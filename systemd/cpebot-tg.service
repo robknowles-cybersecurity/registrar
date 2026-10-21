@@ -1,0 +1,51 @@
+# TEMPLATE — replace every <PLACEHOLDER> before installing:
+#   <INSTALL_DIR>   absolute path of the git checkout
+#   <DATA_DIR>      absolute path for the ledger and evidence (same as the web unit)
+#   <CHAT_ID>       your numeric Telegram chat id (see docs/TELEGRAM-SETUP.md)
+# Install: install -m 0644 systemd/cpebot-tg.service ~/.config/systemd/user/
+[Unit]
+Description=Registrar (cpebot) — Telegram capture
+Documentation=file://<INSTALL_DIR>/docs/TELEGRAM-SETUP.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=<INSTALL_DIR>
+Environment=PYTHONUNBUFFERED=1
+Environment=CPEBOT_DB=<DATA_DIR>/cpebot.db
+Environment=CPEBOT_EVIDENCE=<DATA_DIR>/evidence
+Environment=CPEBOT_BODIES=<INSTALL_DIR>/bodies.yaml
+Environment=CPEBOT_TG_ENV=<INSTALL_DIR>/.env.telegram
+
+# The chat id that is allowed to write to the ledger; every other chat is
+# ignored. Leave this UNSET and the bot refuses EVERY chat (it warns at start-up).
+Environment=CPEBOT_TG_CHAT=<CHAT_ID>
+
+# The token is NOT here and is NOT in the repo. It is read at start-up from
+# CPEBOT_TG_ENV. Until that file exists this unit exits 78 (EX_CONFIG) with an
+# instruction. docs/TELEGRAM-SETUP.md has the exact file, format and mode.
+ExecStart=/usr/bin/python3 -m cpebot.tgcapture
+Restart=on-failure
+RestartSec=15
+# 78 is "config missing", not "crashed". Restarting into it forever would turn
+# a clear one-line error into a log flood that hides the instruction.
+RestartPreventExitStatus=78
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=<DATA_DIR>
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=default.target

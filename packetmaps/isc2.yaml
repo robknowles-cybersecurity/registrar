@@ -1,0 +1,56 @@
+# Registrar packet map — ISC2 (CISSP), schema v1
+#
+# The ISC2 member portal's CPE entry form, field by field, in portal order.
+#
+# UNVERIFIED: these labels were drafted from general knowledge of the ISC2
+# CPE process. The live portal sits behind a member login, so no label below
+# was read off the real form. Correct the labels here (data, not code) the first
+# time you submit, then set verified: true with a date in verified_note.
+#
+# What IS grounded: the Group A / Group B split and its names come from
+# bodies.yaml (cissp: groups), which carries its own provenance.
+
+schema_version: 1
+id: "isc2"
+form_name: "ISC2 member portal: Add CPE"
+body_id: "isc2"
+credentials: ["cissp"]
+verified: false
+verified_note: "Field labels drafted, not read off the live ISC2 form (the portal requires a member login). Values are correct; label wording and order may differ."
+source_url: null
+holder_note: "Sign in to the ISC2 member portal yourself and open the CPE entry form. Registrar never asks for or stores your ISC2 login."
+date_format: "%m/%d/%Y"
+fields:
+  - label: "CPE group"
+    source: "group.id"
+    map:
+      group_a: "Group A"
+      group_b: "Group B"
+    required: true
+    note: "Group A: directly related to the CISSP domains. Group B: general professional development."
+  - label: "Activity category"
+    source: "holder_choice"
+    note: "Pick the portal's closest category. Registrar's tag for this entry is given under Registrar tag."
+  - label: "Registrar tag"
+    source: "entry.tag_labels"
+  - label: "Domain"
+    source: "holder_choice"
+    note: "Group A only. Registrar does not track which CISSP domain an activity covers."
+  - label: "Title"
+    source: "entry.title"
+    required: true
+  - label: "Provider"
+    source: "entry.provider"
+    required: true
+  - label: "Date completed"
+    source: "entry.activity_date"
+    required: true
+  - label: "CPE credits"
+    source: "credit.amount"
+    required: true
+    note: "Claimed for this activity before caps. ISC2 applies the Group B ceiling on its side; Registrar's totals already do."
+  - label: "Description"
+    source: "entry.notes"
+  - label: "Supporting documentation"
+    source: "evidence.filenames"
+    note: "Upload these from the evidence bundle. Keep the bundle: ISC2 can audit."

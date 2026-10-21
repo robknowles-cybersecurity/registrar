@@ -1,0 +1,52 @@
+# TEMPLATE — replace every <PLACEHOLDER> before installing:
+#   <INSTALL_DIR>   absolute path of the git checkout
+#   <DATA_DIR>      absolute path for the ledger and evidence (e.g. <INSTALL_DIR>/var)
+#   <BIND_ADDRESS>  127.0.0.1, or ONE private interface address you trust.
+#                   Never 0.0.0.0 and never a public address: there is no login.
+#   <HOST_NAMES>    optional: names you browse to the app by (see CPEBOT_ALLOWED_HOSTS below)
+# Install: install -m 0644 systemd/cpebot-web.service ~/.config/systemd/user/
+[Unit]
+Description=Registrar (cpebot) — CPE/CEU registrar web app (private network only)
+Documentation=file://<INSTALL_DIR>/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=<INSTALL_DIR>
+Environment=PYTHONUNBUFFERED=1
+Environment=CPEBOT_BIND=<BIND_ADDRESS>
+Environment=CPEBOT_PORT=8762
+# Extra host names the app answers to (comma-separated), besides localhost,
+# 127.0.0.1, [::1] and CPEBOT_BIND. Leave commented out if you browse by address.
+#Environment=CPEBOT_ALLOWED_HOSTS=<HOST_NAMES>
+Environment=CPEBOT_DB=<DATA_DIR>/cpebot.db
+Environment=CPEBOT_EVIDENCE=<DATA_DIR>/evidence
+Environment=CPEBOT_BODIES=<INSTALL_DIR>/bodies.yaml
+ExecStart=/usr/bin/python3 -m cpebot.web
+Restart=on-failure
+RestartSec=5
+
+# Hardening for a stdlib web app under a rootless user manager.
+#
+# ProtectKernelModules is deliberately ABSENT: in a rootless user manager it
+# exits 218/CAPABILITIES rather than being ignored, so including it stops the
+# unit from starting at all. Same for ProtectControlGroups=strict — the
+# relaxed form below is what actually runs.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=<DATA_DIR>
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=default.target

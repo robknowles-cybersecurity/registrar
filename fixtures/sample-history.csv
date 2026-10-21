@@ -1,0 +1,24 @@
+date,title,provider,hours,count,tags,markers,applies_to,submitted_to,cost_usd,notes
+2025-09-12,SAMPLE — Cloud security architecture deep dive,Example Security Institute,8,1,training,domain_security,,,,Fictional demo row
+2025-09-24,SAMPLE — Regional chapter meeting,Example Threat Assessment Chapter,2,1,chapter_meeting,threat_management,,,,Fictional demo row
+2025-10-02,SAMPLE — Detection engineering webinar,Placeholder Labs,1.5,1,training,domain_security,,,,Fictional demo row
+2025-10-15,SAMPLE — Wrote a blog post on log tampering,Self,0,1,authoring_blog,domain_security,,,,Fictional demo row
+2025-11-06,SAMPLE — Fraud examination refresher,Example Fraud Academy,6,1,training,fraud,,,,Fictional demo row
+2025-11-20,SAMPLE — Ethics in investigations,Example Fraud Academy,2,1,training,fraud;ethics,,,,One hour of this is the ethics floor
+2025-12-04,SAMPLE — Presented an internal SOC briefing,Example Employer,1,1,teaching,domain_security,,,,Fictional demo row
+2026-01-14,SAMPLE — Behavioural threat assessment seminar,Example Threat Assessment Chapter,7,1,conference,threat_management;cint,,,,Fictional demo row
+2026-01-29,SAMPLE — Chapter meeting,Example Threat Assessment Chapter,2,1,chapter_meeting,threat_management,,,,Fictional demo row
+2026-02-11,SAMPLE — Read four professional articles,Various,0,4,reading,domain_security,,,,Per-item activity
+2026-02-26,SAMPLE — Incident response tabletop,Placeholder Labs,4,1,training,domain_security,,,,Fictional demo row
+2026-03-10,SAMPLE — Chapter meeting,Example Threat Assessment Chapter,2,1,chapter_meeting,threat_management,,,,Fictional demo row
+2026-03-25,SAMPLE — Volunteer mentoring session,Example Mentoring Program,3,1,volunteer,,,,,Non-domain: falls to Group B on CISSP
+2026-04-08,SAMPLE — Vendor product training,Placeholder Vendor,6,1,training,,,,,Non-domain: falls to Group B on CISSP
+2026-04-22,SAMPLE — Non-domain project management course,Example Business School,10,1,professional_dev,,,,,Non-domain: Group B, and Group B is capped
+2026-05-06,SAMPLE — Another non-domain course,Example Business School,10,1,professional_dev,,,,,Deliberately pushes Group B past its cap
+2026-05-19,SAMPLE — Threat management case review,Example Threat Assessment Chapter,5,1,training,threat_management,,,,Fictional demo row
+2026-06-03,SAMPLE — Fraud data analytics workshop,Example Fraud Academy,8,1,training,fraud,,,,Fictional demo row
+2026-06-17,SAMPLE — Chapter meeting,Example Threat Assessment Chapter,2,1,chapter_meeting,threat_management,,,,Fictional demo row
+2026-07-08,SAMPLE — Insider threat conference,Example Conference Co,12,1,conference,domain_security;cint,,,,Fictional demo row
+2026-07-23,SAMPLE — Wrote an article on interview technique,Self,0,1,authoring_article,fraud,,,,Per-item activity
+2026-08-05,SAMPLE — Security operations training,Placeholder Labs,6,1,training,domain_security,,,,Fictional demo row
+2026-08-19,SAMPLE — Chapter meeting,Example Threat Assessment Chapter,2,1,chapter_meeting,threat_management,,,,Fictional demo row

@@ -1,0 +1,43 @@
+# Registrar packet map — generic fallback, schema v1
+#
+# Used by every credential that has no body-specific map. The fields are the
+# ones nearly every continuing-education portal asks for; the labels are
+# Registrar's own, not any one body's. See packetmaps/README.md for the
+# format and the list of value sources.
+
+schema_version: 1
+id: "generic"
+form_name: "Generic continuing-education form"
+verified: true
+verified_note: "Not a body's form: Registrar's own field set, so there is nothing external to verify."
+holder_note: "No body-specific map exists for this credential yet. Field names in the body's portal will differ; the values are the same."
+date_format: "%Y-%m-%d"
+fields:
+  - label: "Activity date"
+    source: "entry.activity_date"
+    required: true
+  - label: "Title"
+    source: "entry.title"
+    required: true
+  - label: "Provider / sponsor"
+    source: "entry.provider"
+    required: true
+  - label: "Category"
+    source: "bucket.name"
+  - label: "Group"
+    source: "group.name"
+  - label: "Hours"
+    source: "entry.hours"
+  - label: "Credits claimed"
+    source: "credit.amount"
+    required: true
+  - label: "Unit"
+    source: "credit.unit"
+  - label: "Topics"
+    source: "entry.marker_labels"
+  - label: "Notes"
+    source: "entry.notes"
+  - label: "Attendee"
+    source: "holder.name"
+  - label: "Evidence files"
+    source: "evidence.filenames"

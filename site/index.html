@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ceu.tools</title>
+<meta name="description" content="ceu.tools: small, self-hostable tools for keeping professional credentials current. Tool one is Registrar: track your CPEs, CEUs and PDUs in one place.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="brand">ceu.tools</p>
+  <h1>Tools for keeping your professional credentials current.</h1>
+  <p class="lede">Every certifying body counts continuing education
+  differently: caps, minimums, windows, its own name for the unit. These
+  tools do that arithmetic so you do not find out at renewal time.</p>
+</header>
+
+<main>
+  <p class="note"><b>Early release.</b> Registrar works today, but it is
+  young and it is self-host only: there is no hosted version yet. Some
+  bodies' rules could not be confirmed against their own published pages;
+  the app marks those as unverified and does not hide it. Check anything
+  important against your body's portal.</p>
+
+  <h2>The suite</h2>
+
+  <section class="tool" aria-labelledby="registrar">
+    <p class="num">Tool #1</p>
+    <h3 id="registrar">Registrar</h3>
+    <p class="tag">Track your CPEs, CEUs and PDUs in one place.</p>
+    <ul>
+      <li>Totals that respect each body's caps and category minimums,
+          and show you what a plain sum of hours would have got wrong.</li>
+      <li>Evidence files hashed when you attach them and re-checked
+          before you need them.</li>
+      <li>A deadline calendar (.ics) for cycle ends, grace periods,
+          registration windows and fees.</li>
+      <li>Submission packets: each activity laid out in your body's form
+          fields, plus a zip of your evidence. You sign in and submit
+          yourself; Registrar never asks for your portal login.</li>
+      <li>Optional Telegram capture with your own bot.</li>
+    </ul>
+    <a class="cta" href="https://github.com/robknowles-cybersecurity/registrar">Self-host Registrar</a>
+    <p class="small">Python 3 standard library only. Runs on your own
+    machine or private network, bound to localhost by default. Free
+    software under the GNU AGPL v3.</p>
+  </section>
+
+  <div class="later">More tools may join the suite later. Nothing to
+  announce yet.</div>
+</main>
+
+<footer>
+  <p>&copy; 2026 Rob Knowles. ceu.tools and Registrar are not affiliated
+  with or endorsed by any certifying body.</p>
+  <p>This site sets no cookies and runs no scripts or analytics.</p>
+</footer>
+
+</div>
+</body>
+</html>

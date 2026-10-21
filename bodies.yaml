@@ -1,0 +1,3482 @@
+# Registrar (cpebot) / bodies.yaml — rules file, schema v1
+#
+# The rules file. One entry per CREDENTIAL TRACK (not per body): several tracks
+# can share an issuing body, and the rules that matter — cycle length, caps,
+# floors, carryover, submission cadence — are per credential, not per body.
+#
+# EVERY numeric rule below carries provenance: `source_url` + `verified_date`,
+# and a `verified` flag. Anything that could not be read from the issuing
+# body's own page on the verified_date is `verified: false` and is rendered
+# UNVERIFIED in the web UI and in every renewal report. The engine REFUSES to
+# assert compliance for a credential whose binding rules are unverified — see
+# `caps_known` and engine.verdict().
+#
+# Units: bodies call their unit CPE / CEU / ECE / PDU / credit. Internally
+# cpebot has ONE unit, the "credit", and each track declares `unit_label` for
+# display and `unit_note` for anything the label hides.
+#
+# Rates: a bucket either has `per_hour` (credits = hours * per_hour) or
+# `per_item` (credits = count * per_item). Never both.
+#
+# Caps: `cap: null` means "no cap declared". Ineligible activity is simply not
+# mapped to a bucket rather than being given a zero cap.
+#
+# Verification: values were checked against each issuing body's own web
+# pages. The two ATAP tracks could not be fully confirmed and ship UNVERIFIED;
+# the web UI and every report say so — see docs/VERIFICATION.md.
+
+schema_version: 1
+sweep_date: "2026-08-30"
+
+tag_vocabulary:
+  - id: "training"
+    label: "Training / course / webinar / self-study"
+  - id: "conference"
+    label: "Conference or seminar attendance"
+  - id: "chapter_meeting"
+    label: "Chapter / association meeting"
+  - id: "teaching"
+    label: "Teaching, instructing, presenting"
+  - id: "materials"
+    label: "Creating instructional materials"
+  - id: "authoring_blog"
+    label: "Blog post (500+ words)"
+  - id: "authoring_article"
+    label: "Article or white paper"
+  - id: "authoring_book"
+    label: "Book or book chapter"
+  - id: "volunteer"
+    label: "Volunteer / giving back / board service"
+  - id: "work_experience"
+    label: "Work experience in the credential's field"
+  - id: "higher_education"
+    label: "College / university course"
+  - id: "reading"
+    label: "Reading professional material"
+  - id: "cert_exam"
+    label: "Passing another industry certification exam"
+  - id: "special_project"
+    label: "Special project"
+  - id: "program_support"
+    label: "Support to the certifying program itself"
+  - id: "professional_dev"
+    label: "General professional development (non-domain)"
+
+topic_markers:
+  - id: "domain_security"
+    label: "Directly related to information security domains"
+  - id: "fraud"
+    label: "Detection and deterrence of fraud"
+  - id: "ethics"
+    label: "Ethics"
+  - id: "cint"
+    label: "Counter-insider-threat (C-InT)"
+  - id: "threat_management"
+    label: "Threat assessment and management"
+
+credentials:
+
+  - id: "cissp"
+    name: "CISSP"
+    long_name: "Certified Information Systems Security Professional"
+    body_id: "isc2"
+    body_name: "ISC2"
+    unit_label: "CPE"
+    unit_note: "ISC2 calls one credit a CPE credit; one hour of qualifying activity is one CPE."
+    verified: true
+    source_url: "https://www.isc2.org/policies-procedures/member-policies"
+    verified_date: "2026-10-20"
+    verification_note: "Totals, group split, AMF and the 90-day grace read from the ISC2 member-policies and AMF pages (re-verified 2026-10-20): 120 per three years, Group A 90, Group A or B 30, 40/yr suggested only, USD 135 AMF, 90-day grace, and ISSAP/ISSEP/ISSMP CPEs counting toward CISSP. Rollover terms are unverified; see rollover below."
+    caps_known: true
+    cycle:
+      length_months: 36
+      basis: "certification_anniversary"
+    requirements:
+      cycle_total: 120
+      annual_minimum: null
+      annual_target: 40
+      annual_target_advisory: true
+      annual_target_note: "ISC2 states 120 per three-year cycle as the binding requirement and suggests ~40/year as pacing. cpebot treats 40/yr as PACE GUIDANCE, not a hard floor, and says so on every report."
+    groups:
+      - id: "group_a"
+        name: "Group A — directly related to the CISSP domains"
+        floor: 90
+        cap: null
+      - id: "group_b"
+        name: "Group B — general professional development"
+        floor: null
+        cap: 30
+    buckets:
+      - id: "a_activity"
+        name: "Group A activity"
+        group: "group_a"
+        per_hour: 1.0
+        cap: null
+        tags: ["training", "conference", "teaching", "materials", "authoring_blog", "authoring_article", "authoring_book", "volunteer", "higher_education", "reading", "chapter_meeting", "cert_exam"]
+        requires_markers: ["domain_security"]
+      - id: "b_activity"
+        name: "Group B activity"
+        group: "group_b"
+        per_hour: 1.0
+        cap: null
+        cap_note: "No bucket-level cap: Group B's 30-CPE ceiling is a GROUP limit and is encoded once, on the group. Duplicating it here would trim the bucket first and hide how many hours were actually forfeited."
+        tags: ["training", "conference", "teaching", "materials", "authoring_blog", "authoring_article", "authoring_book", "volunteer", "higher_education", "reading", "chapter_meeting", "professional_dev", "work_experience"]
+        requires_markers: []
+    carryover:
+      allowed: true
+      max: 40
+      group: "group_a"
+      window_note: "Only credits earned in the FINAL SIX MONTHS of the prior cycle, in excess of the 120 required, may roll over. No rollover of Group B."
+      verified: false
+      verified_note: "UNVERIFIED. Source: the ISC2 Certification Maintenance Handbook. Confirm against the current handbook before relying on a rollover figure."
+    cross_credential:
+      note: "ISC2 states that CPEs satisfying ISSAP / ISSEP / ISSMP requirements automatically count toward the CISSP requirement. If you hold none of those concentrations, this rule does not affect you."
+      auto_counts_from: ["issap", "issep", "issmp"]
+      verified: true
+    submission:
+      cadence: "continuous"
+      note: "Report as earned through the ISC2 member portal; all credits must be earned and posted by cycle end (plus grace)."
+      window: null
+    grace_period_days: 90
+    fees:
+      - name: "Annual Maintenance Fee (AMF)"
+        amount_usd: 135
+        cadence: "annual"
+        due_note: "Due on the certification cycle start date and each annual anniversary."
+
+  - id: "cysa_plus"
+    name: "CySA+"
+    long_name: "CompTIA Cybersecurity Analyst"
+    body_id: "comptia"
+    body_name: "CompTIA"
+    unit_label: "CEU"
+    unit_note: "CompTIA calls one credit a CEU. Rates are NOT uniformly one-per-hour — creating instructional materials is 2/hour, a college class is a flat 10, a book is a flat award."
+    verified: true
+    source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+    verified_date: "2026-10-20"
+    verification_note: "Total (60/3yr) from CompTIA's CySA+ renewal page. Per-bucket rates and caps from CompTIA's own category pages: work-experience, publishing, it-industry-participation, training-and-higher-education. CE fee from CompTIA's continuing-education-renewal-fees page. Re-verified 2026-10-20 on www.comptia.org: total 60 (Earn CEUs table), fee USD 150 per three years, 50% relevance rule, work experience 3/yr capped at 9, college/ACE course 10 per class, teaching 1/hr and materials 2/hr all unchanged. Corrected from today's CySA+ columns: blog cap 12 -> 18, article cap 12 -> 18, book 60 -> 50 (value and cap), teaching cap unknown -> 30, materials cap unknown -> 30, conference cap none -> 15 (own bucket), grace 0 -> 30 days. The old source URL (renew-options/renewing-cysa-multiple) was not re-read; the totals table is on the Earn CEUs page."
+    caps_known: true
+    cycle:
+      length_months: 36
+      basis: "exam_pass_anniversary"
+    requirements:
+      cycle_total: 60
+      annual_minimum: null
+      annual_target: 20
+      annual_target_advisory: true
+      annual_target_note: "CompTIA sets no annual floor; 20/yr is cpebot's even-pacing figure only."
+      relevance_rule: "At least 50% of an activity's content must relate to the CySA+ exam objectives."
+    groups: []
+    buckets:
+      - id: "training"
+        name: "Training courses"
+        group: null
+        per_hour: 1.0
+        cap: null
+        cap_note: "Training courses count up to the full 60. Live webinars are capped at 15 for CySA+, but they share the 'training' tag with courses, so that cap cannot be applied separately here."
+        tags: ["training"]
+        requires_markers: []
+      - id: "conference"
+        name: "Conference attendance"
+        group: null
+        per_hour: 1.0
+        cap: 15
+        cap_note: "CySA+ maximum 15 CEUs per cycle for attending conferences (training-and-higher-education chart, read 2026-10-20)."
+        tags: ["conference"]
+        requires_markers: []
+      - id: "higher_education"
+        name: "College / ACE course"
+        group: null
+        per_item: 10.0
+        cap: null
+        tags: ["higher_education"]
+        requires_markers: []
+      - id: "teaching"
+        name: "Teaching or mentoring"
+        group: null
+        per_hour: 1.0
+        cap: 30
+        cap_note: "CySA+ maximum 30 CEUs per cycle for teaching or mentoring, one CEU per hour (it-industry-participation chart, read 2026-10-20)."
+        tags: ["teaching"]
+        requires_markers: []
+      - id: "materials"
+        name: "Creating instructional materials"
+        group: null
+        per_hour: 2.0
+        cap: 30
+        cap_note: "CySA+ maximum 30 CEUs per cycle for creating instructional materials, two CEUs per hour (it-industry-participation chart, read 2026-10-20)."
+        tags: ["materials"]
+        requires_markers: []
+      - id: "publishing_blog"
+        name: "Blog posts (500+ words)"
+        group: null
+        per_item: 1.0
+        cap: 18
+        tags: ["authoring_blog"]
+        requires_markers: []
+      - id: "publishing_article"
+        name: "Articles / white papers (4+ pages)"
+        group: null
+        per_item: 4.0
+        cap: 18
+        tags: ["authoring_article"]
+        requires_markers: []
+      - id: "publishing_book"
+        name: "Book"
+        group: null
+        per_item: 50.0
+        cap: 50
+        cap_note: "CompTIA awards the number in its table for a published book: 50 for CySA+ (publishing chart, read 2026-10-20)."
+        tags: ["authoring_book"]
+        requires_markers: []
+      - id: "work_experience"
+        name: "Work experience"
+        group: null
+        per_item: 3.0
+        cap: 9
+        cap_note: "Three CEUs per year of the renewal cycle, nine maximum. Log one item per year, not per hour."
+        tags: ["work_experience"]
+        requires_markers: []
+      - id: "cert_exam"
+        name: "Non-CompTIA IT industry certification"
+        group: null
+        per_item: 0.0
+        cap: null
+        cap_note: "Value is per-certification from CompTIA's approved list; cpebot does not guess it. Enter the awarded CEUs as an explicit credits_override on the entry."
+        value_is_override: true
+        tags: ["cert_exam"]
+        requires_markers: []
+    carryover:
+      allowed: false
+      max: 0
+      window_note: "CompTIA CEUs must be earned inside the three-year cycle; no rollover mechanism is published."
+      verified: true
+    cross_credential:
+      note: "Renewing with a higher-level CompTIA certification renews CySA+ outright and waives the fee. That is a single-activity renewal path, not credit carryover."
+      auto_counts_from: []
+      verified: true
+    submission:
+      cadence: "continuous"
+      note: "Upload CEUs to the CompTIA CE portal as earned; fee due by the certification expiration date."
+      window: null
+    grace_period_days: 30
+    grace_note: "After expiry the holder can activate a 30-day grace period to pay CE fees and/or submit CEUs already earned inside the cycle. No new activities count, and there are no extensions (help.comptia.org article 13922681550228, read 2026-10-20)."
+    fees:
+      - name: "CE renewal fee (three-year)"
+        amount_usd: 150
+        cadence: "per_cycle"
+        due_note: "Payable by the certification expiration date. CompTIA also sells CE tokens ($25/$50, non-expiring). An annual-thirds figure of $50/yr circulates in third-party guides; CompTIA's own fee page states the three-year amount, which is what is encoded."
+
+  - id: "ceh"
+    name: "CEH"
+    long_name: "Certified Ethical Hacker"
+    body_id: "eccouncil"
+    body_name: "EC-Council"
+    unit_label: "CPE"
+    unit_note: "EC-Council now calls one credit a CPE credit (formerly ECE; the policy page and its URL were renamed). Most awards are flat per-item, not per-hour."
+    verified: true
+    source_url: "https://cert.eccouncil.org/cpe-policy.html"
+    verified_date: "2026-10-20"
+    verification_note: "Total, cycle, the January-to-December earning window with the 1-February registration deadline, the $80 annual membership fee and the full activity/credit table read directly from EC-Council's ECE policy page. Re-verified 2026-10-20: cert.eccouncil.org/ece-policy.html now redirects to cpe-policy.html, whose displayed text says CPE throughout (the ECE wording is still in the HTML but hidden by CSS). Unit corrected ECE -> CPE. 120 per certification per three-year window, earning 1 Jan - 31 Dec with registration by 1 Feb, every credit value encoded below, and the USD 80 annual CE fee (continuing-education-fees page) unchanged."
+    caps_known: true
+    cycle:
+      length_months: 36
+      basis: "certification_anniversary"
+    requirements:
+      cycle_total: 120
+      annual_minimum: null
+      annual_target: 40
+      annual_target_advisory: true
+      annual_target_note: "EC-Council publishes no hard annual floor, but credits are earned and REGISTERED on a calendar-year basis, so an unregistered year is a real loss. 40/yr is even pacing across the 120."
+    groups: []
+    buckets:
+      - id: "chapter_meeting"
+        name: "Association chapter meeting"
+        group: null
+        per_item: 1.0
+        cap: null
+        tags: ["chapter_meeting"]
+        requires_markers: []
+      - id: "education_course"
+        name: "Education course / seminar / conference"
+        group: null
+        per_hour: 1.0
+        cap: null
+        tags: ["training", "conference"]
+        requires_markers: []
+      - id: "authoring_article"
+        name: "Article / book chapter / white paper"
+        group: null
+        per_item: 20.0
+        cap: null
+        tags: ["authoring_article", "authoring_blog"]
+        requires_markers: []
+      - id: "authoring_book"
+        name: "Authoring a book"
+        group: null
+        per_item: 100.0
+        cap: null
+        tags: ["authoring_book"]
+        requires_markers: []
+      - id: "presentation"
+        name: "Presentation"
+        group: null
+        per_item: 3.0
+        cap: null
+        tags: ["teaching"]
+        requires_markers: []
+      - id: "materials"
+        name: "Authoring a course or module"
+        group: null
+        per_item: 40.0
+        cap: null
+        tags: ["materials"]
+        requires_markers: []
+      - id: "cert_exam"
+        name: "Passing an IT security certification exam"
+        group: null
+        per_item: 40.0
+        cap: null
+        tags: ["cert_exam"]
+        requires_markers: []
+      - id: "higher_education"
+        name: "Higher education (per semester)"
+        group: null
+        per_item: 15.0
+        cap: null
+        tags: ["higher_education"]
+        requires_markers: []
+      - id: "reading"
+        name: "Reading security materials"
+        group: null
+        per_item: 5.0
+        cap: null
+        tags: ["reading"]
+        requires_markers: []
+      - id: "volunteer"
+        name: "Public-sector volunteering"
+        group: null
+        per_hour: 1.0
+        cap: null
+        tags: ["volunteer"]
+        requires_markers: []
+    carryover:
+      allowed: false
+      max: 0
+      window_note: "Credits belong to the calendar year in which they were earned and must be registered for that year."
+      verified: true
+    cross_credential:
+      note: "ECE credits apply across all EC-Council certifications a member holds under the ECE policy; a holder of a single EC-Council certification sees no cross-credit effect."
+      auto_counts_from: []
+      verified: true
+    submission:
+      cadence: "annual_window"
+      note: "Credits are earned per calendar year (1 January - 31 December) and MUST be registered by 1 February of the following year. A missed window is the single sharpest edge in this portfolio."
+      window:
+        earn_start_mmdd: "01-01"
+        earn_end_mmdd: "12-31"
+        register_by_mmdd: "02-01"
+        register_by_year_offset: 1
+    grace_period_days: 0
+    fees:
+      - name: "Annual membership fee"
+        amount_usd: 80
+        cadence: "annual"
+        due_note: "Required to be able to submit ECE credits at all. $240 across a three-year cycle."
+
+  - id: "gcitp"
+    name: "GCITP"
+    long_name: "Global Counter-Insider Threat Professional (University of Maryland)"
+    body_id: "umd"
+    body_name: "University of Maryland"
+    unit_label: "PDU"
+    unit_note: "UMD calls one credit a Professional Development Unit."
+    verified: true
+    source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+    verified_date: "2026-10-20"
+    verification_note: "Four-year window, 100 PDUs, the 60/40 C-InT split, the per-category maxima and the $500 recertification fee read directly from UMD's maintain-certification page. NOTE: GCITP IS A UMD CREDENTIAL, NOT GIAC/SANS — the acronym resemblance is a common source of error. Re-verified 2026-10-20 on gcitp.umd.edu (maintain page, PDU reference table, candidate handbook): 4 years, 100 PDUs, 60% C-InT minimum, 40% other maximum, special projects 45, USD 500 / 650 unchanged. The name Global Counter-Insider Threat Professional matches UMD's PDU table and handbook. Teaching, mentoring and workshops corrected 1 -> 3 PDUs per contact hour (own bucket). Not modelled: the 45-PDU per-event cap, the 40-PDU cap on non-GCITP certifications, and the fixed per-item values for publications (see publications cap_note)."
+    caps_known: true
+    cycle:
+      length_months: 48
+      basis: "conferral_anniversary"
+    requirements:
+      cycle_total: 100
+      annual_minimum: null
+      annual_target: 25
+      annual_target_advisory: true
+      annual_target_note: "UMD sets no interim reporting and no annual floor; the whole 100 is due at the end of the four years. 25/yr is cpebot's pacing figure only."
+    groups:
+      - id: "cint"
+        name: "Counter-insider-threat related"
+        floor: 60
+        cap: null
+        floor_note: "Minimum 60% of the 100 PDUs must be C-InT related."
+      - id: "other"
+        name: "Other professional development"
+        floor: null
+        cap: 40
+        cap_note: "Maximum 40% of the 100 PDUs may come from outside C-InT."
+    buckets:
+      - id: "training_education"
+        name: "Training and education"
+        group: null
+        per_hour: 1.0
+        cap: 100
+        tags: ["training", "conference", "higher_education"]
+        requires_markers: []
+      - id: "teaching_presenting"
+        name: "Teaching, training, presenting, mentoring, workshops"
+        group: null
+        per_hour: 3.0
+        cap: 100
+        cap_note: "3 PDUs per contact hour, max 45 per event and 100 per category (PDU reference table, read 2026-10-20). The per-event cap is not modelled."
+        tags: ["teaching"]
+        requires_markers: []
+      - id: "giving_back"
+        name: "Giving back to the community"
+        group: null
+        per_hour: 1.0
+        cap: 100
+        tags: ["volunteer", "chapter_meeting"]
+        requires_markers: []
+      - id: "unique_work"
+        name: "Unique work experiences"
+        group: null
+        per_hour: 1.0
+        cap: 100
+        tags: ["work_experience"]
+        requires_markers: []
+      - id: "publications"
+        name: "Publications"
+        group: null
+        per_hour: 1.0
+        cap: 100
+        cap_note: "OPEN: UMD awards publications fixed values per item (scholarly book 45, dissertation 50, book chapter / article / book review 25, newsletter article 10, newsletter editor 5), not per hour. The tags here do not map one-to-one to those types, so the rate is left as is."
+        tags: ["authoring_blog", "authoring_article", "authoring_book", "materials"]
+        requires_markers: []
+      - id: "special_projects"
+        name: "Special projects"
+        group: null
+        per_hour: 1.0
+        cap: 45
+        cap_note: "The one genuinely binding category cap in GCITP — 45 of the 100."
+        tags: ["special_project"]
+        requires_markers: []
+      - id: "program_support"
+        name: "GCITP program support"
+        group: null
+        per_hour: 1.0
+        cap: 100
+        tags: ["program_support"]
+        requires_markers: []
+    group_marker_map:
+      cint: "cint"
+      other: null
+    carryover:
+      allowed: false
+      max: 0
+      window_note: "No published rollover between four-year windows."
+      verified: false
+      verified_note: "UNVERIFIED — UMD's page is silent on rollover. Encoded as no-rollover because that is the conservative reading, not because it was confirmed."
+    cross_credential:
+      note: "None published."
+      auto_counts_from: []
+      verified: true
+    submission:
+      cadence: "end_of_cycle"
+      note: "Single renewal submission at the end of the four-year window; no interim reporting required."
+      window: null
+    grace_period_days: 0
+    fees:
+      - name: "Recertification fee (PDU path)"
+        amount_usd: 500
+        cadence: "per_cycle"
+        due_note: "Standard recertification by PDUs."
+      - name: "Recertification by re-examination"
+        amount_usd: 650
+        cadence: "per_cycle"
+        due_note: "Alternative to completing PDUs."
+
+  - id: "atap_membership"
+    name: "ATAP membership"
+    long_name: "Association of Threat Assessment Professionals — membership in good standing"
+    body_id: "atap"
+    body_name: "ATAP"
+    unit_label: "meeting"
+    unit_note: "Not a CPE scheme. The tracked quantity is qualifying MEETINGS attended per calendar year — the spec calls this 'ATAP meeting tracking'. It is modelled here because a lapsed membership is a prerequisite failure for the CTM track below."
+    verified: false
+    source_url: "https://www.atapworldwide.org/membership/howtojoin"
+    verified_date: "2026-10-20"
+    verification_note: "UNVERIFIED as a whole. Source: https://www.atapworldwide.org/membership/howtojoin (read 2026-10-20): dues USD 150 a year plus a USD 100 application fee; at least one in-person or two virtual chapter meetings per calendar year, or any national ATAP conference; waived for members joining after April 1. Not modelled, so the track stays unverified: a virtual meeting counts as half (no tag tells virtual from in-person) and the after-April-1 waiver."
+    caps_known: true
+    cycle:
+      length_months: 12
+      basis: "calendar_year"
+    requirements:
+      cycle_total: 1
+      annual_minimum: 1
+      annual_target: 1
+      annual_target_advisory: false
+      annual_target_note: "At least one qualifying meeting as a member within the calendar year."
+    groups: []
+    buckets:
+      - id: "chapter_meeting"
+        name: "Chapter meeting"
+        group: null
+        per_item: 1.0
+        cap: null
+        tags: ["chapter_meeting"]
+        requires_markers: []
+      - id: "conference"
+        name: "National ATAP conference"
+        group: null
+        per_item: 1.0
+        cap: null
+        cap_note: "Attending any national ATAP conference satisfies the year's meeting requirement (How to Join, read 2026-10-20)."
+        tags: ["conference"]
+        requires_markers: []
+    carryover:
+      allowed: false
+      max: 0
+      window_note: "Attendance is per calendar year."
+      verified: false
+    cross_credential:
+      note: "Membership in good standing is a prerequisite for holding the CTM."
+      auto_counts_from: []
+      verified: false
+    submission:
+      cadence: "annual"
+      note: "Dues renewal annually; attendance is self-reported to the chapter."
+      window: null
+    grace_period_days: 0
+    fees:
+      - name: "Annual dues"
+        amount_usd: 150
+        cadence: "annual"
+        due_note: "Non-refundable (How to Join, read 2026-10-20)."
+      - name: "Application processing fee"
+        amount_usd: 100
+        cadence: "one_time"
+        due_note: "Non-refundable, paid with the membership application (How to Join, read 2026-10-20)."
+
+  - id: "ctm"
+    name: "CTM"
+    long_name: "Certified Threat Manager (ATAP)"
+    body_id: "atap"
+    body_name: "ATAP"
+    unit_label: "credit"
+    unit_note: "ATAP calls one credit a recertification credit."
+    verified: false
+    source_url: "https://www.atapworldwide.org/page/CTM"
+    verified_date: "2026-08-30"
+    verification_note: "UNVERIFIED. Source: https://www.atapworldwide.org/page/CTM. www.atapworldwide.org/certification confirms 50 recertification points per cycle and that recertification runs through Certemy, but not the cycle length, the grace period (10 vs 30 days) or the caps. The five subcategory CAPS are NOT KNOWN — ATAP states each subsection has a maximum, and Registrar does not have those numbers."
+    caps_known: false
+    caps_unknown_note: "ATAP publishes a per-subcategory maximum for each recertification subsection. Those maxima are not in cpebot. Until they are, this track's totals are ADVISORY ONLY and the engine will not emit a compliance verdict for it."
+    cycle:
+      length_months: 24
+      basis: "certification_anniversary"
+    requirements:
+      cycle_total: 50
+      annual_minimum: null
+      annual_target: 25
+      annual_target_advisory: true
+      annual_target_note: "Even pacing across the two years. ATAP publishes no annual floor."
+    groups: []
+    buckets:
+      - id: "education"
+        name: "Education / training received"
+        group: null
+        per_hour: 1.0
+        cap: null
+        cap_verified: false
+        cap_note: "UNVERIFIED — ATAP caps this subsection; the number is unknown."
+        tags: ["training", "conference"]
+        requires_markers: []
+      - id: "instruction"
+        name: "Instruction / teaching delivered"
+        group: null
+        per_hour: 1.0
+        cap: null
+        cap_verified: false
+        cap_note: "UNVERIFIED — ATAP caps this subsection; the number is unknown."
+        tags: ["teaching", "materials"]
+        requires_markers: []
+      - id: "publications"
+        name: "Publications"
+        group: null
+        per_item: 1.0
+        cap: null
+        cap_verified: false
+        cap_note: "UNVERIFIED — ATAP caps this subsection; the number is unknown."
+        tags: ["authoring_blog", "authoring_article", "authoring_book"]
+        requires_markers: []
+      - id: "professional_service"
+        name: "Professional service / ATAP participation"
+        group: null
+        per_item: 1.0
+        cap: null
+        cap_verified: false
+        cap_note: "UNVERIFIED — ATAP caps this subsection; the number is unknown."
+        tags: ["chapter_meeting", "volunteer"]
+        requires_markers: []
+      - id: "work_experience"
+        name: "Threat management work experience"
+        group: null
+        per_item: 1.0
+        cap: null
+        cap_verified: false
+        cap_note: "UNVERIFIED — ATAP caps this subsection; the number is unknown."
+        tags: ["work_experience", "special_project"]
+        requires_markers: []
+    carryover:
+      allowed: false
+      max: 0
+      window_note: "Not published."
+      verified: false
+    cross_credential:
+      note: "Requires ATAP membership in good standing."
+      auto_counts_from: []
+      verified: false
+    submission:
+      cadence: "end_of_cycle"
+      note: "Proof of credits submitted to ATAP headquarters on the approved form before the expiration date. Ten-day grace between expiration and termination."
+      window: null
+    grace_period_days: 10
+    fees: []
+
+  - id: "cfe"
+    name: "CFE"
+    long_name: "Certified Fraud Examiner (ACFE)"
+    body_id: "acfe"
+    body_name: "ACFE"
+    unit_label: "CPE"
+    unit_note: "ACFE calls one credit a CPE credit; one hour is one credit."
+    verified: true
+    source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements"
+    verified_date: "2026-10-20"
+    verification_note: "The 20/10/2 requirement read from ACFE's CPE-requirements page; the anniversary-month basis, the conditional 10-credit carryover, the three-year retention rule and the single 30-day extension read from ACFE's reporting-CPE page. Re-verified 2026-10-20: all of the above unchanged. Corrected from ACFE's accepted-types page (cpe-types): instructor credit capped at 10 per year (prep time included), author credit capped at 10 per year, mentor/volunteer credit capped at 10 per year, college courses 15 CPE per semester hour (was 1 per hour), and reading dropped (the page says reading a book does not qualify). These were one uncapped bucket before."
+    caps_known: true
+    cycle:
+      length_months: 12
+      basis: "membership_anniversary_month"
+    requirements:
+      cycle_total: 20
+      annual_minimum: 20
+      annual_target: 20
+      annual_target_advisory: false
+      annual_target_note: "The CFE cycle IS one year, so the cycle total and the annual floor are the same number."
+    groups:
+      - id: "fraud"
+        name: "Fraud detection and deterrence"
+        floor: 10
+        cap: null
+        floor_note: "At least 10 of the 20 must relate directly to the detection and deterrence of fraud."
+      - id: "ethics"
+        name: "Ethics"
+        floor: 2
+        cap: null
+        floor_note: "At least 2 of the 20 must relate directly to ethics. This is the floor that most often fails silently."
+    buckets:
+      - id: "cpe_hour"
+        name: "Qualifying CPE (participant, in-house, self-study)"
+        group: null
+        per_hour: 1.0
+        cap: null
+        cap_note: "Participant, in-house and self-study credit are unlimited (cpe-types, read 2026-10-20). Self-study needs a passed final exam."
+        tags: ["training", "conference", "chapter_meeting"]
+        requires_markers: []
+      - id: "college"
+        name: "College or university course"
+        group: null
+        per_item: 15.0
+        cap: null
+        cap_note: "15 CPE per semester hour completed; log the number of semester hours as the count (cpe-types, read 2026-10-20)."
+        tags: ["higher_education"]
+        requires_markers: []
+      - id: "instructor"
+        name: "Instructor credit"
+        group: null
+        per_hour: 1.0
+        cap: 10
+        cap_note: "Presentation time plus up to 2 hours of preparation per presentation hour (first delivery only); max 10 per compliance period, preparation included (cpe-types, read 2026-10-20). The 2x preparation limit is not modelled."
+        tags: ["teaching", "materials"]
+        requires_markers: []
+      - id: "author"
+        name: "Author credit"
+        group: null
+        per_hour: 1.0
+        cap: 10
+        cap_note: "Time spent preparing articles and books in approved fields; max 10 per year (cpe-types, read 2026-10-20)."
+        tags: ["authoring_blog", "authoring_article", "authoring_book"]
+        requires_markers: []
+      - id: "mentor_volunteer"
+        name: "Mentor / volunteer credit"
+        group: null
+        per_hour: 1.0
+        cap: 10
+        cap_note: "Unpaid anti-fraud mentoring and volunteering; max 10 per compliance period, and it may not count toward the ethics requirement (cpe-types, read 2026-10-20). The ethics exclusion is not enforced: do not mark these entries with the ethics marker."
+        tags: ["volunteer"]
+        requires_markers: []
+    group_marker_map:
+      fraud: "fraud"
+      ethics: "ethics"
+    carryover:
+      allowed: true
+      max: 10
+      window_note: "Up to 10 credits carry into the following compliance period, and ONLY if more than 20 credits were earned in the 12-month period AND both the fraud and ethics floors were satisfied. A conditional carryover, not an unconditional one."
+      conditional_on_floors: true
+      verified: true
+    cross_credential:
+      note: "None published."
+      auto_counts_from: []
+      verified: true
+    submission:
+      cadence: "annual_self_certification"
+      note: "SELF-CERTIFIED by the end of the member's anniversary month at ACFE.com/MyCPE. Proof of CPE must be retained for three years against a random compliance audit. Self-certification plus retention is exactly why cpebot hashes evidence: this is compliance, not convenience."
+      window: null
+      self_certified: true
+      evidence_retention_years: 3
+      evidence_required_fields: ["attendee name", "course description", "sponsoring organization", "CPE credits earned", "course date"]
+    grace_period_days: 30
+    grace_note: "A single 30-day extension may be REQUESTED from Member Services; further time is case-by-case. It is not automatic."
+    fees: []
+
+# ---------------------------------------------------------------------------
+# RESEARCH CATALOG
+#
+# `programs:` is reference data, NOT engine input. One entry per certifying
+# body models its maintenance scheme once, with per-certification totals
+# beneath it. The engine scores only `credentials:` above; a catalog
+# certification links to an engine track explicitly via `engine_track`.
+#
+# Provenance on EVERY program, fact, certification and submission item:
+#   source_url    the body's own page the value is attributed to
+#   source_tier   official_page | official_search_snippet | secondary
+#   look_status   READ_OK | CONFIRMED_ABSENT | NOT_READ
+#   checked_date  when the source was last checked
+#   verified / verified_date  true only for READ_OK on an official_page
+#
+# READ_OK: the value was read on the official page. CONFIRMED_ABSENT: the page
+# was read in full and the item is not there. NOT_READ: the value has not been
+# confirmed on the official page and is shown as unverified.
+# ---------------------------------------------------------------------------
+
+programs:
+
+  # ---- ISC2 --------------------------------------------------------
+  - body_id: "isc2"
+    body_name: "ISC2"
+    unit_label: "CPE"
+    cycle_months: 36
+    source_url: "https://www.isc2.org/policies-procedures/member-policies"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "Unit (CPE), three-year cycle, per-certification totals and Group A floors, 90-day grace and the single AMF all confirmed on the member-policies and AMF pages. Rollover, evidence retention, audit and reporting increment are unverified."
+    facts:
+      - key: "annual_figures_advisory"
+        value: true
+        source_url: "https://www.isc2.org/Insights/2026/06/whats-new-in-isc2-cpe-credits"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "ISC2 recommends a yearly target, but there is no annual requirement unless you are an Associate of ISC2."
+      - key: "associate_annual_group_a"
+        value: 15
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Associates of ISC2 must earn and submit 15 CPE credits annually, all Group A (member policies 4.1.3). The original source (What's New in ISC2 CPE Credits) confirms an annual requirement for Associates but does not state the figure."
+      - key: "grace_period_days"
+        value: 90
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "90-day grace after cycle expiry to earn and submit CPEs; suspension if not met (member policies 4.1.1, 4.1.4, 4.1.5)."
+      - key: "amf_usd"
+        value: 135
+        source_url: "https://www.isc2.org/policies-procedures/amfs-overview"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "One AMF of USD 135 regardless of how many certifications are held, due on the earliest certification anniversary."
+      - key: "amf_usd_associate_or_cc_only"
+        value: 50
+        source_url: "https://www.isc2.org/policies-procedures/amfs-overview"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "USD 50 for members holding only CC, and for Associates of ISC2."
+      - key: "amf_payment_window_days"
+        value: 90
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "If the past-due AMF is still unpaid when the 90-day grace period ends, the certification or associate designation is suspended (member policies 4.2.3). The AMF overview page does not state the 90 days."
+      - key: "rollover_group_a_last_six_months"
+        value: true
+        source_url: "https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf. Unverified."
+      - key: "evidence_retention_months_after_cycle"
+        value: 12
+        source_url: "https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf. Unverified."
+      - key: "audit_response_days"
+        value: 90
+        source_url: "https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf. Unverified."
+      - key: "reporting_increment_hours"
+        value: 0.25
+        source_url: "https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://japan.isc2.org/files/MEM-CPE-Handbook-Digital-Japanese%20(1)%20(1).pdf. Unverified."
+    certifications:
+      - id: "isc2_cissp"
+        name: "CISSP"
+        long_name: "Certified Information Systems Security Professional"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        engine_track: "cissp"
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "120 per three years; Group A 90, Group A or B 30 (suggested 40 per year)."
+      - id: "isc2_ccsp"
+        name: "CCSP"
+        long_name: "Certified Cloud Security Professional"
+        status: "offered"
+        cycle_total: 90
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "90 per three years; Group A 60, Group A or B 30."
+      - id: "isc2_csslp"
+        name: "CSSLP"
+        long_name: "Certified Secure Software Lifecycle Professional"
+        status: "offered"
+        cycle_total: 90
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "90 per three years; Group A 60, Group A or B 30."
+      - id: "isc2_sscp"
+        name: "SSCP"
+        long_name: "Systems Security Certified Practitioner"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Group A 45, Group A or B 15."
+      - id: "isc2_cgrc"
+        name: "CGRC"
+        long_name: "Certified in Governance, Risk and Compliance"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Group A 45, Group A or B 15."
+      - id: "isc2_cc"
+        name: "CC"
+        long_name: "Certified in Cybersecurity"
+        status: "offered"
+        cycle_total: 45
+        annual_minimum: null
+        source_url: "https://www.isc2.org/frequently-asked-questions"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "45 CPE per three-year cycle (15 per year recommended); Group B does not apply to CC holders (FAQ; also the member-policies table)."
+      - id: "isc2_issap"
+        name: "CISSP-ISSAP"
+        long_name: "Information Systems Security Architecture Professional"
+        status: "offered"
+        cycle_total: 140
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Per member policies 4.1.1: required three-year total WITHOUT CISSP is 140 Group A (47 suggested per year); that is the figure encoded. WITH CISSP the table shows 20 suggested per year / 60 per three years, while the footnote says 20 of the CISSP cycle's Group A credits must relate to the concentration. Both readings are per cycle; the count (60 vs 20) conflicts on the same page. /certifications says a concentration can now be held as CISSP + 2 years or 7 years cumulative experience. The old source URL (Certifications/CISSP-Concentrations) now redirects to /certifications, which has no CPE figures."
+      - id: "isc2_issep"
+        name: "CISSP-ISSEP"
+        long_name: "Information Systems Security Engineering Professional"
+        status: "offered"
+        cycle_total: 140
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Per member policies 4.1.1: required three-year total WITHOUT CISSP is 140 Group A (47 suggested per year); that is the figure encoded. WITH CISSP the table shows 20 suggested per year / 60 per three years, while the footnote says 20 of the CISSP cycle's Group A credits must relate to the concentration. Both readings are per cycle; the count (60 vs 20) conflicts on the same page. /certifications says a concentration can now be held as CISSP + 2 years or 7 years cumulative experience. The old source URL (Certifications/CISSP-Concentrations) now redirects to /certifications, which has no CPE figures."
+      - id: "isc2_issmp"
+        name: "CISSP-ISSMP"
+        long_name: "Information Systems Security Management Professional"
+        status: "offered"
+        cycle_total: 140
+        annual_minimum: null
+        source_url: "https://www.isc2.org/policies-procedures/member-policies"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Per member policies 4.1.1: required three-year total WITHOUT CISSP is 140 Group A (47 suggested per year); that is the figure encoded. WITH CISSP the table shows 20 suggested per year / 60 per three years, while the footnote says 20 of the CISSP cycle's Group A credits must relate to the concentration. Both readings are per cycle; the count (60 vs 20) conflicts on the same page. /certifications says a concentration can now be held as CISSP + 2 years or 7 years cumulative experience. The old source URL (Certifications/CISSP-Concentrations) now redirects to /certifications, which has no CPE figures."
+      - id: "isc2_hcispp"
+        name: "HCISPP"
+        long_name: "HealthCare Information Security and Privacy Practitioner"
+        status: "retired"
+        cycle_total: null
+        annual_minimum: null
+        source_url: "https://www.isc2.org/notice/HCISPP-sunset"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Final exam 2023-12-01; HCISPP designated an inactive credential on 2026-12-01. The member-policies CPE table has no HCISPP row, so no total is encoded."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.isc2.org/Insights/2024/05/Managing-Your-ISC2-CPE-Credits-and-Activities"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CPE Portal (cpe.isc2.org). Activities done through ISC2 (Security Congress, Express Courses, JTA surveys) are submitted for the member and posted in one week to one month; everything else is uploaded by the member."
+      public_api:
+        value: "not_found"
+        source_url: "https://www.isc2.org/Insights/2024/05/Managing-Your-ISC2-CPE-Credits-and-Activities"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.isc2.org/Insights/2024/05/Managing-Your-ISC2-CPE-Credits-and-Activities."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://www.isc2.org/volunteer/volunteer-opportunities/chapter-officer"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.isc2.org/volunteer/volunteer-opportunities/chapter-officer."
+      mfa:
+        value: "yes"
+        source_url: "https://www.isc2.org/Insights/2025/04/experience-the-new-ISC2-dashboard"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "The dashboard article asks members who have not enabled MFA to do so. Available, user-enabled; not stated as mandatory."
+      provider_reported:
+        value: "yes"
+        source_url: "https://www.isc2.org/members/cpe-partners"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "All listed CPE Partners are authorized to submit CPE activity on behalf of members; ISC2 advises confirming with the partner."
+
+  # ---- ISACA -------------------------------------------------------
+  - body_id: "isaca"
+    body_name: "ISACA"
+    unit_label: "CPE hour"
+    cycle_months: 36
+    source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "Source: https://www.isaca.org/credentialing/cisa/maintain-cisa-certification."
+    facts:
+      - key: "annual_minimum_every_year"
+        value: true
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "At least 20 CPE hours must be earned and reported every year, and 120 over the three-year period; audits cover a specific calendar year; the fee renews through the calendar year."
+      - key: "cpe_hour_minutes"
+        value: 50
+        source_url: "https://www.isaca.org/credentialing/how-to-report-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "One CPE hour per 50 minutes of active participation (lunches and breaks excluded); earned and reported in quarter hours."
+      - key: "carryover"
+        value: false
+        source_url: "https://support.isaca.org/s/article/Can-my-CPEs-be-carried-over-from-one-year-to-the-next-1597877234102"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://support.isaca.org/s/article/Can-my-CPEs-be-carried-over-from-one-year-to-the-next-1597877234102. Unverified."
+      - key: "maintenance_fee_usd_member"
+        value: 45
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "US$45 per certification per year for members."
+      - key: "maintenance_fee_usd_nonmember"
+        value: 85
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "US$85 per certification per year for non-members. Exceptions on their own pages: CCA US$90/170, AAIA and AAISM US$20/35."
+      - key: "maintenance_fee_usd_third_cert_member"
+        value: 25
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Once more than two ISACA certifications are held, the third and later renew at US$25 for members, US$50 for non-members. Stated on the CISA maintenance page; ISACA's support article on this could not be opened."
+      - key: "fee_due"
+        value: "annual, by 1 January"
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Every ISACA certification maintenance page gives 1 January as the annual due date, and the fee covers that calendar year. One ISACA support article is reported to give 31 December instead; it could not be opened, so the date here follows the certification pages."
+      - key: "reinstatement_window_days"
+        value: 60
+        source_url: "https://www.isaca.org/credentialing/-/media/204a258e93f54cf4814460f6bf5ef85e.ashx"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.isaca.org/credentialing/-/media/204a258e93f54cf4814460f6bf5ef85e.ashx. Unverified."
+      - key: "evidence_retention_months_after_cycle"
+        value: 12
+        source_url: "https://www.isaca.org/credentialing/ccoa/maintain-ccoa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Keep documentation for 12 months after the end of each three-year cycle. CCA, CCP and AAIA say a minimum of three years instead."
+      - key: "policy_change_2027"
+        value: "From 2027-01-01 up to 30 per cycle may be non-domain; domain-specific at least 90; volunteering capped"
+        source_url: "https://www.isaca.org/credentialing/cpe-2027"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "From 2027-01-01 the 120 stays; at least 90 must align to the exam content outline, at most 30 may be other professional development. Volunteering: domain-aligned 20/yr and 60/cycle; non-aligned 20/yr and 30/cycle."
+    certifications:
+      - id: "isaca_cisa"
+        name: "CISA"
+        long_name: "Certified Information Systems Auditor"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 20 per year, 120 per three years; fee US$45/85."
+      - id: "isaca_cism"
+        name: "CISM"
+        long_name: "Certified Information Security Manager"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cism/maintain-cism-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 20 per year, 120 per three years; fee US$45/85."
+      - id: "isaca_crisc"
+        name: "CRISC"
+        long_name: "Certified in Risk and Information Systems Control"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/crisc/maintain-crisc-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 20 per year, 120 per three years; fee US$45/85."
+      - id: "isaca_cgeit"
+        name: "CGEIT"
+        long_name: "Certified in the Governance of Enterprise IT"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cgeit/maintain-cgeit-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CGEIT is active. Its maintain page sets 20 per year and 120 per three years with fee US$45/85; it is not on the retired-credentials page (which lists only CSX-P, ITCA and CET); the credentialing nav lists it as a current certification."
+      - id: "isaca_cdpse"
+        name: "CDPSE"
+        long_name: "Certified Data Privacy Solutions Engineer"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cdpse/maintain-cdpse-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 20 per year, 120 per three years; fee US$45/85."
+      - id: "isaca_ccoa"
+        name: "CCOA"
+        long_name: "Certified Cybersecurity Operations Analyst"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/ccoa/maintain-ccoa-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 20 per year, 120 per three years; fee US$45/85."
+      - id: "isaca_cet"
+        name: "CET"
+        long_name: "Certified in Emerging Technology"
+        status: "retired"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cet/maintain-cet-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Retired 2026-01-06 (retired-credentials page; maintenance still available to existing holders). Holders: minimum 20 per year, 120 per three years, and 10 of each year's 20 must be skills-based training or labs (per year)."
+      - id: "isaca_itca"
+        name: "ITCA"
+        long_name: "Information Technology Certified Associate"
+        status: "retired"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/itca/maintain-itca-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Retired 2026-01-06 (retired-credentials page; maintenance still available to existing holders). Holders: minimum 20 per year, 120 per three years, and 10 of each year's 20 must be skills-based training or labs."
+      - id: "isaca_cca"
+        name: "CCA"
+        long_name: "CMMC Certified Assessor"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/cca/maintain-cca-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CCA is the CMMC Certified Assessor. Minimum 20 per year, 120 per three years; prerequisite certification must stay active; fee US$90 member / US$170 non-member; keep documentation at least three years."
+      - id: "isaca_ccp"
+        name: "CCP"
+        long_name: "CMMC Certified Professional"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: 20
+        source_url: "https://www.isaca.org/credentialing/ccp/maintain-ccp-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CCP is the CMMC Certified Professional. Minimum 20 per year, 120 per three years; fee US$45/85; keep documentation at least three years."
+      - id: "isaca_aaia"
+        name: "AAIA"
+        long_name: "Advanced in AI Audit"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: 10
+        source_url: "https://www.isaca.org/credentialing/aaia/maintain-aaia-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 10 per year (AI domain), 30 per three years; prerequisite certification must stay active; fee US$20/35; keep documentation at least three years."
+      - id: "isaca_aaism"
+        name: "AAISM"
+        long_name: "Advanced in AI Security Management"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: 10
+        source_url: "https://www.isaca.org/credentialing/aaism/maintain-aaism-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 10 per year, 30 per three years; must hold an active CISM or CISSP; fee US$20/35."
+      - id: "isaca_csxp"
+        name: "CSX-P"
+        long_name: "Cybersecurity Practitioner"
+        status: "retired"
+        cycle_total: null
+        annual_minimum: null
+        source_url: "https://www.isaca.org/credentialing/retired-credentials"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Retired 2023-04-30; maintenance is still available to existing holders (CSX-P page). No CPE total found on either page."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.isaca.org/credentialing/how-to-report-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "MyISACA > Certifications & CPE Management > Report and Manage CPE. ISACA-tracked hours pre-load as Unapplied CPE Hours, which the member applies to each certification; chapter and other sponsors' hours are self-reported."
+      public_api:
+        value: "not_found"
+        source_url: "https://www.isaca.org/credentialing/how-to-report-cpe"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.isaca.org/credentialing/how-to-report-cpe."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://www.isaca.org/credentialing/how-to-report-cpe"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.isaca.org/credentialing/how-to-report-cpe."
+      mfa:
+        value: "yes"
+        source_url: "https://support.isaca.org/s/article/Multi-Factor-Authentication-MFA-Security-Frequently-Asked-Questions"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://support.isaca.org/s/article/Multi-Factor-Authentication-MFA-Security-Frequently-Asked-Questions. Unverified."
+      provider_reported:
+        value: "no"
+        source_url: "https://www.isaca.org/credentialing/how-to-report-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Only CPE earned and tracked through ISACA pre-loads; hours from chapters and other sponsoring organizations must be self-reported."
+
+  # ---- CompTIA -----------------------------------------------------
+  - body_id: "comptia"
+    body_name: "CompTIA"
+    unit_label: "CEU"
+    cycle_months: 36
+    source_url: "https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "CEU unit, three-year cycle, all 16 CEU totals, CE fees, 30-day grace, work-experience cap and higher-level renewal rules confirmed."
+    facts:
+      - key: "grace_period_days"
+        value: 30
+        source_url: "https://help.comptia.org/hc/en-us/articles/13922681550228-Does-CompTIA-Offer-a-Renewal-Grace-Period-if-My-Certification-Has-Expired"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Article updated 2026-10-10: after expiry you can activate a 30-day grace period to pay outstanding CE fees and/or submit CEUs already earned inside the cycle; no extra activities, no extensions, no exceptions. The article does not say Support must be contacted; how it is activated is not stated."
+      - key: "fee_cadence"
+        value: "per_cycle"
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/continuing-education-renewal-fees/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CE fees need not be paid annually; the table gives the total CE fee for the three-year period, due by the expiration date."
+      - key: "work_experience_cap"
+        value: 9
+        source_url: "https://www.comptia.org/en/resources/ce/choose/renewing-with-multiple-activities/work-experience/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Three CEUs per year of the cycle, maximum 9 for every certification in the chart (Tech+ N/A)."
+      - key: "relevance_rule_percent"
+        value: 50
+        source_url: "https://www.comptia.org/en-us/resources/ce/choose/renewing-with-multiple-activities/training-and-higher-education/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "At least 50% of the content must relate to one or more exam objectives of the certification being renewed; CompTIA makes the final determination."
+      - key: "ce_token_usd"
+        value: 25
+        source_url: "https://help.comptia.org/hc/en-us/articles/37765749716884-How-Do-I-Purchase-a-CE-Token-for-Certification-Renewal"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Each USD 25 token pays CE fees for the listed certifications; the CE fees page says tokens cost USD 25 and USD 50, do not expire, and are non-refundable once uploaded."
+      - key: "comptia_retains_documentation_years"
+        value: 6
+        source_url: "https://www.comptia.org/en-gb/resources/test-policies/continuing-education-policies/continuing-education-unit-documentation-retention-policy/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "All CEU documentation submitted is retained for six years (CompTIA's retention). A holder retention period is not on the page."
+      - key: "carryover"
+        value: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/."
+      - key: "higher_cert_renews_lower"
+        value: true
+        source_url: "https://www.comptia.org/en-us/resources/ce/choose/renew-with-a-single-activity/earn-a-higher-level-comptia-certification/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "E.g. SecurityX fully renews CySA+, PenTest+, Security+, Network+ and A+. CySA+ fully renews PenTest+ only when CySA+ is first earned by passing the exam; renewing CySA+ through CE does not renew PenTest+, although CySA+ CEUs can be applied to it (and the same in reverse). CE fees are not waived when the higher certification does not fully renew the lower."
+      - key: "good_for_life"
+        value: ["Cloud Essentials+", "ITF+", "Tech+ FC0-U71 (non-CE)", "certifications earned before 2011-01-01", "retired certifications"]
+        source_url: "https://help.comptia.org/hc/en-us/articles/13923899954196-Which-CompTIA-Certifications-Must-Be-Renewed"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://help.comptia.org/hc/en-us/articles/13923899954196-Which-CompTIA-Certifications-Must-Be-Renewed. Unverified."
+    certifications:
+      - id: "comptia_aplus"
+        name: "A+"
+        long_name: "CompTIA A+"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "20 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 75 (CE fees page)."
+      - id: "comptia_networkplus"
+        name: "Network+"
+        long_name: "CompTIA Network+"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_securityplus"
+        name: "Security+"
+        long_name: "CompTIA Security+"
+        status: "offered"
+        cycle_total: 50
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "50 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_cysaplus"
+        name: "CySA+"
+        long_name: "CompTIA Cybersecurity Analyst"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        engine_track: "cysa_plus"
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_pentestplus"
+        name: "PenTest+"
+        long_name: "CompTIA PenTest+"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_securityx"
+        name: "SecurityX"
+        long_name: "CompTIA SecurityX (formerly CASP+)"
+        status: "offered"
+        cycle_total: 75
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "75 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_cloudplus"
+        name: "Cloud+"
+        long_name: "CompTIA Cloud+"
+        status: "offered"
+        cycle_total: 50
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "50 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_linuxplus"
+        name: "Linux+"
+        long_name: "CompTIA Linux+"
+        status: "offered"
+        cycle_total: 50
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "50 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_serverplus"
+        name: "Server+"
+        long_name: "CompTIA Server+"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page). Moved from good-for-life to CE on 2025-10-01; existing holders were granted the CE version with a renewal deadline of 2027-10-01 (help article 40383243876500)."
+      - id: "comptia_projectplus"
+        name: "Project+"
+        long_name: "CompTIA Project+"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page). The CE fees page lists Project+ at USD 150. Moved to CE on 2025-10-01; existing holders' renewal deadline 2028-10-01 (help article 40383243876500)."
+      - id: "comptia_dataplus"
+        name: "Data+"
+        long_name: "CompTIA Data+"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "20 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 75 (CE fees page)."
+      - id: "comptia_datasysplus"
+        name: "DataSys+"
+        long_name: "CompTIA DataSys+"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_cloudnetx"
+        name: "CloudNetX"
+        long_name: "CompTIA CloudNetX"
+        status: "offered"
+        cycle_total: 75
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "75 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page)."
+      - id: "comptia_dataai"
+        name: "DataAI"
+        long_name: "CompTIA DataAI (formerly DataX)"
+        status: "offered"
+        cycle_total: 75
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "75 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 150 (CE fees page). Listed as DataAI, formerly DataX."
+      - id: "comptia_secaiplus"
+        name: "SecAI+"
+        long_name: "CompTIA SecAI+"
+        status: "offered"
+        cycle_total: 15
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "15 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 75 (CE fees page)."
+      - id: "comptia_autoopsplus"
+        name: "AutoOps+"
+        long_name: "CompTIA AutoOps+"
+        status: "offered"
+        cycle_total: 15
+        annual_minimum: null
+        source_url: "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "15 CEUs per three-year cycle (CEU table on the Earn CEUs page); three-year CE fee USD 75 (CE fees page)."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Updated 2026-10-18: log in > Manage Certifications > Continuing Education > Add CEUs; one activity per submission, up to five documents (1 MB total); auto-accepted, randomly audited."
+      public_api:
+        value: "not_found"
+        source_url: "https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs."
+      mfa:
+        value: "unknown"
+        source_url: "https://help.comptia.org/hc/en-us/articles/43355481195796-How-to-Log-In-to-CompTIA-Central-Existing-CertMaster-Users"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://help.comptia.org/hc/en-us/articles/43355481195796-How-to-Log-In-to-CompTIA-Central-Existing-CertMaster-Users."
+      provider_reported:
+        value: "no"
+        source_url: "https://help.comptia.org/hc/en-us/articles/13970435065108-How-Do-I-Submit-CEUs"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Holders must upload their own CE activities; no one else can do it for them."
+
+  # ---- GIAC --------------------------------------------------------
+  - body_id: "giac"
+    body_name: "GIAC"
+    unit_label: "CPE"
+    cycle_months: 48
+    source_url: "https://www.giac.org/renewal/cpe-information"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "Source: https://www.giac.org/renewal/cpe-information."
+    facts:
+      - key: "renewal_fee_usd"
+        value: 499
+        source_url: "https://www.giac.org/knowledge-base/renewal"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Non-refundable USD 499 maintenance fee, due once every four years at registration; the pricing page lists USD 499 renewal for each offered certification (N/A for certifications in abeyance)."
+      - key: "additional_renewal_fee_usd"
+        value: 249
+        source_url: "https://www.giac.org/knowledge-base/renewal"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Further renewal registrations within two years of paying a full-price renewal are USD 249 each; the two years run from the first payment."
+      - key: "registration_opens_years_before_expiry"
+        value: 2
+        source_url: "https://www.giac.org/knowledge-base/renewal"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Registration opens at the 2-year mark before expiry; CPEs can be collected from the day the certification is earned."
+      - key: "submit_days_before_expiry"
+        value: 30
+        source_url: "https://www.giac.org/knowledge-base/renewal"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Allow 30 days for processing; submit at least 30 days before expiry. Submissions are queued for review."
+      - key: "cap_sans_giac_programs"
+        value: 36
+        source_url: "https://www.giac.org/knowledge-base/sans-giac"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 36 CPEs; applies to 5 renewals; auto-added to the portal 7-10 business days after the course or event."
+      - key: "cap_other_training"
+        value: 18
+        source_url: "https://www.giac.org/knowledge-base/other-training"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 18 CPEs; applies to 3 renewals."
+      - key: "cap_cyber_ranges"
+        value: 12
+        source_url: "https://www.giac.org/certifications/renewal/cyber-ranges"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 12 CPEs per renewal; applies to 3 renewals. The knowledge-base page sends NetWars to its own category and the CPE table lists the two as separate rows, each up to 12. The shared-cap reading is not on any official page; the conflict is settled as separate caps."
+      - key: "cap_netwars"
+        value: 12
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "SANS NetWars (tournament and continuous) is its own row, up to 12 CPEs, separate from cyber ranges."
+      - key: "cap_work_experience"
+        value: 12
+        source_url: "https://www.giac.org/knowledge-base/work-experience"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "1 CPE per month of work, up to 12 per renewal; applies to 3 renewals."
+      - key: "cap_community_participation"
+        value: 12
+        source_url: "https://www.giac.org/knowledge-base/community-participation"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 12 CPEs; applies to 3 renewals."
+      - key: "cap_career_development"
+        value: 36
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Career Development Activities (other accredited training or certification, published technical work) up to 36 CPEs."
+      - key: "grace_period"
+        value: null
+        source_url: "https://www.giac.org/renewal"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.giac.org/renewal."
+      - key: "carryover"
+        value: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.giac.org/renewal/cpe-information."
+    certifications:
+      - id: "giac_gsec"
+        name: "GSEC"
+        long_name: "GIAC Security Essentials"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gcih"
+        name: "GCIH"
+        long_name: "GIAC Certified Incident Handler"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gcia"
+        name: "GCIA"
+        long_name: "GIAC Certified Intrusion Analyst"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gpen"
+        name: "GPEN"
+        long_name: "GIAC Penetration Tester"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gcfa"
+        name: "GCFA"
+        long_name: "GIAC Certified Forensic Analyst"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_grem"
+        name: "GREM"
+        long_name: "GIAC Reverse Engineering Malware"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gslc"
+        name: "GSLC"
+        long_name: "GIAC Security Leadership"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gstrt"
+        name: "GSTRT"
+        long_name: "GIAC Strategic Planning, Policy, and Leadership"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gicsp"
+        name: "GICSP"
+        long_name: "Global Industrial Cyber Security Professional"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gcld"
+        name: "GCLD"
+        long_name: "GIAC Cloud Security Essentials"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gxpn"
+        name: "GXPN"
+        long_name: "GIAC Exploit Researcher and Advanced Penetration Tester"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gwapt"
+        name: "GWAPT"
+        long_name: "GIAC Web Application Penetration Tester"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gced"
+        name: "GCED"
+        long_name: "GIAC Certified Enterprise Defender"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gcip"
+        name: "GCIP"
+        long_name: "GIAC Critical Infrastructure Protection"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gmon"
+        name: "GMON"
+        long_name: "GIAC Continuous Monitoring"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gweb"
+        name: "GWEB"
+        long_name: "GIAC Certified Web Application Defender"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gsna"
+        name: "GSNA"
+        long_name: "GIAC Systems and Network Auditor"
+        status: "retired"
+        status_note: "in abeyance (GIAC term)"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/certifications/systems-network-auditor-gsna"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "GSNA is in abeyance (its certification page and the pricing page): no new purchases, current holders stay certified and renew by CPE only (36 per four years), and no courseware comes with renewal (GIAC FAQ). The catalog vocabulary has no 'abeyance' value; it maps to 'retired' with status_note 'in abeyance (GIAC term)'. GIAC says the future status is undecided."
+      - id: "giac_goaa"
+        name: "GOAA"
+        long_name: "GIAC Offensive AI Analyst"
+        status: "offered"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "36 CPEs per four years (GIAC's uniform rule, CPE Information page); listed at full price, with a USD 499 renewal, on the pricing page."
+      - id: "giac_gleg"
+        name: "GLEG"
+        long_name: "GIAC Law of Data Security and Investigations"
+        status: "retired"
+        status_note: "in abeyance (GIAC term)"
+        cycle_total: 36
+        annual_minimum: null
+        source_url: "https://www.giac.org/certifications/law-data-security-investigations-gleg"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "GLEG is in abeyance (its certification page and the pricing page): no new purchases, current holders stay certified and renew by CPE only (36 per four years), and no courseware comes with renewal (GIAC FAQ). The catalog vocabulary has no 'abeyance' value; it maps to 'retired' with status_note 'in abeyance (GIAC term)'. GIAC says the future status is undecided."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.giac.org/knowledge-base/sans-giac"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "GIAC Account Dashboard > CPE Management > Submit New CPEs (queued for review), then Assign & Justify per certification; SANS/GIAC activities are added automatically in 7-10 business days."
+      public_api:
+        value: "not_found"
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.giac.org/renewal/cpe-information."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://www.giac.org/renewal/cpe-information"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.giac.org/renewal/cpe-information."
+      mfa:
+        value: "unknown"
+        source_url: "https://www.giac.org/legal/privacy"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.giac.org/legal/privacy."
+      provider_reported:
+        value: "sans_only"
+        source_url: "https://www.giac.org/knowledge-base/sans-giac"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Only SANS and GIAC activities are added automatically; other categories are submitted by the holder with supporting documents."
+
+  # ---- EC-Council --------------------------------------------------
+  - body_id: "eccouncil"
+    body_name: "EC-Council"
+    unit_label: "CPE"
+    cycle_months: 36
+    source_url: "https://cert.eccouncil.org/cpe-policy.html"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "The production policy page (ece-policy.html redirects to cpe-policy.html) displays CPE throughout; the old ECE wording is still in the HTML but hidden by CSS. Unit corrected ECE -> CPE. 120 credits per certification per three-year window, calendar-year earning with registration by 1 February, 12-month suspension, 90-day appeal and the CE fee table all confirmed."
+    facts:
+      - key: "annual_registration_deadline_mmdd"
+        value: "02-01"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Credits are earned 1 January - 31 December and must be registered by 1 February of the following year. The old cert.eccouncil.org/ece-policy.html now redirects to cpe-policy.html."
+      - key: "credits_apply_to_all_active_certs"
+        value: true
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Credits earned are applied across all certifications held; since 2013 each certification has its own three-year window; an activity may be submitted in only one window."
+      - key: "annual_fee_usd_ece_certs"
+        value: 80
+        source_url: "https://cert.eccouncil.org/continuing-education-fees.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "USD 80 a year (USD 240 over three years) for certifications that require continuing education, except CCISO, CPENT and LPT. The policy FAQ repeats USD 80. The old URL (cert.eccouncil.org/blog/membership/) now redirects to the site home page."
+      - key: "annual_fee_usd_non_ece_certs"
+        value: 20
+        source_url: "https://cert.eccouncil.org/continuing-education-fees.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "USD 20 a year for certifications that do not require continuing education (prefix 112), Essentials series excepted."
+      - key: "annual_fee_usd_cciso"
+        value: 100
+        source_url: "https://cert.eccouncil.org/continuing-education-fees.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CCISO USD 100 a year (USD 300 over three years)."
+      - key: "annual_fee_usd_cpent_lpt"
+        value: 250
+        source_url: "https://cert.eccouncil.org/continuing-education-fees.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CPENT, LPT and LPT (Master) USD 250 a year (USD 750 over three years)."
+      - key: "suspension_months"
+        value: 12
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Suspended members who meet the 120 within 12 months of the window's expiry (fee paid) are reinstated with a shortened next window; otherwise revoked, and the new exam must be passed. The old cert.eccouncil.org/ece-policy.html now redirects to cpe-policy.html."
+      - key: "appeal_days"
+        value: 90
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Written appeal must reach EC-Council within 90 days of the suspension or revocation notice. The old cert.eccouncil.org/ece-policy.html now redirects to cpe-policy.html."
+      - key: "category_caps"
+        value: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cert.eccouncil.org/cpe-policy.html."
+      - key: "carryover"
+        value: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cert.eccouncil.org/cpe-policy.html."
+      - key: "possible_unit_rename"
+        value: "ECE to CPE"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Confirmed. The displayed policy is titled CPE Policy and names the unit and the program with CPE throughout; the ECE text is hidden by CSS, and the URL moved from ece-policy.html to cpe-policy.html. The CE fees page still refers to ECE credits once."
+    certifications:
+      - id: "eccouncil_ceh"
+        name: "CEH"
+        long_name: "Certified Ethical Hacker"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        engine_track: "ceh"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr."
+      - id: "eccouncil_cnd"
+        name: "CND"
+        long_name: "Certified Network Defender"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr."
+      - id: "eccouncil_chfi"
+        name: "CHFI"
+        long_name: "Computer Hacking Forensic Investigator"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr."
+      - id: "eccouncil_cciso"
+        name: "CCISO"
+        long_name: "Certified Chief Information Security Officer"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 100/yr. The policy says certifications are valid three years and extended annually on payment of the CE fee, which explains the product page's one-year validity wording."
+      - id: "eccouncil_cpent"
+        name: "CPENT"
+        long_name: "Certified Penetration Testing Professional"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 250/yr."
+      - id: "eccouncil_lpt"
+        name: "LPT"
+        long_name: "Licensed Penetration Tester (Master)"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). LPT and LPT (Master) both listed; CE fee USD 250/yr."
+      - id: "eccouncil_csa"
+        name: "CSA"
+        long_name: "Certified SOC Analyst"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr. The retired list covers CSA Version 1 only (an exam version)."
+      - id: "eccouncil_ctia"
+        name: "CTIA"
+        long_name: "Certified Threat Intelligence Analyst"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr. The retired list covers CTIA Version 1 only (an exam version)."
+      - id: "eccouncil_ecih"
+        name: "ECIH"
+        long_name: "EC-Council Certified Incident Handler"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr."
+      - id: "eccouncil_case"
+        name: "CASE"
+        long_name: "Certified Application Security Engineer"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr (CASE .Net and CASE Java)."
+      - id: "eccouncil_caipm"
+        name: "CAIPM"
+        long_name: "Certified AI Program Manager"
+        status: "offered"
+        cycle_total: 120
+        annual_minimum: null
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Listed among the certifications in the CPE system, 120 credits per three-year window (production CPE policy). CE fee USD 80/yr; marked as a beta in the certification menu."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "The policy FAQ says to log on to the Aspen Portal (aspen.eccouncil.org) to register credits. The detailed menu path is unverified."
+      public_api:
+        value: "not_found"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cert.eccouncil.org/cpe-policy.html."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://cert.eccouncil.org/cpe-policy.html"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cert.eccouncil.org/cpe-policy.html."
+      mfa:
+        value: "unknown"
+        source_url: "https://aspen.eccouncil.org/"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://aspen.eccouncil.org/."
+      provider_reported:
+        value: "not_found"
+        source_url: "https://aspen.eccouncil.org/Docs/Applications/Accredited%20Training%20Center%20(ATC)%20form.pdf"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://aspen.eccouncil.org/Docs/Applications/Accredited%20Training%20Center%20(ATC)%20form.pdf."
+
+  # ---- PMI ---------------------------------------------------------
+  - body_id: "pmi"
+    body_name: "PMI"
+    unit_label: "PDU"
+    cycle_months: 36
+    source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "CCR handbook PDF (edition (c) 2022) on www.pmi.org: PDU unit, three-year cycle (one year for Disciplined Agile), per-certification totals and splits, fee, 90-day payment window, 12-month suspension, 18-month retention, carryover from the final 12 months with caps 20/10/5. PMI-CP, PMI-CPMAI and PMI-PMOCP are not in this edition and are unverified. DASM exams ended 2025-11-30 (ATP FAQ)."
+    facts:
+      - key: "renewal_fee_usd_member"
+        value: 60
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CCR renewal fee US$60 for PMI members. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked. The 2022 edition does not mention regional pricing."
+      - key: "renewal_fee_usd_nonmember"
+        value: 150
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "US$150 for non-members. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "renewal_payment_due_days_after_cycle"
+        value: 90
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Payment no later than 90 days after the cycle end date. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "suspension_months"
+        value: 12
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Unmet requirements suspend for one year (12 months); not renewed by then, the certification expires (new application, fees and exam). Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "carryover_last_12_months"
+        value: true
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Only PDUs earned in the final 12 months of a cycle may be applied to the next. The caps are in the table: PMP, PgMP, PfMP, PMI-PBA 20; PMI-ACP, PMI-RMP, PMI-SP 10; CAPM 5. Working-as-a-professional PDUs apply only to the current cycle. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "evidence_retention_months_after_cycle"
+        value: 18
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Keep documentation for all PDU claims for at least 18 months after the cycle ends (audit). Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "cross_cert_counting"
+        value: true
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "The handbook says Ways of Working and Strategic Business Acumen PDUs apply across all certifications (its example uses leadership PDUs, so the sentence may mean Power Skills); Ways of Working PDUs apply to each relevant certification and all count toward PMP; Giving Back PDUs apply across all certifications. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - key: "retired_status"
+        value: "10 consecutive years in good standing, no PDUs while retired"
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Voluntary retired status requires at least 10 consecutive years in good standing and no primary remuneration from project management; no PDUs while retired. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+    certifications:
+      - id: "pmi_pmp"
+        name: "PMP"
+        long_name: "Project Management Professional"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Education minimum 35 (Ways of Working 8, Power Skills 8, Business Acumen 8, remaining 11 any area); Giving Back maximum 25; working as a professional maximum 8 per cycle; carryover up to 20. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_pgmp"
+        name: "PgMP"
+        long_name: "Program Management Professional"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Education minimum 35 (8/8/8, remaining 11); Giving Back maximum 25; working as a professional maximum 8; carryover up to 20. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_pfmp"
+        name: "PfMP"
+        long_name: "Portfolio Management Professional"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Education minimum 35 (8/8/8, remaining 11); Giving Back maximum 25; working as a professional maximum 8; carryover up to 20. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_pba"
+        name: "PMI-PBA"
+        long_name: "PMI Professional in Business Analysis"
+        status: "offered"
+        cycle_total: 60
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "60 per three years; Education minimum 35 (8/8/8, remaining 11); Giving Back maximum 25; working as a professional maximum 8; carryover up to 20. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_acp"
+        name: "PMI-ACP"
+        long_name: "PMI Agile Certified Practitioner"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 per three years; Education minimum 18 (4/4/4, remaining 6); Giving Back maximum 12; working as a professional maximum 4; carryover up to 10. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_rmp"
+        name: "PMI-RMP"
+        long_name: "PMI Risk Management Professional"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 per three years (not 18; 18 is the education minimum); Education minimum 18 (4/4/4, remaining 6); Giving Back maximum 12; working as a professional maximum 4; carryover up to 10. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_sp"
+        name: "PMI-SP"
+        long_name: "PMI Scheduling Professional"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "30 per three years; Education minimum 18 (4/4/4, remaining 6); Giving Back maximum 12; working as a professional maximum 4; carryover up to 10. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_cp"
+        name: "PMI-CP"
+        long_name: "PMI Construction Professional"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.pmi.org/certifications/certification-resources/maintain"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.pmi.org/certifications/certification-resources/maintain. Unverified."
+      - id: "pmi_cpmai"
+        name: "PMI-CPMAI"
+        long_name: "PMI Cognitive Project Management in AI"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://www.pmi.org/certifications/ai-project-management-cpmai"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.pmi.org/certifications/ai-project-management-cpmai. Unverified."
+      - id: "pmi_pmocp"
+        name: "PMI-PMOCP"
+        long_name: "PMI PMO Certified Professional"
+        status: "offered"
+        cycle_total: 30
+        annual_minimum: null
+        source_url: "https://pmoga.pmi.org/certification"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://pmoga.pmi.org/certification. Unverified."
+      - id: "pmi_capm"
+        name: "CAPM"
+        long_name: "Certified Associate in Project Management"
+        status: "offered"
+        cycle_total: 15
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "15 per three years; Education minimum 9 (2/2/2, remaining 3); Giving Back maximum 6; working as a professional maximum 2; carryover up to 5. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      - id: "pmi_dasm"
+        name: "DASM"
+        long_name: "Disciplined Agile Scrum Master"
+        status: "retired"
+        cycle_months: 12
+        cycle_total: 7
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/microsites/authorized-training-partners/authorized-training-partner-faqs-disciplined-agile-evolution.pdf?rev=7b5f9baae99b4befae68ae41051563a9"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "ATP FAQ (April 2025): DASM exams could be taken until 2025-11-30; DASM became the Disciplined Agile Foundations course (badge and certificate only). Current holders can keep DASM by earning 7 PDUs and paying the annual renewal fee. The CCR handbook (2022) gives 7 agile PDUs per one-year cycle and a renewal fee of US$50 per year regardless of membership; a US$20 member price is not confirmed."
+      - id: "pmi_dassm"
+        name: "DASSM"
+        long_name: "Disciplined Agile Senior Scrum Master"
+        status: "retired"
+        cycle_months: 12
+        cycle_total: 7
+        annual_minimum: null
+        source_url: "https://www.pmi.org/-/media/pmi/microsites/authorized-training-partners/authorized-training-partner-faqs-disciplined-agile-evolution.pdf?rev=7b5f9baae99b4befae68ae41051563a9"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "ATP FAQ (April 2025): DASSM elements moved into the PMI-ACP exam on 2024-11-08; DASSM exams until 2025-11-30, then renewals only; holders maintain with 7 PDUs a year plus the annual fee (US$50 per year in the 2022 CCR handbook). The FAQ also says DAC and DAVSC holders can maintain indefinitely."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "PDUs are recorded in CCRS (the handbook names CCRS as the reporting tool); ProjectManagement.com PDUs report automatically when the account is linked; Authorized Training Partners can batch-submit claims (EPP guide). Chapter-event auto-reporting is not stated. Source: the CCR handbook PDF on www.pmi.org (edition (c) 2022); a newer edition was not checked."
+      public_api:
+        value: "not_found"
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a."
+      bulk_upload:
+        value: "provider_only"
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/microsites/authorized-training-partner/epp-user-guide-2021.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "EPP user guide (2021): approved providers submit batch PDU claims for attendees through the Education Provider Portal; there is no member-facing bulk format."
+      mfa:
+        value: "unknown"
+        source_url: "https://authentication.pmi.org/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://authentication.pmi.org/. Unverified."
+      provider_reported:
+        value: "yes"
+        source_url: "https://www.pmi.org/-/media/pmi/documents/public/pdf/microsites/authorized-training-partner/epp-user-guide-2021.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "EPP user guide (2021): PMI-approved providers can submit PDU claims on behalf of certification holders."
+
+  # ---- IAPP --------------------------------------------------------
+  - body_id: "iapp"
+    body_name: "IAPP"
+    unit_label: "CPE"
+    cycle_months: 24
+    source_url: "https://iapp.org/certify/cpe-policy"
+    source_tier: "official_search_snippet"
+    look_status: "NOT_READ"
+    checked_date: "2026-10-20"
+    verified: false
+    verified_date: null
+    research_note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+    facts:
+      - key: "policy_version"
+        value: "3.3.1 effective 2026-04-07"
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      - key: "maintenance_fee_usd_per_term"
+        value: 250
+        source_url: "https://iapp.org/certify/faqs"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CMF of USD 250 per certification term, or membership (USD 295/yr) instead; /certify/stay-certified says the CMF covers the whole term and membership includes it. One fee for several certifications is implied (the page says certification(s)), not stated."
+      - key: "carryover_max"
+        value: 10
+        source_url: "https://iapp.org/certify/stay-certified"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 10 CPEs, only those earned in the last six months of the term."
+      - key: "grace_period"
+        value: null
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      - key: "cap_reading_per_term"
+        value: 5
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      - key: "cap_teaching_per_term"
+        value: 16
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      - key: "audit_response_days"
+        value: 30
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      - key: "group_split"
+        value: "at least 10 syllabus-specific, at most 10 general"
+        source_url: "https://iapp.org/news/a/the-new-cpe-policy-and-what-it-means-for-you"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/news/a/the-new-cpe-policy-and-what-it-means-for-you. Unverified."
+    certifications:
+      - id: "iapp_cipp_us"
+        name: "CIPP/US"
+        long_name: "Certified Information Privacy Professional/United States"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_e"
+        name: "CIPP/E"
+        long_name: "Certified Information Privacy Professional/Europe"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_c"
+        name: "CIPP/C"
+        long_name: "Certified Information Privacy Professional/Canada"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_a"
+        name: "CIPP/A"
+        long_name: "Certified Information Privacy Professional/Asia"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_cn"
+        name: "CIPP/CN"
+        long_name: "Certified Information Privacy Professional/China"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_au"
+        name: "CIPP/AU"
+        status: "unknown"
+        cycle_total: null
+        annual_minimum: null
+        source_url: "https://iapp.org/certify/cipp"
+        source_tier: "official_page"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cipp. Unverified."
+      - id: "iapp_cipm"
+        name: "CIPM"
+        long_name: "Certified Information Privacy Manager"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipt"
+        name: "CIPT"
+        long_name: "Certified Information Privacy Technologist"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_aigp"
+        name: "AIGP"
+        long_name: "Artificial Intelligence Governance Professional"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: null
+        source_url: "https://prod.iapp.org/certify/programs/"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://prod.iapp.org/certify/programs/. Unverified."
+      - id: "iapp_cipp_g"
+        name: "CIPP/G"
+        long_name: "Certified Information Privacy Professional/Government"
+        status: "retired"
+        cycle_total: null
+        annual_minimum: null
+        source_url: "https://iapp.org/news/a/what-you-need-to-know-about-the-end-of-the-cipp-g-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Deactivated 2018-09-30; holders in good standing on that date stay certified in perpetuity, so there is no CPE total to meet."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://iapp.org/certify/faqs"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "MyIAPP CPE Submission Form (Certifications tab) for non-IAPP activities; IAPP events and webinars are added automatically."
+      public_api:
+        value: "not_found"
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://iapp.org/certify/cpe-policy"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
+      mfa:
+        value: "yes"
+        source_url: "https://iapp.org/about/siteupgrade"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "MFA is available since the Fall 2025 MyIAPP release and is enabled by the user on Profile and security; not stated as mandatory."
+      provider_reported:
+        value: "iapp_only"
+        source_url: "https://iapp.org/certify/faqs"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "IAPP events and webinars post automatically; every other activity is self-reported by the holder. No third-party provider reporting described."
+
+  # ---- ACFE --------------------------------------------------------
+  - body_id: "acfe"
+    body_name: "ACFE"
+    unit_label: "CPE"
+    cycle_months: 12
+    source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "20 CPE per 12-month compliance year (10 fraud, 2 ethics), carryover up to 10, end-of-anniversary-month deadline, 30-day extension, 3-year retention, 60-day audit response and suspension rules all confirmed. Three older URLs (cpe-extensions, maintaining-records, how-to-report-cpe-earned) now redirect to a 404 page; their facts are on reporting-cpe and the CPE FAQ."
+    facts:
+      - key: "fraud_floor"
+        value: 10
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "At least 10 of the 20 must relate directly to detecting and deterring fraud."
+      - key: "ethics_floor"
+        value: 2
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "2 must relate directly to ethics; one course may count toward both floors."
+      - key: "carryover_max"
+        value: 10
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/faq-cpe-compliance"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Up to 10 credits carry into the next compliance period if more than 20 were earned in the 12 months and both the fraud and ethics requirements were met."
+      - key: "deadline"
+        value: "end of anniversary month"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/faq-cpe-compliance"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Compliance must be certified by the end of the anniversary month, typically the month ACFE membership renews."
+      - key: "extension_days"
+        value: 30
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "A 30-day extension can be requested from Member Services; more time after that is case-by-case. Not certified and no extension means suspension. The old cpe-extensions URL now redirects to a 404 page."
+      - key: "evidence_retention_years"
+        value: 3
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Keep proof of CPE (e.g. certificates) for 3 years in case of a random audit. The old maintaining-records URL now redirects to a 404 page."
+      - key: "audit_response_days"
+        value: 60
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/faq-cpe-compliance"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "If selected for an audit, 60 days to provide CPE documentation for the year requested."
+      - key: "suspension_makeup"
+        value: "20 CPE per suspended year; 5+ years drops to Associate and requires the exam"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/resolving-cpe-suspensions"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Resolve each suspended year with 20 CPE (10 fraud, 2 ethics); all past suspensions must be resolved; 5 or more years of suspensions revoke the credential and move the member to Associate status, and reinstatement requires the CFE Exam."
+      - key: "annual_dues_usd"
+        value: 239
+        source_url: "https://www.acfe.com/cfe-credential/~/-/media/03007bbf03b743aa8818d938f88aa065.ashx"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Per the CFE Recertification Application (form updated 01/25): CFE active membership dues USD 239 with auto-renew, USD 259 paid manually. A form, not a current price list; may be stale."
+    certifications:
+      - id: "acfe_cfe"
+        name: "CFE"
+        long_name: "Certified Fraud Examiner"
+        status: "offered"
+        cycle_total: 20
+        annual_minimum: 20
+        engine_track: "cfe"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "20 CPE every compliance year, at least 10 fraud-related and 2 ethics; annual membership dues also required."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Compliance is certified (not itemised) at ACFE.com/MyCPE or by phone; records are sent only if requested or audited. The old how-to-report-cpe-earned URL now redirects to a 404 page."
+      public_api:
+        value: "not_found"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe."
+      mfa:
+        value: "yes"
+        source_url: "https://www.acfe.com/login.aspx"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.acfe.com/login.aspx. Unverified."
+      provider_reported:
+        value: "no"
+        source_url: "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements/reporting-cpe"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "ACFE does not maintain CPE records for members; members track their own credits. ACFE course purchases and certificates are viewable in CPE History. The accepted-types page says nothing about recording event attendance."
+
+  # ---- ATAP --------------------------------------------------------
+  - body_id: "atap"
+    body_name: "ATAP"
+    unit_label: "credit"
+    cycle_months: 24
+    source_url: "https://www.atapworldwide.org/page/certificationexam"
+    source_tier: "official_search_snippet"
+    look_status: "NOT_READ"
+    checked_date: "2026-10-20"
+    verified: false
+    verified_date: null
+    research_note: "Source: https://www.atapworldwide.org/page/certificationexam. Unverified."
+    facts:
+      - key: "ctm_credits"
+        value: 50
+        source_url: "https://www.atapworldwide.org/page/certificationexam"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Certified Threat Managers must earn fifty (50) recertification points during each recertification cycle; activities and point values are in the Recertification Points Matrix (not verified)."
+      - key: "carryover"
+        value: false
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf. Unverified."
+      - key: "grace_period_days"
+        value: 30
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf. Unverified."
+      - key: "renewal_window_opens_months_before"
+        value: 6
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf. Unverified."
+      - key: "recert_fee_usd_member_2017"
+        value: 50
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf. Unverified."
+      - key: "category_caps_2017"
+        value: "membership 20, ATAP board/committee 20 (SUSPECT), non-ATAP TA seminars 5, related-field seminars 3, college courses 10, outside presentations 10"
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/Recertification_2017.pdf. Unverified."
+      - key: "membership_dues_usd"
+        value: 150
+        source_url: "https://www.atapworldwide.org/membership/howtojoin"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Annual membership dues USD 150 plus a USD 100 application processing fee (both non-refundable); applicants need a sponsoring ATAP member."
+      - key: "membership_meeting_rule"
+        value: "1 in-person or 2 virtual chapter meetings per calendar year, or a national conference; waived for members joining after April 1"
+        source_url: "https://www.atapworldwide.org/page/howtojoin"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "At least one in-person or two virtual meetings of the member's chapter or another ATAP chapter per calendar year; attending any national ATAP conference satisfies it; waived for members joining after April 1 for that year. No seminar-equivalence rule on the page. The old /page/howtojoin URL now serves the same page as /membership/howtojoin."
+    certifications:
+      - id: "atap_ctm"
+        name: "CTM"
+        long_name: "Certified Threat Manager"
+        status: "offered"
+        cycle_total: 50
+        annual_minimum: null
+        engine_track: "ctm"
+        source_url: "https://www.atapworldwide.org/page/certificationexam"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CTM requires 50 recertification points per recertification cycle; applications are open (USD 400 member, USD 550 non-member). The cycle length (two years in the old guide) is not stated on the page."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://www.atapworldwide.org/page/certificationexam"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "CTM applications and recertification requirements are managed through Certemy (online platform)."
+      public_api:
+        value: "not_found"
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf. Unverified."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf. Unverified."
+      mfa:
+        value: "unknown"
+        source_url: "https://www.atapworldwide.org/page/certificationexam"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://www.atapworldwide.org/page/certificationexam."
+      provider_reported:
+        value: "not_found"
+        source_url: "https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf"
+        source_tier: "official_search_snippet"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+
+        note: "Source: https://cdn.ymaws.com/www.atapworldwide.org/resource/resmgr/certification/ATAP_-_CERT_PG_080224.pdf. Unverified."
+  # ---- University of Maryland --------------------------------------
+  - body_id: "umd"
+    body_name: "University of Maryland"
+    unit_label: "PDU"
+    cycle_months: 48
+    source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+    source_tier: "official_page"
+    look_status: "READ_OK"
+    checked_date: "2026-10-20"
+    verified: true
+    verified_date: "2026-10-20"
+    research_note: "Four-year validity, 100 PDUs (at least 60% C-InT, at most 40% other), the full PDU table (per-event cap 45 on every row; special projects 45; teaching, mentoring and workshops 3 PDUs per contact hour) and the USD 500 fee (650 by re-exam) confirmed on the maintain page and the PDU reference table; late fees, the 10% audit and the LearningBuilder tracking form in the candidate handbook (2024). The name on UMD's documents is Global Counter-Insider Threat Professional."
+    facts:
+      - key: "cint_floor"
+        value: 60
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Minimum 60 PDUs (60%) in counter-insider-threat activities."
+      - key: "professional_growth_cap"
+        value: 40
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Maximum 40 PDUs (40%) in professional growth / other development areas."
+      - key: "cap_special_projects"
+        value: 45
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Special projects 1 PDU per contact hour, 45 per event, 45 per category."
+      - key: "teaching_rate_per_contact_hour"
+        value: 3
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Teaching, training and presenting, mentoring, and workshops and working groups each earn 3 PDUs per contact hour, max 45 per event, 100 per category. The engine track still encodes 1 per hour; see the engine-track change log."
+      - key: "per_event_cap"
+        value: 45
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Every per-event maximum in the table is 45 (fixed-value publications aside). No per-event maximum of 40 appears on the page or the PDF; the only 40s are the non-GCITP certification category cap (40) and the 40% general ceiling. Conflict settled: 45."
+      - key: "recert_fee_usd"
+        value: 500
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "USD 500 for recertification by PDUs, USD 650 if re-taking the exam."
+      - key: "late_fee_usd"
+        value: 100
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Handbook fee table: late within 30 days, USD 100 late fee; after 30 days, USD 100 late fee plus USD 50 reactivation fee; after one year the account closes and the exam must be taken again. Not on the maintain page."
+      - key: "submission_window_days_before_end"
+        value: 30
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "The handbook says the system will not allow certificants to submit their recertification application 'before 30 days of their maintenance cycle'. The number is confirmed; the wording is ambiguous, and the reading encoded here (accepted only in the last 30 days) is the likelier one."
+      - key: "audit_percent_min"
+        value: 10
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "The PMO audits at least 10% of electronic PDU Tracking Forms each cycle."
+      - key: "carryover"
+        value: null
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://gcitp.umd.edu/gcitp-certification/maintain-certification."
+    certifications:
+      - id: "umd_gcitp"
+        name: "GCITP"
+        long_name: "Global Counter-Insider Threat Professional (University of Maryland)"
+        status: "offered"
+        cycle_total: 100
+        annual_minimum: null
+        engine_track: "gcitp"
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "100 PDUs per four-year window plus the recertification fee. UMD's PDU reference table and candidate handbook both use 'Global Counter-Insider Threat Professional'."
+    submission:
+      channel:
+        value: "member_portal"
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "READ_OK"
+        checked_date: "2026-10-20"
+        verified: true
+        verified_date: "2026-10-20"
+        note: "Certificants keep an electronic PDU Tracking Form on LearningBuilder (the handbook names cint-gsx.learningbuilder.com) and submit it before the last day of the cycle."
+      public_api:
+        value: "not_found"
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf."
+      bulk_upload:
+        value: "not_found"
+        source_url: "https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://gcitp.umd.edu/sites/default/files/2024-04/GCITP%20Candidate%20Handbook_Revision%202_V4%20-%20FINAL_0.pdf."
+      mfa:
+        value: "unknown"
+        source_url: "https://cintglobal-gsx.learningbuilder.com/"
+        source_tier: "secondary"
+        look_status: "NOT_READ"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://cintglobal-gsx.learningbuilder.com/. Unverified."
+      provider_reported:
+        value: "not_found"
+        source_url: "https://gcitp.umd.edu/gcitp-certification/maintain-certification"
+        source_tier: "official_page"
+        look_status: "CONFIRMED_ABSENT"
+        checked_date: "2026-10-20"
+        verified: false
+        verified_date: null
+        note: "Source: https://gcitp.umd.edu/gcitp-certification/maintain-certification."

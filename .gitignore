@@ -1,0 +1,26 @@
+# Registrar (package: cpebot). Secret-shaped paths never enter this repo.
+# Patterns below are written case-insensitively on purpose: a file named
+# TOKEN-notes.md must be ignored exactly like token-notes.md.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*[Ss][Ee][Cc][Rr][Ee][Tt]*
+*[Tt][Oo][Kk][Ee][Nn]*
+*[Cc][Rr][Ee][Dd][Ee][Nn][Tt][Ii][Aa][Ll]*
+
+# runtime state — the ledger is the holder's compliance record, not source
+cpebot.db
+cpebot.db-wal
+cpebot.db-shm
+var/
+evidence/
+packets/
+
+__pycache__/
+*.pyc
+*.bak-*
+*.log
