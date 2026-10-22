@@ -390,6 +390,8 @@ MFA_VALUES = ("yes", "no", "unknown")
 CERT_STATUSES = ("offered", "retired", "unknown")
 SUBMISSION_KEYS = ("channel", "public_api", "bulk_upload", "mfa",
                    "provider_reported")
+# The landing page's one-line summaries (see the `programs:` header comment).
+LANDING_KEYS = ("cycle_total", "annual_minimum", "categories", "submission")
 
 
 def _check_provenance(where, raw):
@@ -476,6 +478,22 @@ class Program(object):
         if self.submission["mfa"].get("value") not in MFA_VALUES:
             raise RulesError("%s: submission.mfa value must be one of %s"
                              % (where, ", ".join(MFA_VALUES)))
+        landing = self.raw.get("landing")
+        if landing is not None:
+            if not isinstance(landing, dict):
+                raise RulesError("%s: landing must be a mapping" % where)
+            for k in landing:
+                if k not in LANDING_KEYS + ("cycle_unverified",):
+                    raise RulesError("%s: unknown landing key %r" % (where, k))
+            for k in LANDING_KEYS:
+                if not isinstance(landing.get(k), str) or not landing[k].strip():
+                    raise RulesError("%s: landing.%s must be a non-empty string"
+                                     % (where, k))
+            if not isinstance(landing.get("cycle_unverified", False), bool):
+                raise RulesError("%s: landing.cycle_unverified must be true or false"
+                                 % where)
+            if not self.cycle_months:
+                raise RulesError("%s: landing needs cycle_months" % where)
         return True
 
 

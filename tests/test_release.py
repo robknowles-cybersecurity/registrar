@@ -92,9 +92,27 @@ class TestLandingPage(unittest.TestCase):
         self.p.feed(self.html)
 
     def test_no_scripts_frames_or_inline_handlers(self):
-        for tag in ("script", "iframe", "object", "embed", "form"):
+        for tag in ("script", "iframe", "object", "embed"):
             self.assertNotIn(tag, self.p.tags, tag)
         self.assertEqual(self.p.handlers, [])
+
+    def test_the_only_form_cannot_submit(self):
+        # One form, the body filter: it exists so "All" can be a reset
+        # button. It has no action or method, no control that submits (a
+        # button is a submit button unless typed otherwise) and no text field
+        # (Enter in one submits implicitly). The CSP's form-action 'none'
+        # would block a submission anyway.
+        forms = re.findall(r"<form\b([^>]*)>(.*?)</form>", self.html, re.S)
+        self.assertEqual(len(forms), 1)
+        attrs, body = forms[0]
+        self.assertEqual(attrs.strip(), 'class="rules-filter"')
+        self.assertEqual(self.html.count("<form"), 1)
+        for b in re.findall(r"<button\b([^>]*)>", body):
+            self.assertRegex(b, r'type="(reset|button)"', b)
+        for i in re.findall(r"<input\b([^>]*)>", body):
+            self.assertRegex(i, r'type="checkbox"', i)
+        self.assertNotIn("formaction", self.html)
+        self.assertIn("form-action 'none'", read("site", "_headers"))
 
     def test_no_third_party_requests(self):
         # Anything the browser would FETCH must be same-origin. Absolute URLs
@@ -154,22 +172,23 @@ class TestLandingPage(unittest.TestCase):
         for url in PROVIDERS:
             self.assertIn('href="%s"' % url, self.html)
 
-    def test_every_body_in_bodies_yaml_has_a_linked_row(self):
-        # The per-body table is written by hand from bodies.yaml: one row per
-        # program, its name linking to the policy page bodies.yaml cites, and
-        # an unverified program badged in its row.
+    def test_every_body_in_bodies_yaml_has_a_linked_card(self):
+        # The per-body section is built from bodies.yaml (npm run build): one
+        # card per program, named for the body, linking to the policy page
+        # bodies.yaml cites, and an unverified program badged in its card.
         from cpebot import bodies as B
         rules = B.load(os.path.join(REPO, "bodies.yaml"))
-        rows = re.findall(r'<tr><th scope="row"><a href="([^"]+)">([^<]+)</a>(.*?)</tr>',
-                          self.html)
-        table = {name: (url, rest) for url, name, rest in rows}
+        cards = re.findall(r'<h3 id="rb-([^"]+)">([^<]+)</h3>(.*?)</article>',
+                           self.html, re.S)
+        table = {name: rest for _, name, rest in cards}
         self.assertEqual(len(table), len(rules.programs))
         for p in rules.programs:
             self.assertIn(p.body_name, table)
-            self.assertEqual(table[p.body_name][0].replace("&amp;", "&"),
-                             p.raw["source_url"])
+            self.assertIn('<a href="%s">%s policy page</a>'
+                          % (p.raw["source_url"].replace("&", "&amp;"), p.body_name),
+                          table[p.body_name])
             if not p.verified:
-                self.assertIn("UNVERIFIED", table[p.body_name][1], p.body_name)
+                self.assertIn("UNVERIFIED", table[p.body_name], p.body_name)
 
     def test_every_credential_in_bodies_yaml_is_listed(self):
         # The coverage table is written by hand from bodies.yaml; it must
@@ -348,8 +367,9 @@ class TestPublicDocs(unittest.TestCase):
 
     def test_changelog_and_release_notes(self):
         log = read("CHANGELOG.md")
-        for head in ("## v1.2.0", "## v1.1.0", "## v1.0.0"):
+        for head in ("## v1.2.1", "## v1.2.0", "## v1.1.0", "## v1.0.0"):
             self.assertIn(head, log)
+        self.assertLess(log.index("## v1.2.1"), log.index("## v1.2.0"))
         self.assertLess(log.index("v1.2.0"), log.index("## v1.1.0"))
         notes = read("docs", "release-notes", "v1.2.0.md")
         self.assertIn("# Registrar v1.2.0", notes)

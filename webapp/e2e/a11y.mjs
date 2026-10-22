@@ -90,6 +90,15 @@ try {
       await audit(page, `${scheme} site ${path}`);
       await page.close();
     }
+    // the rules section as cards and as the grid, unfiltered and filtered
+    for (const width of [390, 1280]) {
+      const page = await browser.newPage({ colorScheme: scheme, viewport: { width, height: 900 } });
+      await page.goto(base + "/");
+      await audit(page, `${scheme} site / at ${width}px`);
+      for (const id of ["isc2", "acfe"]) await page.click(`label[for="rf-${id}"]`);
+      await audit(page, `${scheme} site / at ${width}px, filtered to two bodies`);
+      await page.close();
+    }
     {
       // first run: whatever the app shows to a fresh browser
       const { context, page } = await appPage(scheme, false);

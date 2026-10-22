@@ -5,9 +5,11 @@
 //   node e2e/site.mjs                # exit 0 only if every check passes
 //   node e2e/site.mjs --break og     # a copy of the site without og.png: must FAIL
 //   node e2e/site.mjs --break csp    # a copy whose landing page loads a third-party image: must FAIL
+//   node e2e/site.mjs --break breakpoint  # a copy whose rules grid has no breakpoint: must FAIL
+//   node e2e/site.mjs --shots DIR    # also save a screenshot of the rules section at each width
 import { createRequire } from "node:module";
 import { execSync } from "node:child_process";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,6 +19,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repo = dirname(dirname(here));
 const args = process.argv.slice(2);
 const breakWhat = args.includes("--break") ? args[args.indexOf("--break") + 1] : null;
+const shotsDir = args.includes("--shots") ? args[args.indexOf("--shots") + 1] : null;
+const WIDTHS = [360, 390, 768, 1024, 1280, 1600];
+const BREAKPOINT = 960;
 const PUBLIC = "https://ceu.tools";
 const REPORT_URL = "https://github.com/robknowles-cybersecurity/registrar/security/advisories/new";
 
@@ -33,6 +38,11 @@ if (breakWhat) {
   else if (breakWhat === "csp") {
     const p = join(siteDir, "index.html");
     writeFileSync(p, readFileSync(p, "utf8").replace("</main>", '<img src="https://example.com/pixel.png" alt=""></main>'));
+  } else if (breakWhat === "breakpoint") {
+    const p = join(siteDir, "style.css");
+    const css = readFileSync(p, "utf8");
+    if (!css.includes(`@media (min-width: ${BREAKPOINT}px) {`)) throw new Error("the rules breakpoint is not in style.css");
+    writeFileSync(p, css.replace(`@media (min-width: ${BREAKPOINT}px) {`, "@media all {"));
   } else throw new Error(`unknown --break ${breakWhat}`);
   console.log(`MUTATED SITE (--break ${breakWhat}): this run must FAIL\n`);
 }
@@ -135,6 +145,131 @@ try {
       check("landing: two screenshots and a GIF", (await page.locator('img[src$=".png"]').count()) === 2 && (await page.locator('img[src$=".gif"]').count()) === 1);
       check("landing: runs no scripts", (await page.locator("script").count()) === 0);
     }
+    await context.close();
+  }
+
+  // -- "How each body counts": no horizontal scroll at any width, cards
+  // below the breakpoint and the grid above it, and a filter that works.
+  const data = JSON.parse(readFileSync(join(siteDir, "app", "data.json"), "utf8"));
+  const total = data.programs.filter((p) => p.landing).length;
+  const board = async (page) => page.evaluate(() => {
+    const cards = [...document.querySelectorAll(".rules-cards > .rb")];
+    const shown = cards.filter((c) => c.getClientRects().length > 0);
+    const heads = document.querySelector(".rb-colheads");
+    const headCycle = heads.children[1].getBoundingClientRect();
+    const dts = shown.map((c) => c.querySelector("dt").getBoundingClientRect().width);
+    const cycleX = shown.map((c) => Math.round(c.querySelector(".rb-cycle").getBoundingClientRect().left));
+    const b = document.querySelector(".rules-board");
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+      shown: shown.map((c) => c.querySelector("h3").textContent),
+      count: document.querySelector(".rules-count").innerText.trim(),
+      headsShown: heads.getClientRects().length > 0,
+      dtsVisible: dts.every((w) => w > 1),
+      cycleAligned: cycleX.every((x) => x === Math.round(headCycle.left)),
+      boardFits: b.scrollWidth <= b.clientWidth + 1 && b.getBoundingClientRect().right <= document.documentElement.clientWidth + 0.5,
+      boardWidth: Math.round(b.getBoundingClientRect().width),
+    };
+  });
+  const measured = [];
+  for (const w of WIDTHS) {
+    const context = await browser.newContext({ viewport: { width: w, height: 900 } });
+    const page = await context.newPage();
+    await page.goto(base + "/", { waitUntil: "load" });
+    const m = await board(page);
+    measured.push({ width: w, scrollWidth: m.scrollWidth, clientWidth: m.clientWidth, boardWidth: m.boardWidth });
+    check(`rules @${w}px: no horizontal scroll (scrollWidth ${m.scrollWidth} = clientWidth ${m.clientWidth})`, m.scrollWidth === m.clientWidth);
+    check(`rules @${w}px: the board fits inside the viewport`, m.boardFits, `board ${m.boardWidth}px`);
+    check(`rules @${w}px: all ${total} bodies shown, count says so`, m.shown.length === total && m.count === `${total} of ${total} bodies shown`, `${m.shown.length}; "${m.count}"`);
+    if (w < BREAKPOINT) check(`rules @${w}px: stacked cards (field labels visible, no column header row)`, !m.headsShown && m.dtsVisible);
+    else check(`rules @${w}px: comparison grid (column header row, every body's cycle under its heading)`, m.headsShown && m.cycleAligned);
+    if (shotsDir) {
+      mkdirSync(shotsDir, { recursive: true });
+      const bb = await page.locator("section[aria-labelledby=rules]").boundingBox();
+      await page.screenshot({ path: join(shotsDir, `rules-${w}.png`), fullPage: true, clip: { x: 0, y: bb.y, width: w, height: bb.height } });
+    }
+    await context.close();
+  }
+  if (shotsDir) writeFileSync(join(shotsDir, "widths.json"), `${JSON.stringify(measured, null, 1)}\n`);
+
+  for (const w of [390, 1280]) {
+    const context = await browser.newContext({ viewport: { width: w, height: 900 } });
+    const page = await context.newPage();
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto(base + "/", { waitUntil: "load" });
+    for (const id of ["isc2", "comptia", "acfe"]) await page.click(`label[for="rf-${id}"]`);
+    let m = await board(page);
+    check(`filter @${w}px: three chips show three bodies, count "3 of ${total}"`, m.shown.join("|") === "ISC2|CompTIA|ACFE" && m.count === `3 of ${total} bodies shown`, `${m.shown.join(", ")}; "${m.count}"`);
+    check(`filter @${w}px: still no horizontal scroll when filtered`, m.scrollWidth === m.clientWidth, `${m.scrollWidth}/${m.clientWidth}`);
+    if (w === 1280) check("filter @1280px: filtered rows stay aligned to the grid", m.cycleAligned);
+    const states = await page.evaluate(() => [...document.querySelectorAll(".chip-input")].filter((i) => i.checked).map((i) => i.id));
+    check(`filter @${w}px: the ticked chips report checked`, states.join(",") === "rf-isc2,rf-comptia,rf-acfe", states.join(","));
+    await page.click(".chip-all");
+    m = await board(page);
+    check(`filter @${w}px: All shows every body again`, m.shown.length === total && m.count === `${total} of ${total} bodies shown`, `${m.shown.length}; "${m.count}"`);
+    // keyboard: Tab from All reaches the first body chip, Space ticks it,
+    // Tab moves on, Space ticks the next; focus is visible on the chip.
+    await page.focus(".chip-all");
+    await page.keyboard.press("Tab");
+    const focused = await page.evaluate(() => document.activeElement.id);
+    const ring = await page.evaluate(() => getComputedStyle(document.querySelector(`label[for="${document.activeElement.id}"]`)).outlineStyle);
+    await page.keyboard.press("Space");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Space");
+    m = await board(page);
+    check(`filter @${w}px: keyboard (Tab, Space) ticks chips, focus ring visible`, focused === "rf-isc2" && ring !== "none" && m.shown.join("|") === "ISC2|ISACA" && m.count === `2 of ${total} bodies shown`, `${focused}; outline ${ring}; ${m.shown.join(", ")}; "${m.count}"`);
+    await page.focus(".chip-all");
+    await page.keyboard.press("Enter");
+    m = await board(page);
+    check(`filter @${w}px: Enter on All clears the filter`, m.shown.length === total);
+    // every possible count, ticking in reverse order: label = rendered cards
+    const ids = await page.evaluate(() => [...document.querySelectorAll(".chip-input")].map((i) => i.id).reverse());
+    const bad = [];
+    for (let k = 1; k <= ids.length; k++) {
+      await page.click(`label[for="${ids[k - 1]}"]`);
+      m = await board(page);
+      if (m.shown.length !== k || m.count !== `${k} of ${total} bodies shown`) bad.push(`${k}: ${m.shown.length} shown, "${m.count}"`);
+    }
+    check(`filter @${w}px: for every count 1 to ${total}, the label matches the cards rendered`, ids.length === total && !bad.length, bad.join("; "));
+    const ax = await page.locator(".rules-count").ariaSnapshot();
+    check(`filter @${w}px: the count is in the accessibility tree`, ax.includes(`${total} of ${total} bodies shown`), ax);
+    await page.click(".chip-all");
+    // What a reload does. The page runs no scripts, so nothing is stored:
+    // a reload shows every body. This check records that behaviour; if it
+    // ever starts failing, the page has gained storage it does not declare.
+    await page.click('label[for="rf-giac"]');
+    await page.reload({ waitUntil: "load" });
+    m = await board(page);
+    check(`filter @${w}px: a reload shows every body again (no storage on this page)`, m.shown.length === total, `${m.shown.length} shown`);
+    check(`filter @${w}px: no page errors`, errors.length === 0, errors.join(" | "));
+    await context.close();
+  }
+
+  // Could the landing page pre-select the bodies chosen in /app? The app's
+  // IndexedDB is per origin, not per path, so the data is there for any
+  // script on this origin; but the landing page's policy runs no script.
+  {
+    const context = await browser.newContext();
+    const app = await context.newPage();
+    await app.goto(base + "/app/", { waitUntil: "load" });
+    await app.waitForFunction(async () => (await indexedDB.databases()).some((d) => d.name === "registrar"), null, { timeout: 15000 });
+    const page = await context.newPage();
+    await page.goto(base + "/", { waitUntil: "load" });
+    // evaluate() runs through the DevTools protocol, outside the page's CSP
+    const dbs = await page.evaluate(async () => (await indexedDB.databases()).map((d) => d.name));
+    check("same origin: the app's IndexedDB is visible from / (to the DevTools protocol)", dbs.includes("registrar"), dbs.join(","));
+    const blocked = await page.evaluate(() => new Promise((resolve) => {
+      window.__ran = false;
+      document.addEventListener("securitypolicyviolation", (e) => resolve(e.effectiveDirective), { once: true });
+      const s = document.createElement("script");
+      s.src = "/app/schema.js";
+      s.onload = () => resolve("loaded");
+      document.head.append(s);
+      setTimeout(() => resolve("timeout"), 3000);
+    }));
+    check("but the landing page's CSP blocks any script of its own, same-origin included", blocked === "script-src-elem" || blocked === "script-src", blocked);
     await context.close();
   }
 

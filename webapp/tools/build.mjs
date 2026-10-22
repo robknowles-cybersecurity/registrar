@@ -3,6 +3,8 @@
 //   1. data.json from bodies.yaml + packetmaps/ via the Python loaders
 //   2. copy src/ (app code + vendored libraries) to site/app/
 //   3. write the service worker with a precache list and a content hash
+//   4. the landing page's "How each body counts" section, from the same
+//      data.json (tools/site_rules.mjs)
 //
 // No bundler, no minifier, no network: the output is the source, as shipped.
 import { execFileSync } from "node:child_process";
@@ -10,6 +12,7 @@ import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeRules } from "./site_rules.mjs";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const repo = dirname(root);
@@ -50,3 +53,5 @@ writeFileSync(join(out, "version.json"), `${JSON.stringify({ version: pkg.versio
 writeFileSync(join(out, "BUILD.txt"), `Built from webapp/src by webapp/tools/build.mjs. Do not edit here.\nversion ${version}\n${files.length + 2} files\n`);
 console.log(`built site/app: ${files.length + 2} files, version ${pkg.version}, build ${version}`);
 if (!existsSync(join(out, "index.html"))) throw new Error("no index.html in the build");
+const { count } = writeRules(JSON.parse(readFileSync(join(src, "data.json"), "utf8")), join(repo, "site"));
+console.log(`built the landing page's rules section: ${count} bodies`);

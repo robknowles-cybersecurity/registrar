@@ -149,10 +149,6 @@ code { font-size: .92em; }
           border-radius: 0 8px 8px 0; }
 .bridge b { color: var(--accent); }
 .bridge a { white-space: nowrap; }
-.scroll table.rules { min-width: 52rem; }
-.rules th[scope="row"] { font-size: .92rem; text-transform: none;
-                         letter-spacing: 0; color: var(--ink); font-weight: 700; }
-.rules .unit { font-weight: 400; font-size: .8rem; color: var(--mute); }
 .check { list-style: none; padding-left: 0; }
 .check li { position: relative; margin: .5rem 0; padding-left: 1.75rem; }
 .check li::before { content: ""; position: absolute; left: 0; top: .3rem;
@@ -163,3 +159,96 @@ code { font-size: .92em; }
 .gloss dt { font-weight: 700; margin-top: .8rem; }
 .gloss dd { margin: .15rem 0 0; }
 .attrib { margin: 2rem 0 0; }
+
+/* How each body counts: one card per body below 960px, a comparison grid
+   above it. Same markup for both; the filter is checkboxes and CSS (this
+   page runs no scripts). */
+.vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.rules-board { margin: 1rem 0 0; overflow-wrap: anywhere; }
+.rules-filter { margin: 0 0 .75rem; }
+.rules-filter fieldset { position: relative; border: 0; margin: 0; padding: 0;
+                         display: flex; flex-wrap: wrap; gap: .4rem; }
+.rules-filter legend { padding: 0; margin: 0 0 .45rem; font-size: .8rem;
+                       text-transform: uppercase; letter-spacing: .08em; color: var(--mute); }
+.chip-input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.chip { display: inline-flex; align-items: center; min-height: 2.25rem;
+        padding: .25rem .8rem; border: 1px solid var(--line); border-radius: 999px;
+        background: var(--card); color: var(--ink); font: inherit; font-size: .9rem;
+        line-height: 1.2; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip-input:checked + .chip,
+.rules-filter:not(:has(.chip-input:checked)) .chip-all {
+  background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.chip-input:checked + .chip::before { content: "\2713\00a0" / ""; }
+.chip-input:focus-visible + .chip, .chip-all:focus-visible {
+  outline: 3px solid var(--note); outline-offset: 2px; }
+.rules-count { margin: .55rem 0 0; font-size: .9rem; color: var(--mute); }
+.rn { display: none; }
+.rn-0 { display: inline; }
+.rules-badge-key { margin: 0 0 .75rem; }
+.nowrap { white-space: nowrap; }
+.rules-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+.rb { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+      padding: .9rem 1rem; }
+.rb-head { padding: 0; }
+.rb-head h3 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+.rb-unit, .rb-creds { margin: .15rem 0 0; font-size: .82rem; color: var(--mute); }
+.rb-facts { margin: .75rem 0 0; display: grid; gap: .6rem 1rem; font-size: .92rem;
+            grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); }
+.rb-facts > div { min-width: 0; }
+.rb-annual-minimum, .rb-categories, .rb-submission, .rb-policy { grid-column: 1 / -1; }
+.rb-facts dt { font-size: .72rem; font-weight: 600; text-transform: uppercase;
+               letter-spacing: .05em; color: var(--mute); }
+.rb-facts dd { margin: .1rem 0 0; }
+.rb-colheads { display: none; }
+
+/* rules-breakpoint: the grid needs about 48rem of columns, so it starts at
+   960px, where the board breaks out of the reading column (up to 1200px). */
+@media (min-width: 960px) {
+  .rules-board { width: min(1200px, 100vw - 32px);
+                 margin-left: calc(50% - min(600px, 50vw - 16px)); }
+  .rules-table { display: grid; column-gap: 0; font-size: .88rem;
+    grid-template-columns: minmax(8.5rem, 1.1fr) minmax(5rem, .6fr) minmax(6.5rem, 1fr)
+                           minmax(6.5rem, 1fr) minmax(8rem, 1.7fr) minmax(8rem, 1.7fr)
+                           minmax(5.5rem, .7fr); }
+  .rb-colheads, .rules-cards, .rb, .rb > article, .rb-facts {
+    display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; gap: 0; }
+  .rb-facts { grid-column: 2 / -1; margin: 0; font-size: inherit; }
+  .rb { padding: 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+        background: transparent; }
+  .rb:nth-child(even) { background: var(--card); }
+  .rb-colheads { border-bottom: 2px solid var(--line); }
+  .rb-colheads > span { font-size: .72rem; font-weight: 600; text-transform: uppercase;
+                        letter-spacing: .05em; color: var(--mute); }
+  .rb-colheads > span, .rb-head, .rb-facts > div { padding: .55rem .6rem; min-width: 0; }
+  .rb-head h3 { font-size: .98rem; }
+  .rb-annual-minimum, .rb-categories, .rb-submission, .rb-policy { grid-column: auto; }
+  .rb-facts dt { position: absolute; width: 1px; height: 1px; margin: -1px;
+                 overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .rb-facts dd { margin: 0; }
+}
+
+/* rules-filter:begin (built from bodies.yaml by npm run build; do not edit by hand) */
+.rules-board:has(.chip-input:checked):not(:has(#rf-isc2:checked)) .rb-isc2,
+.rules-board:has(.chip-input:checked):not(:has(#rf-isaca:checked)) .rb-isaca,
+.rules-board:has(.chip-input:checked):not(:has(#rf-comptia:checked)) .rb-comptia,
+.rules-board:has(.chip-input:checked):not(:has(#rf-giac:checked)) .rb-giac,
+.rules-board:has(.chip-input:checked):not(:has(#rf-eccouncil:checked)) .rb-eccouncil,
+.rules-board:has(.chip-input:checked):not(:has(#rf-pmi:checked)) .rb-pmi,
+.rules-board:has(.chip-input:checked):not(:has(#rf-iapp:checked)) .rb-iapp,
+.rules-board:has(.chip-input:checked):not(:has(#rf-acfe:checked)) .rb-acfe,
+.rules-board:has(.chip-input:checked):not(:has(#rf-atap:checked)) .rb-atap,
+.rules-board:has(.chip-input:checked):not(:has(#rf-umd:checked)) .rb-umd { display: none; }
+.rules-filter:has(.chip-input:checked) .rn-0 { display: none; }
+.rules-filter:has(.chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked)) .rn-1 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-2 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-3 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-4 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-5 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-6 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-7 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-8 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-9 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked) .rn-10 { display: inline; }
+/* rules-filter:end */

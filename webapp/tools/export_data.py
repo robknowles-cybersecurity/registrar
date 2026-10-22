@@ -33,7 +33,7 @@ def _plain(value):
 # Python app. Only the fields the app shows are exported.
 PROGRAM_KEYS = ("body_id", "body_name", "unit_label", "cycle_months",
                 "verified", "verified_date", "source_url", "look_status",
-                "checked_date")
+                "checked_date", "landing")
 CERT_KEYS = ("id", "name", "long_name", "status", "status_note",
              "cycle_total", "annual_minimum", "cycle_months", "engine_track",
              "verified", "verified_date", "source_url", "look_status")

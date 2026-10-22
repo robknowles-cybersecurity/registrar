@@ -759,6 +759,12 @@ credentials:
 # READ_OK: the value was read on the official page. CONFIRMED_ABSENT: the page
 # was read in full and the item is not there. NOT_READ: the value has not been
 # confirmed on the official page and is shown as unverified.
+#
+# `landing:` holds the one-line summaries the landing page's "How each body
+# counts" section is built from (webapp/tools/site_rules.mjs; `npm run build`
+# rewrites the section). They summarise the provenance-bearing values above
+# and carry none of their own. `{unverified}` marks where the UNVERIFIED
+# badge goes; `cycle_unverified: true` puts it on the cycle length.
 # ---------------------------------------------------------------------------
 
 programs:
@@ -774,6 +780,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "45 to 140 by certification; CISSP 120"
+      annual_minimum: "None (ISC2 suggests a yearly pace); Associates of ISC2: 15 a year, all Group A"
+      categories: "CISSP: at least 90 Group A, at most 30 Group B. Rollover {unverified}"
+      submission: "CPE Portal. ISC2's own activities and its CPE Partners submit for you; you upload the rest. 90-day grace."
     research_note: "Unit (CPE), three-year cycle, per-certification totals and Group A floors, 90-day grace and the single AMF all confirmed on the member-policies and AMF pages. Rollover, evidence retention, audit and reporting increment are unverified."
     facts:
       - key: "annual_figures_advisory"
@@ -1056,6 +1067,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "120; AAIA and AAISM 30"
+      annual_minimum: "20 every year (AAIA and AAISM 10)"
+      categories: "A CPE hour is 50 minutes. From 2027: at least 90 tied to the credential, at most 30 other. Carryover: none {unverified}"
+      submission: "MyISACA. Hours ISACA tracks pre-load; chapter and other sponsors' hours you report yourself."
     research_note: "Source: https://www.isaca.org/credentialing/cisa/maintain-cisa-certification."
     facts:
       - key: "annual_minimum_every_year"
@@ -1376,6 +1392,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "15 to 75; Security+ 50, CySA+ 60"
+      annual_minimum: "None"
+      categories: "Caps by activity type, for example work experience at most 9; at least half of a training's content must match the exam objectives. No carryover stated."
+      submission: "CE portal. You upload every activity yourself; no one can do it for you. Accepted on upload, audited at random. 30-day grace."
     research_note: "CEU unit, three-year cycle, all 16 CEU totals, CE fees, 30-day grace, work-experience cap and higher-level renewal rules confirmed."
     facts:
       - key: "grace_period_days"
@@ -1727,6 +1748,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "36"
+      annual_minimum: "None"
+      categories: "Per-category caps: SANS and GIAC programs 36, other training 18, work experience 12, community participation 12, cyber ranges 12, NetWars 12. No grace period or carryover stated."
+      submission: "GIAC account. SANS and GIAC activities are added for you; submit the rest with documents at least 30 days before expiry."
     research_note: "Source: https://www.giac.org/renewal/cpe-information."
     facts:
       - key: "renewal_fee_usd"
@@ -2154,6 +2180,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "120 per certification"
+      annual_minimum: "No floor, but each calendar year's credits must be registered by 1 February of the next"
+      categories: "No category caps stated. Credits apply across all your EC-Council certifications; an activity counts in one window only."
+      submission: "Aspen portal; you register credits yourself."
     research_note: "The production policy page (ece-policy.html redirects to cpe-policy.html) displays CPE throughout; the old ECE wording is still in the HTML but hidden by CSS. Unit corrected ECE -> CPE. 120 credits per certification per three-year window, calendar-year earning with registration by 1 February, 12-month suspension, 90-day appeal and the CE fee table all confirmed."
     facts:
       - key: "annual_registration_deadline_mmdd"
@@ -2458,6 +2489,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "15 to 60; PMP 60, CAPM 15; PMI-CP, PMI-CPMAI and PMI-PMOCP 30 {unverified}"
+      annual_minimum: "None"
+      categories: "PMP: at least 35 Education (8 each in Ways of Working, Power Skills and Business Acumen); Giving Back at most 25. PDUs from the final 12 months can carry over (PMP up to 20)."
+      submission: "CCRS. Approved providers can submit claims for you; ProjectManagement.com reports automatically once linked. From the 2022 handbook."
     research_note: "CCR handbook PDF (edition (c) 2022) on www.pmi.org: PDU unit, three-year cycle (one year for Disciplined Agile), per-certification totals and splits, fee, 90-day payment window, 12-month suspension, 18-month retention, carryover from the final 12 months with caps 20/10/5. PMI-CP, PMI-CPMAI and PMI-PMOCP are not in this edition and are unverified. DASM exams ended 2025-11-30 (ATP FAQ)."
     facts:
       - key: "renewal_fee_usd_member"
@@ -2762,6 +2798,12 @@ programs:
     checked_date: "2026-10-20"
     verified: false
     verified_date: null
+    landing:
+      cycle_unverified: true
+      cycle_total: "20 {unverified}"
+      annual_minimum: "None stated"
+      categories: "At least 10 syllabus-specific, at most 10 general {unverified}; reading capped at 5 and teaching at 16 {unverified}. Up to 10 can carry over."
+      submission: "MyIAPP. IAPP events and webinars post automatically; you report the rest."
     research_note: "Source: https://iapp.org/certify/cpe-policy. Unverified."
     facts:
       - key: "policy_version"
@@ -3024,6 +3066,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "20"
+      annual_minimum: "20 (the cycle is one year)"
+      categories: "At least 10 on fraud, at least 2 on ethics; one course can count toward both. Up to 10 extra carry over."
+      submission: "Certify compliance at MyCPE by the end of your anniversary month. ACFE keeps no record of your activities: keep your proof for 3 years. A 30-day extension can be requested."
     research_note: "20 CPE per 12-month compliance year (10 fraud, 2 ethics), carryover up to 10, end-of-anniversary-month deadline, 30-day extension, 3-year retention, 60-day audit response and suspension rules all confirmed. Three older URLs (cpe-extensions, maintaining-records, how-to-report-cpe-earned) now redirect to a 404 page; their facts are on reporting-cpe and the CPE FAQ."
     facts:
       - key: "fraud_floor"
@@ -3180,6 +3227,12 @@ programs:
     checked_date: "2026-10-20"
     verified: false
     verified_date: null
+    landing:
+      cycle_unverified: true
+      cycle_total: "50"
+      annual_minimum: "None stated"
+      categories: "Category caps {unverified}, so Registrar treats the CTM total as advisory."
+      submission: "Certemy. 30-day grace {unverified}."
     research_note: "Source: https://www.atapworldwide.org/page/certificationexam. Unverified."
     facts:
       - key: "ctm_credits"
@@ -3327,6 +3380,11 @@ programs:
     checked_date: "2026-10-20"
     verified: true
     verified_date: "2026-10-20"
+    landing:
+      cycle_total: "100"
+      annual_minimum: "None"
+      categories: "At least 60 in counter-insider-threat, at most 40 other; no single activity counts for more than 45. No carryover stated."
+      submission: "A PDU Tracking Form on LearningBuilder, submitted once before the last day of the cycle."
     research_note: "Four-year validity, 100 PDUs (at least 60% C-InT, at most 40% other), the full PDU table (per-event cap 45 on every row; special projects 45; teaching, mentoring and workshops 3 PDUs per contact hour) and the USD 500 fee (650 by re-exam) confirmed on the maintain page and the PDU reference table; late fees, the 10% audit and the LearningBuilder tracking form in the candidate handbook (2024). The name on UMD's documents is Global Counter-Insider Threat Professional."
     facts:
       - key: "cint_floor"

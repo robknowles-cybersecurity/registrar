@@ -1263,6 +1263,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 36,
+   "landing": {
+    "annual_minimum": "None (ISC2 suggests a yearly pace); Associates of ISC2: 15 a year, all Group A",
+    "categories": "CISSP: at least 90 Group A, at most 30 Group B. Rollover {unverified}",
+    "cycle_total": "45 to 140 by certification; CISSP 120",
+    "submission": "CPE Portal. ISC2's own activities and its CPE Partners submit for you; you upload the rest. 90-day grace."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.isc2.org/policies-procedures/member-policies",
    "unit_label": "CPE",
@@ -1471,6 +1477,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 36,
+   "landing": {
+    "annual_minimum": "20 every year (AAIA and AAISM 10)",
+    "categories": "A CPE hour is 50 minutes. From 2027: at least 90 tied to the credential, at most 30 other. Carryover: none {unverified}",
+    "cycle_total": "120; AAIA and AAISM 30",
+    "submission": "MyISACA. Hours ISACA tracks pre-load; chapter and other sponsors' hours you report yourself."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification",
    "unit_label": "CPE hour",
@@ -1724,6 +1736,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 36,
+   "landing": {
+    "annual_minimum": "None",
+    "categories": "Caps by activity type, for example work experience at most 9; at least half of a training's content must match the exam objectives. No carryover stated.",
+    "cycle_total": "15 to 75; Security+ 50, CySA+ 60",
+    "submission": "CE portal. You upload every activity yourself; no one can do it for you. Accepted on upload, audited at random. 30-day grace."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/",
    "unit_label": "CEU",
@@ -2022,6 +2040,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 48,
+   "landing": {
+    "annual_minimum": "None",
+    "categories": "Per-category caps: SANS and GIAC programs 36, other training 18, work experience 12, community participation 12, cyber ranges 12, NetWars 12. No grace period or carryover stated.",
+    "cycle_total": "36",
+    "submission": "GIAC account. SANS and GIAC activities are added for you; submit the rest with documents at least 30 days before expiry."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.giac.org/renewal/cpe-information",
    "unit_label": "CPE",
@@ -2200,6 +2224,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 36,
+   "landing": {
+    "annual_minimum": "No floor, but each calendar year's credits must be registered by 1 February of the next",
+    "categories": "No category caps stated. Credits apply across all your EC-Council certifications; an activity counts in one window only.",
+    "cycle_total": "120 per certification",
+    "submission": "Aspen portal; you register credits yourself."
+   },
    "look_status": "READ_OK",
    "source_url": "https://cert.eccouncil.org/cpe-policy.html",
    "unit_label": "CPE",
@@ -2408,6 +2438,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 36,
+   "landing": {
+    "annual_minimum": "None",
+    "categories": "PMP: at least 35 Education (8 each in Ways of Working, Power Skills and Business Acumen); Giving Back at most 25. PDUs from the final 12 months can carry over (PMP up to 20).",
+    "cycle_total": "15 to 60; PMP 60, CAPM 15; PMI-CP, PMI-CPMAI and PMI-PMOCP 30 {unverified}",
+    "submission": "CCRS. Approved providers can submit claims for you; ProjectManagement.com reports automatically once linked. From the 2022 handbook."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
    "unit_label": "PDU",
@@ -2571,6 +2607,13 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 24,
+   "landing": {
+    "annual_minimum": "None stated",
+    "categories": "At least 10 syllabus-specific, at most 10 general {unverified}; reading capped at 5 and teaching at 16 {unverified}. Up to 10 can carry over.",
+    "cycle_total": "20 {unverified}",
+    "cycle_unverified": true,
+    "submission": "MyIAPP. IAPP events and webinars post automatically; you report the rest."
+   },
    "look_status": "NOT_READ",
    "source_url": "https://iapp.org/certify/cpe-policy",
    "unit_label": "CPE",
@@ -2599,6 +2642,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 12,
+   "landing": {
+    "annual_minimum": "20 (the cycle is one year)",
+    "categories": "At least 10 on fraud, at least 2 on ethics; one course can count toward both. Up to 10 extra carry over.",
+    "cycle_total": "20",
+    "submission": "Certify compliance at MyCPE by the end of your anniversary month. ACFE keeps no record of your activities: keep your proof for 3 years. A 30-day extension can be requested."
+   },
    "look_status": "READ_OK",
    "source_url": "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements",
    "unit_label": "CPE",
@@ -2627,6 +2676,13 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 24,
+   "landing": {
+    "annual_minimum": "None stated",
+    "categories": "Category caps {unverified}, so Registrar treats the CTM total as advisory.",
+    "cycle_total": "50",
+    "cycle_unverified": true,
+    "submission": "Certemy. 30-day grace {unverified}."
+   },
    "look_status": "NOT_READ",
    "source_url": "https://www.atapworldwide.org/page/certificationexam",
    "unit_label": "credit",
@@ -2655,6 +2711,12 @@
    ],
    "checked_date": "2026-10-20",
    "cycle_months": 48,
+   "landing": {
+    "annual_minimum": "None",
+    "categories": "At least 60 in counter-insider-threat, at most 40 other; no single activity counts for more than 45. No carryover stated.",
+    "cycle_total": "100",
+    "submission": "A PDU Tracking Form on LearningBuilder, submitted once before the last day of the cycle."
+   },
    "look_status": "READ_OK",
    "source_url": "https://gcitp.umd.edu/gcitp-certification/maintain-certification",
    "unit_label": "PDU",

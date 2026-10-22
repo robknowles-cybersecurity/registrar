@@ -168,32 +168,211 @@
     <h2 id="rules">How each body counts</h2>
     <p>The ten bodies whose rules Registrar knows, side by side. Totals are
     for one cycle of one credential; where a body has many credentials the
-    range is shown with common examples. Each body's name links to its own
-    policy page.</p>
+    range is shown with common examples. Each body's entry links to its own
+    policy page. Tick the bodies you hold to show only those.</p>
     <p class="note"><b>Rules change; confirm with your body before you rely
     on a number.</b> These figures come from Registrar's rules file,
     <code>bodies.yaml</code>, which records where and when each value was
     checked.</p>
-    <p class="small"><span class="badge">UNVERIFIED</span> means that value
+    <!-- rules:begin (built from bodies.yaml by npm run build; do not edit by hand) -->
+    <div class="rules-board">
+    <form class="rules-filter">
+      <fieldset>
+        <legend>Show bodies</legend>
+        <button type="reset" class="chip chip-all">All<span class="vh"> bodies</span></button>
+        <input type="checkbox" class="chip-input" id="rf-isc2"><label class="chip" for="rf-isc2">ISC2</label>
+        <input type="checkbox" class="chip-input" id="rf-isaca"><label class="chip" for="rf-isaca">ISACA</label>
+        <input type="checkbox" class="chip-input" id="rf-comptia"><label class="chip" for="rf-comptia">CompTIA</label>
+        <input type="checkbox" class="chip-input" id="rf-giac"><label class="chip" for="rf-giac">GIAC</label>
+        <input type="checkbox" class="chip-input" id="rf-eccouncil"><label class="chip" for="rf-eccouncil">EC-Council</label>
+        <input type="checkbox" class="chip-input" id="rf-pmi"><label class="chip" for="rf-pmi">PMI</label>
+        <input type="checkbox" class="chip-input" id="rf-iapp"><label class="chip" for="rf-iapp">IAPP</label>
+        <input type="checkbox" class="chip-input" id="rf-acfe"><label class="chip" for="rf-acfe">ACFE</label>
+        <input type="checkbox" class="chip-input" id="rf-atap"><label class="chip" for="rf-atap">ATAP</label>
+        <input type="checkbox" class="chip-input" id="rf-umd"><label class="chip" for="rf-umd">University of Maryland</label>
+      </fieldset>
+      <p class="rules-count" aria-live="polite"><span class="rn rn-0">10</span><span class="rn rn-1">1</span><span class="rn rn-2">2</span><span class="rn rn-3">3</span><span class="rn rn-4">4</span><span class="rn rn-5">5</span><span class="rn rn-6">6</span><span class="rn rn-7">7</span><span class="rn rn-8">8</span><span class="rn rn-9">9</span><span class="rn rn-10">10</span> of 10 bodies shown</p>
+    </form>
+    <p class="small rules-badge-key"><span class="badge">UNVERIFIED</span> means that value
     could not be confirmed on the body's own published pages: it is shown,
     but you should check it before you rely on it.</p>
-    <div class="scroll" role="region" aria-label="Table of how each certifying body counts credits" tabindex="0">
-    <table class="rules">
-      <thead><tr><th scope="col">Body and unit</th><th scope="col">Cycle</th><th scope="col">Cycle total</th><th scope="col">Annual minimum</th><th scope="col">Categories and caps</th><th scope="col">How you submit</th></tr></thead>
-      <tbody>
-        <tr><th scope="row"><a href="https://www.isc2.org/policies-procedures/member-policies">ISC2</a><br><span class="unit">CPE</span></th><td>3 years</td><td>45 to 140 by certification; CISSP 120</td><td>None (ISC2 suggests a yearly pace); Associates of ISC2: 15 a year, all Group A</td><td>CISSP: at least 90 Group A, at most 30 Group B. Rollover <span class="badge">UNVERIFIED</span></td><td>CPE Portal. ISC2's own activities and its CPE Partners submit for you; you upload the rest. 90-day grace.</td></tr>
-        <tr><th scope="row"><a href="https://www.isaca.org/credentialing/cisa/maintain-cisa-certification">ISACA</a><br><span class="unit">CPE hour</span></th><td>3 years</td><td>120; AAIA and AAISM 30</td><td>20 every year (AAIA and AAISM 10)</td><td>A CPE hour is 50 minutes. From 2027: at least 90 tied to the credential, at most 30 other. Carryover: none <span class="badge">UNVERIFIED</span></td><td>MyISACA. Hours ISACA tracks pre-load; chapter and other sponsors' hours you report yourself.</td></tr>
-        <tr><th scope="row"><a href="https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/">CompTIA</a><br><span class="unit">CEU</span></th><td>3 years</td><td>15 to 75; Security+ 50, CySA+ 60</td><td>None</td><td>Caps by activity type, for example work experience at most 9; at least half of a training's content must match the exam objectives. No carryover stated.</td><td>CE portal. You upload every activity yourself; no one can do it for you. Accepted on upload, audited at random. 30-day grace.</td></tr>
-        <tr><th scope="row"><a href="https://www.giac.org/renewal/cpe-information">GIAC</a><br><span class="unit">CPE</span></th><td>4 years</td><td>36</td><td>None</td><td>Per-category caps: SANS and GIAC programs 36, other training 18, work experience 12, community participation 12, cyber ranges 12, NetWars 12. No grace period or carryover stated.</td><td>GIAC account. SANS and GIAC activities are added for you; submit the rest with documents at least 30 days before expiry.</td></tr>
-        <tr><th scope="row"><a href="https://cert.eccouncil.org/cpe-policy.html">EC-Council</a><br><span class="unit">CPE</span></th><td>3 years</td><td>120 per certification</td><td>No floor, but each calendar year's credits must be registered by 1 February of the next</td><td>No category caps stated. Credits apply across all your EC-Council certifications; an activity counts in one window only.</td><td>Aspen portal; you register credits yourself.</td></tr>
-        <tr><th scope="row"><a href="https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a">PMI</a><br><span class="unit">PDU</span></th><td>3 years</td><td>15 to 60; PMP 60, CAPM 15; PMI-CP, PMI-CPMAI and PMI-PMOCP 30 <span class="badge">UNVERIFIED</span></td><td>None</td><td>PMP: at least 35 Education (8 each in Ways of Working, Power Skills and Business Acumen); Giving Back at most 25. PDUs from the final 12 months can carry over (PMP up to 20).</td><td>CCRS. Approved providers can submit claims for you; ProjectManagement.com reports automatically once linked. From the 2022 handbook.</td></tr>
-        <tr><th scope="row"><a href="https://iapp.org/certify/cpe-policy">IAPP</a><br><span class="unit">CPE</span></th><td>2 years <span class="badge">UNVERIFIED</span></td><td>20 <span class="badge">UNVERIFIED</span></td><td>None stated</td><td>At least 10 syllabus-specific, at most 10 general <span class="badge">UNVERIFIED</span>; reading capped at 5 and teaching at 16 <span class="badge">UNVERIFIED</span>. Up to 10 can carry over.</td><td>MyIAPP. IAPP events and webinars post automatically; you report the rest.</td></tr>
-        <tr><th scope="row"><a href="https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements">ACFE</a><br><span class="unit">CPE</span></th><td>1 year</td><td>20</td><td>20 (the cycle is one year)</td><td>At least 10 on fraud, at least 2 on ethics; one course can count toward both. Up to 10 extra carry over.</td><td>Certify compliance at MyCPE by the end of your anniversary month. ACFE keeps no record of your activities: keep your proof for 3 years. A 30-day extension can be requested.</td></tr>
-        <tr><th scope="row"><a href="https://www.atapworldwide.org/page/certificationexam">ATAP</a><br><span class="unit">credit (CTM)</span></th><td>2 years <span class="badge">UNVERIFIED</span></td><td>50</td><td>None stated</td><td>Category caps <span class="badge">UNVERIFIED</span>, so Registrar treats the CTM total as advisory.</td><td>Certemy. 30-day grace <span class="badge">UNVERIFIED</span>.</td></tr>
-        <tr><th scope="row"><a href="https://gcitp.umd.edu/gcitp-certification/maintain-certification">University of Maryland</a><br><span class="unit">PDU (GCITP)</span></th><td>4 years</td><td>100</td><td>None</td><td>At least 60 in counter-insider-threat, at most 40 other; no single activity counts for more than 45. No carryover stated.</td><td>A PDU Tracking Form on LearningBuilder, submitted once before the last day of the cycle.</td></tr>
-      </tbody>
-    </table>
+    <div class="rules-table">
+    <div class="rb-colheads" aria-hidden="true"><span>Body</span><span>Cycle</span><span>Cycle total</span><span>Annual minimum</span><span>Categories and caps</span><span>How you submit</span><span>Policy</span></div>
+    <ul class="rules-cards" role="list">
+      <li class="rb rb-isc2">
+        <article aria-labelledby="rb-isc2">
+          <header class="rb-head">
+            <h3 id="rb-isc2">ISC2</h3>
+            <p class="rb-unit">Unit: CPE</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>CISSP, CCSP, CSSLP, SSCP, CGRC, CC, CISSP-ISSAP, CISSP-ISSEP, CISSP-ISSMP</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>3 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>45 to 140 by certification; CISSP 120</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None (ISC2 suggests a yearly pace); Associates of ISC2: 15 a year, all Group A</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>CISSP: at least 90 Group A, at most 30 Group B. Rollover <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>CPE Portal. ISC2's own activities and its CPE Partners submit for you; you upload the rest. 90-day grace.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.isc2.org/policies-procedures/member-policies">ISC2 policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-isaca">
+        <article aria-labelledby="rb-isaca">
+          <header class="rb-head">
+            <h3 id="rb-isaca">ISACA</h3>
+            <p class="rb-unit">Unit: CPE hour</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>CISA, CISM, CRISC, CGEIT, CDPSE, CCOA, CCA, CCP, AAIA, AAISM</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>3 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>120; AAIA and AAISM 30</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>20 every year (AAIA and AAISM 10)</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>A CPE hour is 50 minutes. From 2027: at least 90 tied to the credential, at most 30 other. Carryover: none <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>MyISACA. Hours ISACA tracks pre-load; chapter and other sponsors' hours you report yourself.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.isaca.org/credentialing/cisa/maintain-cisa-certification">ISACA policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-comptia">
+        <article aria-labelledby="rb-comptia">
+          <header class="rb-head">
+            <h3 id="rb-comptia">CompTIA</h3>
+            <p class="rb-unit">Unit: CEU</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>A+, Network+, Security+, CySA+, PenTest+, SecurityX, Cloud+, Linux+, Server+, Project+, Data+, DataSys+, CloudNetX, DataAI, SecAI+, AutoOps+</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>3 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>15 to 75; Security+ 50, CySA+ 60</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>Caps by activity type, for example work experience at most 9; at least half of a training's content must match the exam objectives. No carryover stated.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>CE portal. You upload every activity yourself; no one can do it for you. Accepted on upload, audited at random. 30-day grace.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/">CompTIA policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-giac">
+        <article aria-labelledby="rb-giac">
+          <header class="rb-head">
+            <h3 id="rb-giac">GIAC</h3>
+            <p class="rb-unit">Unit: CPE</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>GSEC, GCIH, GCIA, GPEN, GCFA, GREM, GSLC, GSTRT, GICSP, GCLD, GXPN, GWAPT, GCED, GCIP, GMON, GWEB, GOAA</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>4 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>36</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>Per-category caps: SANS and GIAC programs 36, other training 18, work experience 12, community participation 12, cyber ranges 12, NetWars 12. No grace period or carryover stated.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>GIAC account. SANS and GIAC activities are added for you; submit the rest with documents at least 30 days before expiry.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.giac.org/renewal/cpe-information">GIAC policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-eccouncil">
+        <article aria-labelledby="rb-eccouncil">
+          <header class="rb-head">
+            <h3 id="rb-eccouncil">EC-Council</h3>
+            <p class="rb-unit">Unit: CPE</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>CEH, CND, CHFI, CCISO, CPENT, LPT, CSA, CTIA, ECIH, CASE, CAIPM</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>3 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>120 per certification</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>No floor, but each calendar year's credits must be registered by 1 February of the next</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>No category caps stated. Credits apply across all your EC-Council certifications; an activity counts in one window only.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>Aspen portal; you register credits yourself.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://cert.eccouncil.org/cpe-policy.html">EC-Council policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-pmi">
+        <article aria-labelledby="rb-pmi">
+          <header class="rb-head">
+            <h3 id="rb-pmi">PMI</h3>
+            <p class="rb-unit">Unit: PDU</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>PMP, PgMP, PfMP, PMI-PBA, PMI-ACP, PMI-RMP, PMI-SP, PMI-CP, PMI-CPMAI, PMI-PMOCP, CAPM</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>3 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>15 to 60; PMP 60, CAPM 15; PMI-CP, PMI-CPMAI and PMI-PMOCP 30 <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>PMP: at least 35 Education (8 each in Ways of Working, Power Skills and Business Acumen); Giving Back at most 25. PDUs from the final 12 months can carry over (PMP up to 20).</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>CCRS. Approved providers can submit claims for you; ProjectManagement.com reports automatically once linked. From the 2022 handbook.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a">PMI policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-iapp">
+        <article aria-labelledby="rb-iapp">
+          <header class="rb-head">
+            <h3 id="rb-iapp">IAPP</h3>
+            <p class="rb-unit">Unit: CPE</p>
+            <p class="rb-creds"><span class="vh">Credentials: </span>CIPP/US, CIPP/E, CIPP/C, CIPP/A, CIPP/CN, CIPM, CIPT, AIGP</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>2 years <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>20 <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None stated</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>At least 10 syllabus-specific, at most 10 general <span class="nowrap"><span class="badge">UNVERIFIED</span>;</span> reading capped at 5 and teaching at 16 <span class="nowrap"><span class="badge">UNVERIFIED</span>.</span> Up to 10 can carry over.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>MyIAPP. IAPP events and webinars post automatically; you report the rest.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://iapp.org/certify/cpe-policy">IAPP policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-acfe">
+        <article aria-labelledby="rb-acfe">
+          <header class="rb-head">
+            <h3 id="rb-acfe">ACFE</h3>
+            <p class="rb-unit">Unit: CPE</p>
+            <p class="rb-creds"><span class="vh">Credential: </span>CFE</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>1 year</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>20</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>20 (the cycle is one year)</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>At least 10 on fraud, at least 2 on ethics; one course can count toward both. Up to 10 extra carry over.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>Certify compliance at MyCPE by the end of your anniversary month. ACFE keeps no record of your activities: keep your proof for 3 years. A 30-day extension can be requested.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements">ACFE policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-atap">
+        <article aria-labelledby="rb-atap">
+          <header class="rb-head">
+            <h3 id="rb-atap">ATAP</h3>
+            <p class="rb-unit">Unit: credit</p>
+            <p class="rb-creds"><span class="vh">Credential: </span>CTM</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>2 years <span class="badge">UNVERIFIED</span></dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>50</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None stated</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>Category caps <span class="nowrap"><span class="badge">UNVERIFIED</span>,</span> so Registrar treats the CTM total as advisory.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>Certemy. 30-day grace <span class="nowrap"><span class="badge">UNVERIFIED</span>.</span></dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://www.atapworldwide.org/page/certificationexam">ATAP policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+      <li class="rb rb-umd">
+        <article aria-labelledby="rb-umd">
+          <header class="rb-head">
+            <h3 id="rb-umd">University of Maryland</h3>
+            <p class="rb-unit">Unit: PDU</p>
+            <p class="rb-creds"><span class="vh">Credential: </span>GCITP</p>
+          </header>
+          <dl class="rb-facts">
+          <div class="rb-cycle"><dt>Cycle</dt><dd>4 years</dd></div>
+          <div class="rb-cycle-total"><dt>Cycle total</dt><dd>100</dd></div>
+          <div class="rb-annual-minimum"><dt>Annual minimum</dt><dd>None</dd></div>
+          <div class="rb-categories"><dt>Categories and caps</dt><dd>At least 60 in counter-insider-threat, at most 40 other; no single activity counts for more than 45. No carryover stated.</dd></div>
+          <div class="rb-submission"><dt>How you submit</dt><dd>A PDU Tracking Form on LearningBuilder, submitted once before the last day of the cycle.</dd></div>
+          <div class="rb-policy"><dt>Policy</dt><dd><a href="https://gcitp.umd.edu/gcitp-certification/maintain-certification">University of Maryland policy page</a></dd></div>
+          </dl>
+        </article>
+      </li>
+    </ul>
     </div>
+    </div>
+    <!-- rules:end -->
     <p class="bridge"><b>In Registrar:</b> these rules are built in, and the
     app flags the same unverified values where they affect your count.
     Tick the credentials you hold and add each cycle's start date.

@@ -22,8 +22,11 @@ rules" in "The problem" links the CPE Resources page.
 
 ## The per-body table ("How each body counts")
 
-Every row comes from `bodies.yaml`, and each body's name links to the
-`source_url` that file records for it. An **UNVERIFIED** badge is shown
+Every entry comes from `bodies.yaml`, and each body's policy link is the
+`source_url` that file records for it. Since v1.2.1 the section is built
+from `bodies.yaml` by `npm run build`: the one-line summaries live in each
+program's `landing:` block, and the credentials listed under each body
+are that program's offered certifications. An **UNVERIFIED** badge is shown
 wherever `bodies.yaml` marks a value as unverified. No value was added that
 could not be confirmed by fetching the body's own page; where a body's page
 was not fetched, the row says only what `bodies.yaml` already says.

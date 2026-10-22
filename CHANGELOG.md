@@ -5,6 +5,30 @@ at <https://ceu.tools/app>. Versions follow
 [Semantic Versioning](https://semver.org/) and are tagged on this
 repository as a whole; the browser app shows its version in its footer.
 
+## v1.2.1
+
+The landing page's per-body rules, readable at any width. Release notes:
+[docs/release-notes/v1.2.1.md](docs/release-notes/v1.2.1.md).
+
+### Changed
+
+- **"How each body counts"** on <https://ceu.tools> is no longer a table
+  that scrolls sideways. Below 960 px wide each body is a card (name, unit
+  and credentials, then cycle, cycle total, annual minimum, categories and
+  caps, how you submit, and the policy link); from 960 px it is a
+  comparison grid that widens past the reading column, up to 1200 px. The
+  page has no horizontal scroll at any width from 360 px up.
+- The section is now **built from `bodies.yaml`** by `npm run build` (new
+  `landing:` summaries on each body), from the same export the browser app
+  uses, instead of being written by hand. The wording is unchanged.
+
+### Added
+
+- **A body filter** above the section: a chip per body plus "All", with a
+  visible count ("3 of 10 bodies shown"). It is plain HTML and CSS, as the
+  landing page runs no scripts, so the choice is not remembered after a
+  reload.
+
 ## v1.2.0
 
 Polish for first-time visitors, a CPE/CEU guide, plus reports. Release

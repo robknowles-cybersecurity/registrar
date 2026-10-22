@@ -47,6 +47,7 @@ src/                 the app, as shipped (no bundler)
   data.json          generated from bodies.yaml + packetmaps/ (do not edit)
   vendor/            pdf.js and tesseract.js, pinned; MANIFEST.json has hashes
 tools/               vendor.mjs, build.mjs, export_data.py, check_public_text.py,
+                     site_rules.mjs (the landing page's per-body section),
                      capture.mjs (landing-page images), make_sample_certificate.py
 tests/               unit tests, parity with Python, fixtures
 e2e/                 serve.mjs (applies site/_headers), verify.mjs, site.mjs,
@@ -70,6 +71,12 @@ npm run check-public        # fails if anything under site/ carries internal wor
 `site/app/` is committed and deploys with the rest of `site/` on Cloudflare
 Pages. Never edit it by hand; rebuild.
 
+The build also writes the landing page's "How each body counts" section
+(between the `rules:begin` and `rules:end` comments in `site/index.html`, and
+the matching block at the end of `site/style.css`) from the same
+`data.json`, so a `bodies.yaml` change updates the app and the page
+together. `tests/site_rules.test.mjs` fails if either file was not rebuilt.
+
 ## Tests
 
 ```bash
@@ -81,8 +88,10 @@ npm test                    # unit tests (node:test), including:
 npm run heldout             # parser score on held-out certificates it was not tuned on (a score, not a gate)
 npm run e2e                 # the built app in headless Chromium, under the real CSP (57 checks; 53 with --skip-ocr)
 npm run e2e:prove-fails     # the same against three deliberately broken builds: all must fail
-npm run e2e:site            # landing page, /privacy, share card, icons, security.txt (38 checks)
-npm run e2e:site:prove-fails  # a site without og.png, and one loading a third-party image: both must fail
+npm run e2e:site            # landing page, /privacy, share card, icons, security.txt, and the
+                            #   "How each body counts" section at 360-1600 px (85 checks)
+npm run e2e:site:prove-fails  # a site without og.png, one loading a third-party image, and one
+                              #   whose rules grid has no breakpoint: all three must fail
 node e2e/keyboard.mjs       # keyboard-only walk of the core flow, focus visible at every stop
 AXE=/path/to/axe.min.js npm run a11y   # axe-core on every screen, light and dark
 ```
