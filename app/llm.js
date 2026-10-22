@@ -84,7 +84,7 @@ export async function extractWithLlm(text, { fetchImpl = fetch } = {}) {
       headers: {
         "content-type": "application/json",
         "x-api-key": session.key,
-        "anthropic-version": "2026-10-21",
+        "anthropic-version": "2023-06-01",
         "anthropic-dangerous-direct-browser-access": "true",
         "anthropic-beta": "server-side-fallback-2026-07-01",
       },

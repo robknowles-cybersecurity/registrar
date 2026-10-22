@@ -64,8 +64,9 @@
       <li><b>What is sent:</b> the text already extracted from that one
       certificate (at most 20,000 characters), a fixed instruction, the
       model name, and your key (as the provider's authentication header).</li>
-      <li><b>To whom:</b> over HTTPS to the provider you chose, and only
-      that one: Anthropic's API (<code>api.anthropic.com</code>), or an
+      <li><b>To whom:</b> the provider you chose, and only that one, over
+      HTTPS, or plain HTTP to a model running on your own machine:
+      Anthropic's API (<code>api.anthropic.com</code>), or an
       OpenAI-compatible endpoint (<code>api.openai.com</code>, or a model
       you run on <code>localhost</code> or <code>127.0.0.1</code>). The site's security policy
       blocks every other destination.</li>
@@ -74,8 +75,11 @@
       text itself usually contains your name and the provider's, so treat
       it as personal data you are choosing to share.</li>
       <li><b>The key</b> is held in a JavaScript variable for that tab
-      only. It is not written to IndexedDB, localStorage, cookies or
-      exports, and a reload forgets it.</li>
+      only. Registrar never stores it: it is not written to IndexedDB,
+      localStorage, cookies or exports, and a reload forgets it. Your
+      browser's own password manager is outside the app; the key field
+      asks it and common password-manager extensions not to offer to
+      save it.</li>
       <li><b>The provider</b> sees the certificate text and your key, and
       handles them under its own terms. The model's answer fills the form,
       marked "llm", and you confirm it before anything is saved.</li>
@@ -105,6 +109,7 @@
 <footer>
   <p>&copy; 2026 Rob Knowles. ceu.tools and Registrar are not affiliated
   with or endorsed by any certifying body.</p>
+  <p>Built with AI-assisted development.</p>
 </footer>
 
 </div>

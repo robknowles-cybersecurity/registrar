@@ -92,6 +92,11 @@ footer p { margin: .3rem 0; }
 .skip { position: absolute; left: -999px; top: .5rem; background: var(--card);
         color: var(--accent); padding: .5rem .8rem; border-radius: 6px; z-index: 2; }
 .skip:focus { left: .5rem; }
+/* The same site is served at more than one address; say so, statically. */
+.alias-banner { margin: 0; padding: .45rem 16px; background: var(--note-soft); color: var(--ink);
+  border-bottom: 1px solid var(--line); font-size: .9rem; line-height: 1.4; text-align: center; }
+.alias-banner p { margin: 0; }
+.alias-banner a { color: var(--accent); }
 .mt0 { margin-top: 0; }
 .points { padding-left: 1.1rem; }
 .points li { margin: .45rem 0; }

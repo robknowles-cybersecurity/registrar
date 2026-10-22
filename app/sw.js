@@ -2,7 +2,7 @@
 // engine and its language model (about 7 MB) are cached the first time they
 // are used, or when you press "Make OCR available offline" in Settings.
 // Nothing here talks to any origin but this one.
-const VERSION = "17a529fefcbbe2f7";
+const VERSION = "199136ce06de83cc";
 const SHELL = [
  "./",
  "./app.css",

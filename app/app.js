@@ -1,14 +1,14 @@
 // Registrar in the browser: screens and wiring. No framework; each screen is
 // a function that renders HTML into <main> and binds its handlers.
 import * as E from "./engine.js";
-import { Ledger, LedgerError, SoftDuplicate, validateUpload, CONFIRMED, CAPTURED, STATES } from "./ledger.js";
+import { Ledger, LedgerError, SoftDuplicate, validateUpload, MAX_EVIDENCE_BYTES, CONFIRMED, CAPTURED, STATES } from "./ledger.js";
 import { IdbStore, requestPersistence } from "./db.js";
 import { exportLedger, importLedger } from "./schema.js";
 import { parseCertificate } from "./parser.js";
 import { extractText } from "./ingest.js";
 import { bodyPacket, packetZip, coverSheet } from "./packets.js";
 import * as LLM from "./llm.js";
-import { loadSample, removeSample, sampleState } from "./sample.js";
+import { loadSample, removeSample, sampleLoaded } from "./sample.js";
 import { ledgerCsv, ledgerXlsx, cycleEndCalendar } from "./exports.js";
 
 const view = document.getElementById("view");
@@ -111,7 +111,7 @@ async function screenHome() {
   const stats = await led.stats();
   const pending = stats.entries[CAPTURED] || 0;
   const nEntries = Object.values(stats.entries).reduce((x, y) => x + y, 0);
-  const sample = await sampleState(led);
+  const sample = await sampleLoaded(led);
   const noStart = (await held()).filter((s) => !s.anchor_date);
   let html = `<h1>Credentials</h1>`;
   if (sample) html += `<div class="banner sample"><p class="m0"><b>Sample data is loaded.</b> The activities titled “SAMPLE —” and their certificates are invented, to show how Registrar counts. Remove them before you log your own, or keep them while you look around.</p>
@@ -166,7 +166,8 @@ async function screenHome() {
   });
   if ($("#sample-remove")) $("#sample-remove").addEventListener("click", async () => {
     const r = await removeSample(led);
-    toast(`Sample data removed: ${r.activities} activities. Your own data was not touched.`);
+    const kept = r.kept ? ` Kept ${r.kept} credential ${r.kept === 1 ? "setting" : "settings"} you changed.` : "";
+    toast(`Sample data removed: ${r.activities} activities. Your own data was not touched.${kept}`);
     route();
   });
   $$(".start-form").forEach((f) => f.addEventListener("submit", async (ev) => {
@@ -417,6 +418,11 @@ async function screenLog({ uuid = null, correct = false } = {}) {
 
   const ingest = async (files) => {
     for (const file of files) {
+      // Refuse an oversized file before reading any of it into memory.
+      if (file.size > MAX_EVIDENCE_BYTES) {
+        status(`${file.name}: evidence file too large: ${(file.size / 1048576).toFixed(1)} MB (cap ${MAX_EVIDENCE_BYTES / 1048576} MB)`);
+        continue;
+      }
       const bytes = new Uint8Array(await file.arrayBuffer());
       let mime;
       try {
@@ -537,7 +543,7 @@ async function screenEntry(uuid, query) {
       <dt>Date</dt><dd>${esc(e.activity_date)}</dd>
       <dt>Provider</dt><dd>${esc(e.provider || "—")}</dd>
       <dt>Hours</dt><dd id="entry-hours">${fmt(e.hours)}</dd>
-      <dt>Count</dt><dd>${e.count}</dd>
+      <dt>Count</dt><dd>${esc(e.count)}</dd>
       <dt>Kind</dt><dd>${e.tags.map((t) => esc(rules.tag_labels[t] || t)).join(", ") || "—"}</dd>
       <dt>Topics</dt><dd>${e.markers.map((m) => esc(rules.marker_labels[m] || m)).join(", ") || "—"}</dd>
       <dt>Counts toward</dt><dd>${credits.map(({ c, n }) => `${esc(c.name)}: ${fmt(n)} ${esc(c.unit_label)}`).join("; ") || "nothing (no matching category)"}</dd>
@@ -582,7 +588,7 @@ async function screenEntries(query) {
   const status = query.get("status") || "";
   const rows = await led.listEntries(status ? { status } : {});
   const ev = await led.listEvidence();
-  const sample = await sampleState(led);
+  const sample = await sampleLoaded(led);
   view.innerHTML = `<h1>Activities</h1>
     ${sample ? `<div class="banner sample">Sample data is loaded: activities titled “SAMPLE —” are invented. Remove them on the <a href="#/">Credentials</a> screen.</div>` : ""}
     <p><label for="status-filter" class="inline">Show</label>
@@ -705,7 +711,7 @@ async function screenSettings() {
         </div>
         <label for="l-base">API base URL</label><input type="url" id="l-base" name="baseUrl" value="${esc(LLM.PROVIDERS.anthropic.baseUrl)}">
         <p class="small mute">This site's security policy allows only api.anthropic.com, api.openai.com and localhost. Other OpenAI-compatible hosts need a self-hosted copy with an edited policy.</p>
-        <label for="l-key">API key</label><input type="password" id="l-key" name="key" autocomplete="off" spellcheck="false">
+        <label for="l-key">API key</label><input type="password" id="l-key" name="key" autocomplete="new-password" data-1p-ignore data-lpignore="true" spellcheck="false">
         <div class="actions"><button type="submit">Use for this session</button><button type="button" class="secondary" id="llm-forget">Forget key</button></div>
       </form>
     </div>`;
@@ -772,7 +778,7 @@ async function doImport(file) {
   }
   try {
     const r = await importLedger(led, doc);
-    toast(`Imported ${r.entries_added} activities (${r.entries_skipped} already here), ${r.files_stored} file(s)${r.files_refused.length ? `; ${r.files_refused.length} altered file(s) refused` : ""}${r.files_absent ? `; ${r.files_absent} file(s) not in the export` : ""}.`);
+    toast(`Imported ${r.entries_added} activities (${r.entries_skipped} already here), ${r.files_stored} file(s)${r.files_refused.length ? `; ${r.files_refused.length} altered file(s) refused` : ""}${r.files_too_large.length ? `; ${r.files_too_large.length} file(s) over ${MAX_EVIDENCE_BYTES / 1048576} MB refused` : ""}${r.files_absent ? `; ${r.files_absent} file(s) not in the export` : ""}.`);
     route();
   } catch (err) {
     toast(`Import refused: ${err.message}`);
@@ -834,6 +840,9 @@ async function route() {
 }
 
 async function main() {
+  // The same app is served at more than one address; on ceu.tools itself the
+  // "also available at ceu.tools" line has nothing to add.
+  if (location.hostname === "ceu.tools") document.getElementById("alias-note").hidden = true;
   const data = await (await fetch("./data.json")).json();
   rules = E.loadRules(data);
   try {
