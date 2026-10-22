@@ -108,7 +108,7 @@ def check(label, ok, detail=""):
 def main(base):
     base = base.rstrip("/")
     marker = "LIVE VERIFY %s" % uuidlib.uuid4().hex[:8]
-    print("cpebot live verification against %s\n" % base)
+    print("Registrar live verification against %s\n" % base)
 
     print("health")
     status, body, _ = http(base + "/health")

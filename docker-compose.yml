@@ -1,0 +1,32 @@
+# Registrar, self-hosted: `docker compose up -d`, then http://127.0.0.1:8762/
+# Settings come from .env (copy .env.example). Nothing in it is secret.
+services:
+  registrar:
+    build: .
+    image: registrar:local
+    container_name: registrar
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/New_York}
+      CPEBOT_ALLOWED_HOSTS: ${REGISTRAR_ALLOWED_HOSTS:-}
+    ports:
+      # Host side: loopback by default. Set REGISTRAR_HOST_BIND to a private
+      # (VPN / overlay) address you trust, never to a public one or 0.0.0.0.
+      - "${REGISTRAR_HOST_BIND:-127.0.0.1}:${REGISTRAR_HOST_PORT:-8762}:8762"
+    volumes:
+      - registrar-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import sys,urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8762/health', timeout=4); sys.exit(0 if r.status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+volumes:
+  registrar-data:

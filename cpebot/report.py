@@ -118,7 +118,7 @@ def credential_report(rules, led, cred_id, as_of=None):
     }
     if portal_credits is None:
         portal["note"] = ("no portal figure recorded — reconciliation is the "
-                          "one check cpebot cannot do for you")
+                          "one check Registrar cannot do for you")
     elif portal["diff"]:
         portal["note"] = (
             "ledger and portal disagree by %s %s; the portal is authoritative "
@@ -457,7 +457,7 @@ def _render_manifest(cred, rep, fields, rows, missing, as_of, attendee, copied):
 
     if rep["unverified_reasons"]:
         out += ["## Rules that could not be verified", "",
-                "The figures above depend on the following, which cpebot could "
+                "The figures above depend on the following, which Registrar could "
                 "not confirm against a primary source. Check them before you "
                 "submit.", ""]
         for reason in rep["unverified_reasons"]:

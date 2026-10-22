@@ -1,0 +1,2756 @@
+{
+ "credentials": [
+  {
+   "body_id": "isc2",
+   "body_name": "ISC2",
+   "buckets": [
+    {
+     "cap": null,
+     "group": "group_a",
+     "id": "a_activity",
+     "name": "Group A activity",
+     "per_hour": 1.0,
+     "requires_markers": [
+      "domain_security"
+     ],
+     "tags": [
+      "training",
+      "conference",
+      "teaching",
+      "materials",
+      "authoring_blog",
+      "authoring_article",
+      "authoring_book",
+      "volunteer",
+      "higher_education",
+      "reading",
+      "chapter_meeting",
+      "cert_exam"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "No bucket-level cap: Group B's 30-CPE ceiling is a GROUP limit and is encoded once, on the group. Duplicating it here would trim the bucket first and hide how many hours were actually forfeited.",
+     "group": "group_b",
+     "id": "b_activity",
+     "name": "Group B activity",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training",
+      "conference",
+      "teaching",
+      "materials",
+      "authoring_blog",
+      "authoring_article",
+      "authoring_book",
+      "volunteer",
+      "higher_education",
+      "reading",
+      "chapter_meeting",
+      "professional_dev",
+      "work_experience"
+     ]
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": true,
+    "group": "group_a",
+    "max": 40,
+    "verified": false,
+    "verified_note": "UNVERIFIED. Source: the ISC2 Certification Maintenance Handbook. Confirm against the current handbook before relying on a rollover figure.",
+    "window_note": "Only credits earned in the FINAL SIX MONTHS of the prior cycle, in excess of the 120 required, may roll over. No rollover of Group B."
+   },
+   "cross_credential": {
+    "auto_counts_from": [
+     "issap",
+     "issep",
+     "issmp"
+    ],
+    "note": "ISC2 states that CPEs satisfying ISSAP / ISSEP / ISSMP requirements automatically count toward the CISSP requirement. If you hold none of those concentrations, this rule does not affect you.",
+    "verified": true
+   },
+   "cycle": {
+    "basis": "certification_anniversary",
+    "length_months": 36
+   },
+   "fees": [
+    {
+     "amount_usd": 135,
+     "cadence": "annual",
+     "due_note": "Due on the certification cycle start date and each annual anniversary.",
+     "name": "Annual Maintenance Fee (AMF)"
+    }
+   ],
+   "grace_period_days": 90,
+   "groups": [
+    {
+     "cap": null,
+     "floor": 90,
+     "id": "group_a",
+     "name": "Group A — directly related to the CISSP domains"
+    },
+    {
+     "cap": 30,
+     "floor": null,
+     "id": "group_b",
+     "name": "Group B — general professional development"
+    }
+   ],
+   "id": "cissp",
+   "long_name": "Certified Information Systems Security Professional",
+   "name": "CISSP",
+   "requirements": {
+    "annual_minimum": null,
+    "annual_target": 40,
+    "annual_target_advisory": true,
+    "annual_target_note": "ISC2 states 120 per three-year cycle as the binding requirement and suggests ~40/year as pacing. Registrar treats 40/yr as PACE GUIDANCE, not a hard floor, and says so on every report.",
+    "cycle_total": 120
+   },
+   "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+   "submission": {
+    "cadence": "continuous",
+    "note": "Report as earned through the ISC2 member portal; all credits must be earned and posted by cycle end (plus grace).",
+    "window": null
+   },
+   "unit_label": "CPE",
+   "unit_note": "ISC2 calls one credit a CPE credit; one hour of qualifying activity is one CPE.",
+   "verification_note": "Totals, group split, AMF and the 90-day grace read from the ISC2 member-policies and AMF pages (re-verified 2026-10-20): 120 per three years, Group A 90, Group A or B 30, 40/yr suggested only, USD 135 AMF, 90-day grace, and ISSAP/ISSEP/ISSMP CPEs counting toward CISSP. Rollover terms are unverified; see rollover below.",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "comptia",
+   "body_name": "CompTIA",
+   "buckets": [
+    {
+     "cap": null,
+     "cap_note": "Training courses count up to the full 60. Live webinars are capped at 15 for CySA+, but they share the 'training' tag with courses, so that cap cannot be applied separately here.",
+     "group": null,
+     "id": "training",
+     "name": "Training courses",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training"
+     ]
+    },
+    {
+     "cap": 15,
+     "cap_note": "CySA+ maximum 15 CEUs per cycle for attending conferences (training-and-higher-education chart, read 2026-10-20).",
+     "group": null,
+     "id": "conference",
+     "name": "Conference attendance",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "conference"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "higher_education",
+     "name": "College / ACE course",
+     "per_item": 10.0,
+     "requires_markers": [],
+     "tags": [
+      "higher_education"
+     ]
+    },
+    {
+     "cap": 30,
+     "cap_note": "CySA+ maximum 30 CEUs per cycle for teaching or mentoring, one CEU per hour (it-industry-participation chart, read 2026-10-20).",
+     "group": null,
+     "id": "teaching",
+     "name": "Teaching or mentoring",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "teaching"
+     ]
+    },
+    {
+     "cap": 30,
+     "cap_note": "CySA+ maximum 30 CEUs per cycle for creating instructional materials, two CEUs per hour (it-industry-participation chart, read 2026-10-20).",
+     "group": null,
+     "id": "materials",
+     "name": "Creating instructional materials",
+     "per_hour": 2.0,
+     "requires_markers": [],
+     "tags": [
+      "materials"
+     ]
+    },
+    {
+     "cap": 18,
+     "group": null,
+     "id": "publishing_blog",
+     "name": "Blog posts (500+ words)",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_blog"
+     ]
+    },
+    {
+     "cap": 18,
+     "group": null,
+     "id": "publishing_article",
+     "name": "Articles / white papers (4+ pages)",
+     "per_item": 4.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_article"
+     ]
+    },
+    {
+     "cap": 50,
+     "cap_note": "CompTIA awards the number in its table for a published book: 50 for CySA+ (publishing chart, read 2026-10-20).",
+     "group": null,
+     "id": "publishing_book",
+     "name": "Book",
+     "per_item": 50.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_book"
+     ]
+    },
+    {
+     "cap": 9,
+     "cap_note": "Three CEUs per year of the renewal cycle, nine maximum. Log one item per year, not per hour.",
+     "group": null,
+     "id": "work_experience",
+     "name": "Work experience",
+     "per_item": 3.0,
+     "requires_markers": [],
+     "tags": [
+      "work_experience"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "Value is per-certification from CompTIA's approved list; Registrar does not guess it. Enter the awarded CEUs as an explicit credits_override on the entry.",
+     "group": null,
+     "id": "cert_exam",
+     "name": "Non-CompTIA IT industry certification",
+     "per_item": 0.0,
+     "requires_markers": [],
+     "tags": [
+      "cert_exam"
+     ],
+     "value_is_override": true
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": false,
+    "max": 0,
+    "verified": true,
+    "window_note": "CompTIA CEUs must be earned inside the three-year cycle; no rollover mechanism is published."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "Renewing with a higher-level CompTIA certification renews CySA+ outright and waives the fee. That is a single-activity renewal path, not credit carryover.",
+    "verified": true
+   },
+   "cycle": {
+    "basis": "exam_pass_anniversary",
+    "length_months": 36
+   },
+   "fees": [
+    {
+     "amount_usd": 150,
+     "cadence": "per_cycle",
+     "due_note": "Payable by the certification expiration date. CompTIA also sells CE tokens ($25/$50, non-expiring). An annual-thirds figure of $50/yr circulates in third-party guides; CompTIA's own fee page states the three-year amount, which is what is encoded.",
+     "name": "CE renewal fee (three-year)"
+    }
+   ],
+   "grace_note": "After expiry the holder can activate a 30-day grace period to pay CE fees and/or submit CEUs already earned inside the cycle. No new activities count, and there are no extensions (help.comptia.org article 13922681550228, read 2026-10-20).",
+   "grace_period_days": 30,
+   "groups": [],
+   "id": "cysa_plus",
+   "long_name": "CompTIA Cybersecurity Analyst",
+   "name": "CySA+",
+   "requirements": {
+    "annual_minimum": null,
+    "annual_target": 20,
+    "annual_target_advisory": true,
+    "annual_target_note": "CompTIA sets no annual floor; 20/yr is Registrar's even-pacing figure only.",
+    "cycle_total": 60,
+    "relevance_rule": "At least 50% of an activity's content must relate to the CySA+ exam objectives."
+   },
+   "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+   "submission": {
+    "cadence": "continuous",
+    "note": "Upload CEUs to the CompTIA CE portal as earned; fee due by the certification expiration date.",
+    "window": null
+   },
+   "unit_label": "CEU",
+   "unit_note": "CompTIA calls one credit a CEU. Rates are NOT uniformly one-per-hour — creating instructional materials is 2/hour, a college class is a flat 10, a book is a flat award.",
+   "verification_note": "Total (60/3yr) from CompTIA's CySA+ renewal page. Per-bucket rates and caps from CompTIA's own category pages: work-experience, publishing, it-industry-participation, training-and-higher-education. CE fee from CompTIA's continuing-education-renewal-fees page. Re-verified 2026-10-20 on www.comptia.org: total 60 (Earn CEUs table), fee USD 150 per three years, 50% relevance rule, work experience 3/yr capped at 9, college/ACE course 10 per class, teaching 1/hr and materials 2/hr all unchanged. Corrected from today's CySA+ columns: blog cap 12 -> 18, article cap 12 -> 18, book 60 -> 50 (value and cap), teaching cap unknown -> 30, materials cap unknown -> 30, conference cap none -> 15 (own bucket), grace 0 -> 30 days. The old source URL (renew-options/renewing-cysa-multiple) was not re-read; the totals table is on the Earn CEUs page.",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "eccouncil",
+   "body_name": "EC-Council",
+   "buckets": [
+    {
+     "cap": null,
+     "group": null,
+     "id": "chapter_meeting",
+     "name": "Association chapter meeting",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "chapter_meeting"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "education_course",
+     "name": "Education course / seminar / conference",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training",
+      "conference"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "authoring_article",
+     "name": "Article / book chapter / white paper",
+     "per_item": 20.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_article",
+      "authoring_blog"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "authoring_book",
+     "name": "Authoring a book",
+     "per_item": 100.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_book"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "presentation",
+     "name": "Presentation",
+     "per_item": 3.0,
+     "requires_markers": [],
+     "tags": [
+      "teaching"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "materials",
+     "name": "Authoring a course or module",
+     "per_item": 40.0,
+     "requires_markers": [],
+     "tags": [
+      "materials"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "cert_exam",
+     "name": "Passing an IT security certification exam",
+     "per_item": 40.0,
+     "requires_markers": [],
+     "tags": [
+      "cert_exam"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "higher_education",
+     "name": "Higher education (per semester)",
+     "per_item": 15.0,
+     "requires_markers": [],
+     "tags": [
+      "higher_education"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "reading",
+     "name": "Reading security materials",
+     "per_item": 5.0,
+     "requires_markers": [],
+     "tags": [
+      "reading"
+     ]
+    },
+    {
+     "cap": null,
+     "group": null,
+     "id": "volunteer",
+     "name": "Public-sector volunteering",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "volunteer"
+     ]
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": false,
+    "max": 0,
+    "verified": true,
+    "window_note": "Credits belong to the calendar year in which they were earned and must be registered for that year."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "ECE credits apply across all EC-Council certifications a member holds under the ECE policy; a holder of a single EC-Council certification sees no cross-credit effect.",
+    "verified": true
+   },
+   "cycle": {
+    "basis": "certification_anniversary",
+    "length_months": 36
+   },
+   "fees": [
+    {
+     "amount_usd": 80,
+     "cadence": "annual",
+     "due_note": "Required to be able to submit ECE credits at all. $240 across a three-year cycle.",
+     "name": "Annual membership fee"
+    }
+   ],
+   "grace_period_days": 0,
+   "groups": [],
+   "id": "ceh",
+   "long_name": "Certified Ethical Hacker",
+   "name": "CEH",
+   "requirements": {
+    "annual_minimum": null,
+    "annual_target": 40,
+    "annual_target_advisory": true,
+    "annual_target_note": "EC-Council publishes no hard annual floor, but credits are earned and REGISTERED on a calendar-year basis, so an unregistered year is a real loss. 40/yr is even pacing across the 120.",
+    "cycle_total": 120
+   },
+   "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+   "submission": {
+    "cadence": "annual_window",
+    "note": "Credits are earned per calendar year (1 January - 31 December) and MUST be registered by 1 February of the following year. A missed window is the single sharpest edge in this portfolio.",
+    "window": {
+     "earn_end_mmdd": "12-31",
+     "earn_start_mmdd": "01-01",
+     "register_by_mmdd": "02-01",
+     "register_by_year_offset": 1
+    }
+   },
+   "unit_label": "CPE",
+   "unit_note": "EC-Council now calls one credit a CPE credit (formerly ECE; the policy page and its URL were renamed). Most awards are flat per-item, not per-hour.",
+   "verification_note": "Total, cycle, the January-to-December earning window with the 1-February registration deadline, the $80 annual membership fee and the full activity/credit table read directly from EC-Council's ECE policy page. Re-verified 2026-10-20: cert.eccouncil.org/ece-policy.html now redirects to cpe-policy.html, whose displayed text says CPE throughout (the ECE wording is still in the HTML but hidden by CSS). Unit corrected ECE -> CPE. 120 per certification per three-year window, earning 1 Jan - 31 Dec with registration by 1 Feb, every credit value encoded below, and the USD 80 annual CE fee (continuing-education-fees page) unchanged.",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "umd",
+   "body_name": "University of Maryland",
+   "buckets": [
+    {
+     "cap": 100,
+     "group": null,
+     "id": "training_education",
+     "name": "Training and education",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training",
+      "conference",
+      "higher_education"
+     ]
+    },
+    {
+     "cap": 100,
+     "cap_note": "3 PDUs per contact hour, max 45 per event and 100 per category (PDU reference table, read 2026-10-20). The per-event cap is not modelled.",
+     "group": null,
+     "id": "teaching_presenting",
+     "name": "Teaching, training, presenting, mentoring, workshops",
+     "per_hour": 3.0,
+     "requires_markers": [],
+     "tags": [
+      "teaching"
+     ]
+    },
+    {
+     "cap": 100,
+     "group": null,
+     "id": "giving_back",
+     "name": "Giving back to the community",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "volunteer",
+      "chapter_meeting"
+     ]
+    },
+    {
+     "cap": 100,
+     "group": null,
+     "id": "unique_work",
+     "name": "Unique work experiences",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "work_experience"
+     ]
+    },
+    {
+     "cap": 100,
+     "cap_note": "OPEN: UMD awards publications fixed values per item (scholarly book 45, dissertation 50, book chapter / article / book review 25, newsletter article 10, newsletter editor 5), not per hour. The tags here do not map one-to-one to those types, so the rate is left as is.",
+     "group": null,
+     "id": "publications",
+     "name": "Publications",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_blog",
+      "authoring_article",
+      "authoring_book",
+      "materials"
+     ]
+    },
+    {
+     "cap": 45,
+     "cap_note": "The one genuinely binding category cap in GCITP — 45 of the 100.",
+     "group": null,
+     "id": "special_projects",
+     "name": "Special projects",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "special_project"
+     ]
+    },
+    {
+     "cap": 100,
+     "group": null,
+     "id": "program_support",
+     "name": "GCITP program support",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "program_support"
+     ]
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": false,
+    "max": 0,
+    "verified": false,
+    "verified_note": "UNVERIFIED — UMD's page is silent on rollover. Encoded as no-rollover because that is the conservative reading, not because it was confirmed.",
+    "window_note": "No published rollover between four-year windows."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "None published.",
+    "verified": true
+   },
+   "cycle": {
+    "basis": "conferral_anniversary",
+    "length_months": 48
+   },
+   "fees": [
+    {
+     "amount_usd": 500,
+     "cadence": "per_cycle",
+     "due_note": "Standard recertification by PDUs.",
+     "name": "Recertification fee (PDU path)"
+    },
+    {
+     "amount_usd": 650,
+     "cadence": "per_cycle",
+     "due_note": "Alternative to completing PDUs.",
+     "name": "Recertification by re-examination"
+    }
+   ],
+   "grace_period_days": 0,
+   "group_marker_map": {
+    "cint": "cint",
+    "other": null
+   },
+   "groups": [
+    {
+     "cap": null,
+     "floor": 60,
+     "floor_note": "Minimum 60% of the 100 PDUs must be C-InT related.",
+     "id": "cint",
+     "name": "Counter-insider-threat related"
+    },
+    {
+     "cap": 40,
+     "cap_note": "Maximum 40% of the 100 PDUs may come from outside C-InT.",
+     "floor": null,
+     "id": "other",
+     "name": "Other professional development"
+    }
+   ],
+   "id": "gcitp",
+   "long_name": "Global Counter-Insider Threat Professional (University of Maryland)",
+   "name": "GCITP",
+   "requirements": {
+    "annual_minimum": null,
+    "annual_target": 25,
+    "annual_target_advisory": true,
+    "annual_target_note": "UMD sets no interim reporting and no annual floor; the whole 100 is due at the end of the four years. 25/yr is Registrar's pacing figure only.",
+    "cycle_total": 100
+   },
+   "source_url": "https://gcitp.umd.edu/gcitp-certification/maintain-certification",
+   "submission": {
+    "cadence": "end_of_cycle",
+    "note": "Single renewal submission at the end of the four-year window; no interim reporting required.",
+    "window": null
+   },
+   "unit_label": "PDU",
+   "unit_note": "UMD calls one credit a Professional Development Unit.",
+   "verification_note": "Four-year window, 100 PDUs, the 60/40 C-InT split, the per-category maxima and the $500 recertification fee read directly from UMD's maintain-certification page. NOTE: GCITP IS A UMD CREDENTIAL, NOT GIAC/SANS — the acronym resemblance is a common source of error. Re-verified 2026-10-20 on gcitp.umd.edu (maintain page, PDU reference table, candidate handbook): 4 years, 100 PDUs, 60% C-InT minimum, 40% other maximum, special projects 45, USD 500 / 650 unchanged. The name Global Counter-Insider Threat Professional matches UMD's PDU table and handbook. Teaching, mentoring and workshops corrected 1 -> 3 PDUs per contact hour (own bucket). Not modelled: the 45-PDU per-event cap, the 40-PDU cap on non-GCITP certifications, and the fixed per-item values for publications (see publications cap_note).",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "atap",
+   "body_name": "ATAP",
+   "buckets": [
+    {
+     "cap": null,
+     "group": null,
+     "id": "chapter_meeting",
+     "name": "Chapter meeting",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "chapter_meeting"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "Attending any national ATAP conference satisfies the year's meeting requirement (How to Join, read 2026-10-20).",
+     "group": null,
+     "id": "conference",
+     "name": "National ATAP conference",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "conference"
+     ]
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": false,
+    "max": 0,
+    "verified": false,
+    "window_note": "Attendance is per calendar year."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "Membership in good standing is a prerequisite for holding the CTM.",
+    "verified": false
+   },
+   "cycle": {
+    "basis": "calendar_year",
+    "length_months": 12
+   },
+   "fees": [
+    {
+     "amount_usd": 150,
+     "cadence": "annual",
+     "due_note": "Non-refundable (How to Join, read 2026-10-20).",
+     "name": "Annual dues"
+    },
+    {
+     "amount_usd": 100,
+     "cadence": "one_time",
+     "due_note": "Non-refundable, paid with the membership application (How to Join, read 2026-10-20).",
+     "name": "Application processing fee"
+    }
+   ],
+   "grace_period_days": 0,
+   "groups": [],
+   "id": "atap_membership",
+   "long_name": "Association of Threat Assessment Professionals — membership in good standing",
+   "name": "ATAP membership",
+   "requirements": {
+    "annual_minimum": 1,
+    "annual_target": 1,
+    "annual_target_advisory": false,
+    "annual_target_note": "At least one qualifying meeting as a member within the calendar year.",
+    "cycle_total": 1
+   },
+   "source_url": "https://www.atapworldwide.org/membership/howtojoin",
+   "submission": {
+    "cadence": "annual",
+    "note": "Dues renewal annually; attendance is self-reported to the chapter.",
+    "window": null
+   },
+   "unit_label": "meeting",
+   "unit_note": "Not a CPE scheme. The tracked quantity is qualifying MEETINGS attended per calendar year. It is modelled here because a lapsed membership is a prerequisite failure for the CTM track below.",
+   "verification_note": "UNVERIFIED as a whole. Source: https://www.atapworldwide.org/membership/howtojoin (read 2026-10-20): dues USD 150 a year plus a USD 100 application fee; at least one in-person or two virtual chapter meetings per calendar year, or any national ATAP conference; waived for members joining after April 1. Not modelled, so the track stays unverified: a virtual meeting counts as half (no tag tells virtual from in-person) and the after-April-1 waiver.",
+   "verified": false,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "atap",
+   "body_name": "ATAP",
+   "buckets": [
+    {
+     "cap": null,
+     "cap_note": "UNVERIFIED — ATAP caps this subsection; the number is unknown.",
+     "cap_verified": false,
+     "group": null,
+     "id": "education",
+     "name": "Education / training received",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training",
+      "conference"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "UNVERIFIED — ATAP caps this subsection; the number is unknown.",
+     "cap_verified": false,
+     "group": null,
+     "id": "instruction",
+     "name": "Instruction / teaching delivered",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "teaching",
+      "materials"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "UNVERIFIED — ATAP caps this subsection; the number is unknown.",
+     "cap_verified": false,
+     "group": null,
+     "id": "publications",
+     "name": "Publications",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_blog",
+      "authoring_article",
+      "authoring_book"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "UNVERIFIED — ATAP caps this subsection; the number is unknown.",
+     "cap_verified": false,
+     "group": null,
+     "id": "professional_service",
+     "name": "Professional service / ATAP participation",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "chapter_meeting",
+      "volunteer"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "UNVERIFIED — ATAP caps this subsection; the number is unknown.",
+     "cap_verified": false,
+     "group": null,
+     "id": "work_experience",
+     "name": "Threat management work experience",
+     "per_item": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "work_experience",
+      "special_project"
+     ]
+    }
+   ],
+   "caps_known": false,
+   "caps_unknown_note": "ATAP publishes a per-subcategory maximum for each recertification subsection. Those maxima are not in Registrar. Until they are, this track's totals are ADVISORY ONLY and the engine will not emit a compliance verdict for it.",
+   "carryover": {
+    "allowed": false,
+    "max": 0,
+    "verified": false,
+    "window_note": "Not published."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "Requires ATAP membership in good standing.",
+    "verified": false
+   },
+   "cycle": {
+    "basis": "certification_anniversary",
+    "length_months": 24
+   },
+   "fees": [],
+   "grace_period_days": 10,
+   "groups": [],
+   "id": "ctm",
+   "long_name": "Certified Threat Manager (ATAP)",
+   "name": "CTM",
+   "requirements": {
+    "annual_minimum": null,
+    "annual_target": 25,
+    "annual_target_advisory": true,
+    "annual_target_note": "Even pacing across the two years. ATAP publishes no annual floor.",
+    "cycle_total": 50
+   },
+   "source_url": "https://www.atapworldwide.org/page/CTM",
+   "submission": {
+    "cadence": "end_of_cycle",
+    "note": "Proof of credits submitted to ATAP headquarters on the approved form before the expiration date. Ten-day grace between expiration and termination.",
+    "window": null
+   },
+   "unit_label": "credit",
+   "unit_note": "ATAP calls one credit a recertification credit.",
+   "verification_note": "UNVERIFIED. Source: https://www.atapworldwide.org/page/CTM. www.atapworldwide.org/certification confirms 50 recertification points per cycle and that recertification runs through Certemy, but not the cycle length, the grace period (10 vs 30 days) or the caps. The five subcategory CAPS are NOT KNOWN — ATAP states each subsection has a maximum, and Registrar does not have those numbers.",
+   "verified": false,
+   "verified_date": "2026-08-30"
+  },
+  {
+   "body_id": "acfe",
+   "body_name": "ACFE",
+   "buckets": [
+    {
+     "cap": null,
+     "cap_note": "Participant, in-house and self-study credit are unlimited (cpe-types, read 2026-10-20). Self-study needs a passed final exam.",
+     "group": null,
+     "id": "cpe_hour",
+     "name": "Qualifying CPE (participant, in-house, self-study)",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "training",
+      "conference",
+      "chapter_meeting"
+     ]
+    },
+    {
+     "cap": null,
+     "cap_note": "15 CPE per semester hour completed; log the number of semester hours as the count (cpe-types, read 2026-10-20).",
+     "group": null,
+     "id": "college",
+     "name": "College or university course",
+     "per_item": 15.0,
+     "requires_markers": [],
+     "tags": [
+      "higher_education"
+     ]
+    },
+    {
+     "cap": 10,
+     "cap_note": "Presentation time plus up to 2 hours of preparation per presentation hour (first delivery only); max 10 per compliance period, preparation included (cpe-types, read 2026-10-20). The 2x preparation limit is not modelled.",
+     "group": null,
+     "id": "instructor",
+     "name": "Instructor credit",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "teaching",
+      "materials"
+     ]
+    },
+    {
+     "cap": 10,
+     "cap_note": "Time spent preparing articles and books in approved fields; max 10 per year (cpe-types, read 2026-10-20).",
+     "group": null,
+     "id": "author",
+     "name": "Author credit",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "authoring_blog",
+      "authoring_article",
+      "authoring_book"
+     ]
+    },
+    {
+     "cap": 10,
+     "cap_note": "Unpaid anti-fraud mentoring and volunteering; max 10 per compliance period, and it may not count toward the ethics requirement (cpe-types, read 2026-10-20). The ethics exclusion is not enforced: do not mark these entries with the ethics marker.",
+     "group": null,
+     "id": "mentor_volunteer",
+     "name": "Mentor / volunteer credit",
+     "per_hour": 1.0,
+     "requires_markers": [],
+     "tags": [
+      "volunteer"
+     ]
+    }
+   ],
+   "caps_known": true,
+   "carryover": {
+    "allowed": true,
+    "conditional_on_floors": true,
+    "max": 10,
+    "verified": true,
+    "window_note": "Up to 10 credits carry into the following compliance period, and ONLY if more than 20 credits were earned in the 12-month period AND both the fraud and ethics floors were satisfied. A conditional carryover, not an unconditional one."
+   },
+   "cross_credential": {
+    "auto_counts_from": [],
+    "note": "None published.",
+    "verified": true
+   },
+   "cycle": {
+    "basis": "membership_anniversary_month",
+    "length_months": 12
+   },
+   "fees": [],
+   "grace_note": "A single 30-day extension may be REQUESTED from Member Services; further time is case-by-case. It is not automatic.",
+   "grace_period_days": 30,
+   "group_marker_map": {
+    "ethics": "ethics",
+    "fraud": "fraud"
+   },
+   "groups": [
+    {
+     "cap": null,
+     "floor": 10,
+     "floor_note": "At least 10 of the 20 must relate directly to the detection and deterrence of fraud.",
+     "id": "fraud",
+     "name": "Fraud detection and deterrence"
+    },
+    {
+     "cap": null,
+     "floor": 2,
+     "floor_note": "At least 2 of the 20 must relate directly to ethics. This is the floor that most often fails silently.",
+     "id": "ethics",
+     "name": "Ethics"
+    }
+   ],
+   "id": "cfe",
+   "long_name": "Certified Fraud Examiner (ACFE)",
+   "name": "CFE",
+   "requirements": {
+    "annual_minimum": 20,
+    "annual_target": 20,
+    "annual_target_advisory": false,
+    "annual_target_note": "The CFE cycle IS one year, so the cycle total and the annual floor are the same number.",
+    "cycle_total": 20
+   },
+   "source_url": "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements",
+   "submission": {
+    "cadence": "annual_self_certification",
+    "evidence_required_fields": [
+     "attendee name",
+     "course description",
+     "sponsoring organization",
+     "CPE credits earned",
+     "course date"
+    ],
+    "evidence_retention_years": 3,
+    "note": "SELF-CERTIFIED by the end of the member's anniversary month at ACFE.com/MyCPE. Proof of CPE must be retained for three years against a random compliance audit. Self-certification plus retention is exactly why Registrar hashes evidence: this is compliance, not convenience.",
+    "self_certified": true,
+    "window": null
+   },
+   "unit_label": "CPE",
+   "unit_note": "ACFE calls one credit a CPE credit; one hour is one credit.",
+   "verification_note": "The 20/10/2 requirement read from ACFE's CPE-requirements page; the anniversary-month basis, the conditional 10-credit carryover, the three-year retention rule and the single 30-day extension read from ACFE's reporting-CPE page. Re-verified 2026-10-20: all of the above unchanged. Corrected from ACFE's accepted-types page (cpe-types): instructor credit capped at 10 per year (prep time included), author credit capped at 10 per year, mentor/volunteer credit capped at 10 per year, college courses 15 CPE per semester hour (was 1 per hour), and reading dropped (the page says reading a book does not qualify). These were one uncapped bucket before.",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  }
+ ],
+ "packetmaps": {
+  "generic": {
+   "date_format": "%Y-%m-%d",
+   "fields": [
+    {
+     "label": "Activity date",
+     "required": true,
+     "source": "entry.activity_date"
+    },
+    {
+     "label": "Title",
+     "required": true,
+     "source": "entry.title"
+    },
+    {
+     "label": "Provider / sponsor",
+     "required": true,
+     "source": "entry.provider"
+    },
+    {
+     "label": "Category",
+     "source": "bucket.name"
+    },
+    {
+     "label": "Group",
+     "source": "group.name"
+    },
+    {
+     "label": "Hours",
+     "source": "entry.hours"
+    },
+    {
+     "label": "Credits claimed",
+     "required": true,
+     "source": "credit.amount"
+    },
+    {
+     "label": "Unit",
+     "source": "credit.unit"
+    },
+    {
+     "label": "Topics",
+     "source": "entry.marker_labels"
+    },
+    {
+     "label": "Notes",
+     "source": "entry.notes"
+    },
+    {
+     "label": "Attendee",
+     "source": "holder.name"
+    },
+    {
+     "label": "Evidence files",
+     "source": "evidence.filenames"
+    }
+   ],
+   "form_name": "Generic continuing-education form",
+   "holder_note": "No body-specific map exists for this credential yet. Field names in the body's portal will differ; the values are the same.",
+   "id": "generic",
+   "schema_version": 1,
+   "verified": true,
+   "verified_note": "Not a body's form: Registrar's own field set, so there is nothing external to verify."
+  },
+  "isc2": {
+   "body_id": "isc2",
+   "credentials": [
+    "cissp"
+   ],
+   "date_format": "%m/%d/%Y",
+   "fields": [
+    {
+     "label": "CPE group",
+     "map": {
+      "group_a": "Group A",
+      "group_b": "Group B"
+     },
+     "note": "Group A: directly related to the CISSP domains. Group B: general professional development.",
+     "required": true,
+     "source": "group.id"
+    },
+    {
+     "label": "Activity category",
+     "note": "Pick the portal's closest category. Registrar's tag for this entry is given under Registrar tag.",
+     "source": "holder_choice"
+    },
+    {
+     "label": "Registrar tag",
+     "source": "entry.tag_labels"
+    },
+    {
+     "label": "Domain",
+     "note": "Group A only. Registrar does not track which CISSP domain an activity covers.",
+     "source": "holder_choice"
+    },
+    {
+     "label": "Title",
+     "required": true,
+     "source": "entry.title"
+    },
+    {
+     "label": "Provider",
+     "required": true,
+     "source": "entry.provider"
+    },
+    {
+     "label": "Date completed",
+     "required": true,
+     "source": "entry.activity_date"
+    },
+    {
+     "label": "CPE credits",
+     "note": "Claimed for this activity before caps. ISC2 applies the Group B ceiling on its side; Registrar's totals already do.",
+     "required": true,
+     "source": "credit.amount"
+    },
+    {
+     "label": "Description",
+     "source": "entry.notes"
+    },
+    {
+     "label": "Supporting documentation",
+     "note": "Upload these from the evidence bundle. Keep the bundle: ISC2 can audit.",
+     "source": "evidence.filenames"
+    }
+   ],
+   "form_name": "ISC2 member portal: Add CPE",
+   "holder_note": "Sign in to the ISC2 member portal yourself and open the CPE entry form. Registrar never asks for or stores your ISC2 login.",
+   "id": "isc2",
+   "schema_version": 1,
+   "source_url": null,
+   "verified": false,
+   "verified_note": "Field labels drafted, not read off the live ISC2 form (the portal requires a member login). Values are correct; label wording and order may differ."
+  }
+ },
+ "programs": [
+  {
+   "body_id": "isc2",
+   "body_name": "ISC2",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": "cissp",
+     "id": "isc2_cissp",
+     "long_name": "Certified Information Systems Security Professional",
+     "look_status": "READ_OK",
+     "name": "CISSP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 90,
+     "engine_track": null,
+     "id": "isc2_ccsp",
+     "long_name": "Certified Cloud Security Professional",
+     "look_status": "READ_OK",
+     "name": "CCSP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 90,
+     "engine_track": null,
+     "id": "isc2_csslp",
+     "long_name": "Certified Secure Software Lifecycle Professional",
+     "look_status": "READ_OK",
+     "name": "CSSLP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "isc2_sscp",
+     "long_name": "Systems Security Certified Practitioner",
+     "look_status": "READ_OK",
+     "name": "SSCP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "isc2_cgrc",
+     "long_name": "Certified in Governance, Risk and Compliance",
+     "look_status": "READ_OK",
+     "name": "CGRC",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 45,
+     "engine_track": null,
+     "id": "isc2_cc",
+     "long_name": "Certified in Cybersecurity",
+     "look_status": "READ_OK",
+     "name": "CC",
+     "source_url": "https://www.isc2.org/frequently-asked-questions",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 140,
+     "engine_track": null,
+     "id": "isc2_issap",
+     "long_name": "Information Systems Security Architecture Professional",
+     "look_status": "READ_OK",
+     "name": "CISSP-ISSAP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 140,
+     "engine_track": null,
+     "id": "isc2_issep",
+     "long_name": "Information Systems Security Engineering Professional",
+     "look_status": "READ_OK",
+     "name": "CISSP-ISSEP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 140,
+     "engine_track": null,
+     "id": "isc2_issmp",
+     "long_name": "Information Systems Security Management Professional",
+     "look_status": "READ_OK",
+     "name": "CISSP-ISSMP",
+     "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": null,
+     "engine_track": null,
+     "id": "isc2_hcispp",
+     "long_name": "HealthCare Information Security and Privacy Practitioner",
+     "look_status": "READ_OK",
+     "name": "HCISPP",
+     "source_url": "https://www.isc2.org/notice/HCISPP-sunset",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 36,
+   "look_status": "READ_OK",
+   "source_url": "https://www.isc2.org/policies-procedures/member-policies",
+   "unit_label": "CPE",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "isaca",
+   "body_name": "ISACA",
+   "certifications": [
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cisa",
+     "long_name": "Certified Information Systems Auditor",
+     "look_status": "READ_OK",
+     "name": "CISA",
+     "source_url": "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cism",
+     "long_name": "Certified Information Security Manager",
+     "look_status": "READ_OK",
+     "name": "CISM",
+     "source_url": "https://www.isaca.org/credentialing/cism/maintain-cism-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_crisc",
+     "long_name": "Certified in Risk and Information Systems Control",
+     "look_status": "READ_OK",
+     "name": "CRISC",
+     "source_url": "https://www.isaca.org/credentialing/crisc/maintain-crisc-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cgeit",
+     "long_name": "Certified in the Governance of Enterprise IT",
+     "look_status": "READ_OK",
+     "name": "CGEIT",
+     "source_url": "https://www.isaca.org/credentialing/cgeit/maintain-cgeit-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cdpse",
+     "long_name": "Certified Data Privacy Solutions Engineer",
+     "look_status": "READ_OK",
+     "name": "CDPSE",
+     "source_url": "https://www.isaca.org/credentialing/cdpse/maintain-cdpse-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_ccoa",
+     "long_name": "Certified Cybersecurity Operations Analyst",
+     "look_status": "READ_OK",
+     "name": "CCOA",
+     "source_url": "https://www.isaca.org/credentialing/ccoa/maintain-ccoa-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cet",
+     "long_name": "Certified in Emerging Technology",
+     "look_status": "READ_OK",
+     "name": "CET",
+     "source_url": "https://www.isaca.org/credentialing/cet/maintain-cet-certification",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_itca",
+     "long_name": "Information Technology Certified Associate",
+     "look_status": "READ_OK",
+     "name": "ITCA",
+     "source_url": "https://www.isaca.org/credentialing/itca/maintain-itca-certification",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_cca",
+     "long_name": "CMMC Certified Assessor",
+     "look_status": "READ_OK",
+     "name": "CCA",
+     "source_url": "https://www.isaca.org/credentialing/cca/maintain-cca-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "isaca_ccp",
+     "long_name": "CMMC Certified Professional",
+     "look_status": "READ_OK",
+     "name": "CCP",
+     "source_url": "https://www.isaca.org/credentialing/ccp/maintain-ccp-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 10,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "isaca_aaia",
+     "long_name": "Advanced in AI Audit",
+     "look_status": "READ_OK",
+     "name": "AAIA",
+     "source_url": "https://www.isaca.org/credentialing/aaia/maintain-aaia-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": 10,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "isaca_aaism",
+     "long_name": "Advanced in AI Security Management",
+     "look_status": "READ_OK",
+     "name": "AAISM",
+     "source_url": "https://www.isaca.org/credentialing/aaism/maintain-aaism-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": null,
+     "engine_track": null,
+     "id": "isaca_csxp",
+     "long_name": "Cybersecurity Practitioner",
+     "look_status": "READ_OK",
+     "name": "CSX-P",
+     "source_url": "https://www.isaca.org/credentialing/retired-credentials",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 36,
+   "look_status": "READ_OK",
+   "source_url": "https://www.isaca.org/credentialing/cisa/maintain-cisa-certification",
+   "unit_label": "CPE hour",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "comptia",
+   "body_name": "CompTIA",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "comptia_aplus",
+     "long_name": "CompTIA A+",
+     "look_status": "READ_OK",
+     "name": "A+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "comptia_networkplus",
+     "long_name": "CompTIA Network+",
+     "look_status": "READ_OK",
+     "name": "Network+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 50,
+     "engine_track": null,
+     "id": "comptia_securityplus",
+     "long_name": "CompTIA Security+",
+     "look_status": "READ_OK",
+     "name": "Security+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": "cysa_plus",
+     "id": "comptia_cysaplus",
+     "long_name": "CompTIA Cybersecurity Analyst",
+     "look_status": "READ_OK",
+     "name": "CySA+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "comptia_pentestplus",
+     "long_name": "CompTIA PenTest+",
+     "look_status": "READ_OK",
+     "name": "PenTest+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 75,
+     "engine_track": null,
+     "id": "comptia_securityx",
+     "long_name": "CompTIA SecurityX (formerly CASP+)",
+     "look_status": "READ_OK",
+     "name": "SecurityX",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 50,
+     "engine_track": null,
+     "id": "comptia_cloudplus",
+     "long_name": "CompTIA Cloud+",
+     "look_status": "READ_OK",
+     "name": "Cloud+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 50,
+     "engine_track": null,
+     "id": "comptia_linuxplus",
+     "long_name": "CompTIA Linux+",
+     "look_status": "READ_OK",
+     "name": "Linux+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "comptia_serverplus",
+     "long_name": "CompTIA Server+",
+     "look_status": "READ_OK",
+     "name": "Server+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "comptia_projectplus",
+     "long_name": "CompTIA Project+",
+     "look_status": "READ_OK",
+     "name": "Project+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "comptia_dataplus",
+     "long_name": "CompTIA Data+",
+     "look_status": "READ_OK",
+     "name": "Data+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "comptia_datasysplus",
+     "long_name": "CompTIA DataSys+",
+     "look_status": "READ_OK",
+     "name": "DataSys+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 75,
+     "engine_track": null,
+     "id": "comptia_cloudnetx",
+     "long_name": "CompTIA CloudNetX",
+     "look_status": "READ_OK",
+     "name": "CloudNetX",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 75,
+     "engine_track": null,
+     "id": "comptia_dataai",
+     "long_name": "CompTIA DataAI (formerly DataX)",
+     "look_status": "READ_OK",
+     "name": "DataAI",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 15,
+     "engine_track": null,
+     "id": "comptia_secaiplus",
+     "long_name": "CompTIA SecAI+",
+     "look_status": "READ_OK",
+     "name": "SecAI+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 15,
+     "engine_track": null,
+     "id": "comptia_autoopsplus",
+     "long_name": "CompTIA AutoOps+",
+     "look_status": "READ_OK",
+     "name": "AutoOps+",
+     "source_url": "https://www.comptia.org/en-us/resources/ce/learn/earn-continuing-education-units-ceus/",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 36,
+   "look_status": "READ_OK",
+   "source_url": "https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/",
+   "unit_label": "CEU",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "giac",
+   "body_name": "GIAC",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gsec",
+     "long_name": "GIAC Security Essentials",
+     "look_status": "READ_OK",
+     "name": "GSEC",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gcih",
+     "long_name": "GIAC Certified Incident Handler",
+     "look_status": "READ_OK",
+     "name": "GCIH",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gcia",
+     "long_name": "GIAC Certified Intrusion Analyst",
+     "look_status": "READ_OK",
+     "name": "GCIA",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gpen",
+     "long_name": "GIAC Penetration Tester",
+     "look_status": "READ_OK",
+     "name": "GPEN",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gcfa",
+     "long_name": "GIAC Certified Forensic Analyst",
+     "look_status": "READ_OK",
+     "name": "GCFA",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_grem",
+     "long_name": "GIAC Reverse Engineering Malware",
+     "look_status": "READ_OK",
+     "name": "GREM",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gslc",
+     "long_name": "GIAC Security Leadership",
+     "look_status": "READ_OK",
+     "name": "GSLC",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gstrt",
+     "long_name": "GIAC Strategic Planning, Policy, and Leadership",
+     "look_status": "READ_OK",
+     "name": "GSTRT",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gicsp",
+     "long_name": "Global Industrial Cyber Security Professional",
+     "look_status": "READ_OK",
+     "name": "GICSP",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gcld",
+     "long_name": "GIAC Cloud Security Essentials",
+     "look_status": "READ_OK",
+     "name": "GCLD",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gxpn",
+     "long_name": "GIAC Exploit Researcher and Advanced Penetration Tester",
+     "look_status": "READ_OK",
+     "name": "GXPN",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gwapt",
+     "long_name": "GIAC Web Application Penetration Tester",
+     "look_status": "READ_OK",
+     "name": "GWAPT",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gced",
+     "long_name": "GIAC Certified Enterprise Defender",
+     "look_status": "READ_OK",
+     "name": "GCED",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gcip",
+     "long_name": "GIAC Critical Infrastructure Protection",
+     "look_status": "READ_OK",
+     "name": "GCIP",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gmon",
+     "long_name": "GIAC Continuous Monitoring",
+     "look_status": "READ_OK",
+     "name": "GMON",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gweb",
+     "long_name": "GIAC Certified Web Application Defender",
+     "look_status": "READ_OK",
+     "name": "GWEB",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gsna",
+     "long_name": "GIAC Systems and Network Auditor",
+     "look_status": "READ_OK",
+     "name": "GSNA",
+     "source_url": "https://www.giac.org/certifications/systems-network-auditor-gsna",
+     "status": "retired",
+     "status_note": "in abeyance (GIAC term)",
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_goaa",
+     "long_name": "GIAC Offensive AI Analyst",
+     "look_status": "READ_OK",
+     "name": "GOAA",
+     "source_url": "https://www.giac.org/renewal/cpe-information",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 36,
+     "engine_track": null,
+     "id": "giac_gleg",
+     "long_name": "GIAC Law of Data Security and Investigations",
+     "look_status": "READ_OK",
+     "name": "GLEG",
+     "source_url": "https://www.giac.org/certifications/law-data-security-investigations-gleg",
+     "status": "retired",
+     "status_note": "in abeyance (GIAC term)",
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 48,
+   "look_status": "READ_OK",
+   "source_url": "https://www.giac.org/renewal/cpe-information",
+   "unit_label": "CPE",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "eccouncil",
+   "body_name": "EC-Council",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": "ceh",
+     "id": "eccouncil_ceh",
+     "long_name": "Certified Ethical Hacker",
+     "look_status": "READ_OK",
+     "name": "CEH",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_cnd",
+     "long_name": "Certified Network Defender",
+     "look_status": "READ_OK",
+     "name": "CND",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_chfi",
+     "long_name": "Computer Hacking Forensic Investigator",
+     "look_status": "READ_OK",
+     "name": "CHFI",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_cciso",
+     "long_name": "Certified Chief Information Security Officer",
+     "look_status": "READ_OK",
+     "name": "CCISO",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_cpent",
+     "long_name": "Certified Penetration Testing Professional",
+     "look_status": "READ_OK",
+     "name": "CPENT",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_lpt",
+     "long_name": "Licensed Penetration Tester (Master)",
+     "look_status": "READ_OK",
+     "name": "LPT",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_csa",
+     "long_name": "Certified SOC Analyst",
+     "look_status": "READ_OK",
+     "name": "CSA",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_ctia",
+     "long_name": "Certified Threat Intelligence Analyst",
+     "look_status": "READ_OK",
+     "name": "CTIA",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_ecih",
+     "long_name": "EC-Council Certified Incident Handler",
+     "look_status": "READ_OK",
+     "name": "ECIH",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_case",
+     "long_name": "Certified Application Security Engineer",
+     "look_status": "READ_OK",
+     "name": "CASE",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 120,
+     "engine_track": null,
+     "id": "eccouncil_caipm",
+     "long_name": "Certified AI Program Manager",
+     "look_status": "READ_OK",
+     "name": "CAIPM",
+     "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 36,
+   "look_status": "READ_OK",
+   "source_url": "https://cert.eccouncil.org/cpe-policy.html",
+   "unit_label": "CPE",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "pmi",
+   "body_name": "PMI",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "pmi_pmp",
+     "long_name": "Project Management Professional",
+     "look_status": "READ_OK",
+     "name": "PMP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "pmi_pgmp",
+     "long_name": "Program Management Professional",
+     "look_status": "READ_OK",
+     "name": "PgMP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "pmi_pfmp",
+     "long_name": "Portfolio Management Professional",
+     "look_status": "READ_OK",
+     "name": "PfMP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 60,
+     "engine_track": null,
+     "id": "pmi_pba",
+     "long_name": "PMI Professional in Business Analysis",
+     "look_status": "READ_OK",
+     "name": "PMI-PBA",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_acp",
+     "long_name": "PMI Agile Certified Practitioner",
+     "look_status": "READ_OK",
+     "name": "PMI-ACP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_rmp",
+     "long_name": "PMI Risk Management Professional",
+     "look_status": "READ_OK",
+     "name": "PMI-RMP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_sp",
+     "long_name": "PMI Scheduling Professional",
+     "look_status": "READ_OK",
+     "name": "PMI-SP",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_cp",
+     "long_name": "PMI Construction Professional",
+     "look_status": "NOT_READ",
+     "name": "PMI-CP",
+     "source_url": "https://www.pmi.org/certifications/certification-resources/maintain",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_cpmai",
+     "long_name": "PMI Cognitive Project Management in AI",
+     "look_status": "NOT_READ",
+     "name": "PMI-CPMAI",
+     "source_url": "https://www.pmi.org/certifications/ai-project-management-cpmai",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 30,
+     "engine_track": null,
+     "id": "pmi_pmocp",
+     "long_name": "PMI PMO Certified Professional",
+     "look_status": "NOT_READ",
+     "name": "PMI-PMOCP",
+     "source_url": "https://pmoga.pmi.org/certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 15,
+     "engine_track": null,
+     "id": "pmi_capm",
+     "long_name": "Certified Associate in Project Management",
+     "look_status": "READ_OK",
+     "name": "CAPM",
+     "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": 12,
+     "cycle_total": 7,
+     "engine_track": null,
+     "id": "pmi_dasm",
+     "long_name": "Disciplined Agile Scrum Master",
+     "look_status": "READ_OK",
+     "name": "DASM",
+     "source_url": "https://www.pmi.org/-/media/pmi/microsites/authorized-training-partners/authorized-training-partner-faqs-disciplined-agile-evolution.pdf?rev=7b5f9baae99b4befae68ae41051563a9",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": 12,
+     "cycle_total": 7,
+     "engine_track": null,
+     "id": "pmi_dassm",
+     "long_name": "Disciplined Agile Senior Scrum Master",
+     "look_status": "READ_OK",
+     "name": "DASSM",
+     "source_url": "https://www.pmi.org/-/media/pmi/microsites/authorized-training-partners/authorized-training-partner-faqs-disciplined-agile-evolution.pdf?rev=7b5f9baae99b4befae68ae41051563a9",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 36,
+   "look_status": "READ_OK",
+   "source_url": "https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a",
+   "unit_label": "PDU",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "iapp",
+   "body_name": "IAPP",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipp_us",
+     "long_name": "Certified Information Privacy Professional/United States",
+     "look_status": "NOT_READ",
+     "name": "CIPP/US",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipp_e",
+     "long_name": "Certified Information Privacy Professional/Europe",
+     "look_status": "NOT_READ",
+     "name": "CIPP/E",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipp_c",
+     "long_name": "Certified Information Privacy Professional/Canada",
+     "look_status": "NOT_READ",
+     "name": "CIPP/C",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipp_a",
+     "long_name": "Certified Information Privacy Professional/Asia",
+     "look_status": "NOT_READ",
+     "name": "CIPP/A",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipp_cn",
+     "long_name": "Certified Information Privacy Professional/China",
+     "look_status": "NOT_READ",
+     "name": "CIPP/CN",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": null,
+     "engine_track": null,
+     "id": "iapp_cipp_au",
+     "long_name": null,
+     "look_status": "NOT_READ",
+     "name": "CIPP/AU",
+     "source_url": "https://iapp.org/certify/cipp",
+     "status": "unknown",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipm",
+     "long_name": "Certified Information Privacy Manager",
+     "look_status": "NOT_READ",
+     "name": "CIPM",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_cipt",
+     "long_name": "Certified Information Privacy Technologist",
+     "look_status": "NOT_READ",
+     "name": "CIPT",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": null,
+     "id": "iapp_aigp",
+     "long_name": "Artificial Intelligence Governance Professional",
+     "look_status": "NOT_READ",
+     "name": "AIGP",
+     "source_url": "https://prod.iapp.org/certify/programs/",
+     "status": "offered",
+     "status_note": null,
+     "verified": false,
+     "verified_date": null
+    },
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": null,
+     "engine_track": null,
+     "id": "iapp_cipp_g",
+     "long_name": "Certified Information Privacy Professional/Government",
+     "look_status": "READ_OK",
+     "name": "CIPP/G",
+     "source_url": "https://iapp.org/news/a/what-you-need-to-know-about-the-end-of-the-cipp-g-certification",
+     "status": "retired",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 24,
+   "look_status": "NOT_READ",
+   "source_url": "https://iapp.org/certify/cpe-policy",
+   "unit_label": "CPE",
+   "verified": false,
+   "verified_date": null
+  },
+  {
+   "body_id": "acfe",
+   "body_name": "ACFE",
+   "certifications": [
+    {
+     "annual_minimum": 20,
+     "cycle_months": null,
+     "cycle_total": 20,
+     "engine_track": "cfe",
+     "id": "acfe_cfe",
+     "long_name": "Certified Fraud Examiner",
+     "look_status": "READ_OK",
+     "name": "CFE",
+     "source_url": "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 12,
+   "look_status": "READ_OK",
+   "source_url": "https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements",
+   "unit_label": "CPE",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  },
+  {
+   "body_id": "atap",
+   "body_name": "ATAP",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 50,
+     "engine_track": "ctm",
+     "id": "atap_ctm",
+     "long_name": "Certified Threat Manager",
+     "look_status": "READ_OK",
+     "name": "CTM",
+     "source_url": "https://www.atapworldwide.org/page/certificationexam",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 24,
+   "look_status": "NOT_READ",
+   "source_url": "https://www.atapworldwide.org/page/certificationexam",
+   "unit_label": "credit",
+   "verified": false,
+   "verified_date": null
+  },
+  {
+   "body_id": "umd",
+   "body_name": "University of Maryland",
+   "certifications": [
+    {
+     "annual_minimum": null,
+     "cycle_months": null,
+     "cycle_total": 100,
+     "engine_track": "gcitp",
+     "id": "umd_gcitp",
+     "long_name": "Global Counter-Insider Threat Professional (University of Maryland)",
+     "look_status": "READ_OK",
+     "name": "GCITP",
+     "source_url": "https://gcitp.umd.edu/gcitp-certification/maintain-certification",
+     "status": "offered",
+     "status_note": null,
+     "verified": true,
+     "verified_date": "2026-10-20"
+    }
+   ],
+   "checked_date": "2026-10-20",
+   "cycle_months": 48,
+   "look_status": "READ_OK",
+   "source_url": "https://gcitp.umd.edu/gcitp-certification/maintain-certification",
+   "unit_label": "PDU",
+   "verified": true,
+   "verified_date": "2026-10-20"
+  }
+ ],
+ "schema_version": 1,
+ "source": "bodies.yaml + packetmaps/ (exported by webapp/tools/export_data.py)",
+ "sweep_date": "2026-08-30",
+ "tag_vocabulary": [
+  {
+   "id": "training",
+   "label": "Training / course / webinar / self-study"
+  },
+  {
+   "id": "conference",
+   "label": "Conference or seminar attendance"
+  },
+  {
+   "id": "chapter_meeting",
+   "label": "Chapter / association meeting"
+  },
+  {
+   "id": "teaching",
+   "label": "Teaching, instructing, presenting"
+  },
+  {
+   "id": "materials",
+   "label": "Creating instructional materials"
+  },
+  {
+   "id": "authoring_blog",
+   "label": "Blog post (500+ words)"
+  },
+  {
+   "id": "authoring_article",
+   "label": "Article or white paper"
+  },
+  {
+   "id": "authoring_book",
+   "label": "Book or book chapter"
+  },
+  {
+   "id": "volunteer",
+   "label": "Volunteer / giving back / board service"
+  },
+  {
+   "id": "work_experience",
+   "label": "Work experience in the credential's field"
+  },
+  {
+   "id": "higher_education",
+   "label": "College / university course"
+  },
+  {
+   "id": "reading",
+   "label": "Reading professional material"
+  },
+  {
+   "id": "cert_exam",
+   "label": "Passing another industry certification exam"
+  },
+  {
+   "id": "special_project",
+   "label": "Special project"
+  },
+  {
+   "id": "program_support",
+   "label": "Support to the certifying program itself"
+  },
+  {
+   "id": "professional_dev",
+   "label": "General professional development (non-domain)"
+  }
+ ],
+ "topic_markers": [
+  {
+   "id": "domain_security",
+   "label": "Directly related to information security domains"
+  },
+  {
+   "id": "fraud",
+   "label": "Detection and deterrence of fraud"
+  },
+  {
+   "id": "ethics",
+   "label": "Ethics"
+  },
+  {
+   "id": "cint",
+   "label": "Counter-insider-threat (C-InT)"
+  },
+  {
+   "id": "threat_management",
+   "label": "Threat assessment and management"
+  }
+ ]
+}

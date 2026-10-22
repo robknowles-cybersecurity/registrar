@@ -1,0 +1,16 @@
+# Only the runtime goes into the image. Never the ledger, evidence or secrets.
+.git
+.env
+.env.*
+var/
+evidence/
+packets/
+*.db
+*.db-*
+__pycache__/
+webapp/
+site/
+tests/
+tools/
+fixtures/
+docs/

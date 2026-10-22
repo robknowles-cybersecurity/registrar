@@ -84,3 +84,6 @@ footer { margin: 3.5rem 0 2.5rem; padding-top: 1.25rem;
          border-top: 1px solid var(--line); font-size: .85rem;
          color: var(--mute); }
 footer p { margin: .3rem 0; }
+.ctas { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0 .5rem; }
+.ctas .cta { margin: 0; }
+.cta.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }

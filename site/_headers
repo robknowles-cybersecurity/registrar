@@ -1,8 +1,36 @@
-# Cloudflare Pages headers file. Applies to every path.
+# Cloudflare Pages headers file.
+#
+# Every rule whose path matches a request applies, so the Content-Security-
+# Policy is set per area, never on /*: two policies on one response would
+# both be enforced, and the landing page's script-free policy would break the
+# browser app.
+
 /*
   X-Clacks-Overhead: GNU Terry Pratchett
-  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
+
+# The landing page: no scripts at all.
+/
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+/index.html
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+/favicon.svg
+  Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'
+/style.css
+  Content-Security-Policy: default-src 'none'
+
+# The browser app: its own scripts only (plus WebAssembly for OCR); network
+# only to this origin and, when the person turns on "use my own API key", to
+# the model provider they chose.
+/app/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://api.anthropic.com https://api.openai.com http://localhost:* http://127.0.0.1:*; img-src 'self' blob: data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: browsing-topics=(), microphone=(), geolocation=(), camera=(self)
+  Cross-Origin-Opener-Policy: same-origin
+/app/sw.js
+  Cache-Control: no-cache
+/app/vendor/*
+  Cache-Control: public, max-age=31536000, immutable

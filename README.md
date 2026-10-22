@@ -10,6 +10,9 @@ and honest about what it does not yet know.
 
 (The Python package is called `cpebot`, its name before release.)
 
+**Try it in your browser:** <https://ceu.tools/app>. Nothing to install, and
+your ledger and evidence stay in your browser.
+
 ## Why not a spreadsheet
 
 Every body counts differently, and a sum of hours is wrong in the direction
@@ -114,6 +117,12 @@ checkout, and back them up.
 
 ## Self-hosting
 
+With Docker: `cp .env.example .env && docker compose up -d --build`, then
+open <http://127.0.0.1:8762/>. One container, your ledger in a named volume,
+a health check, no secrets. Details: [docs/SELF-HOST.md](docs/SELF-HOST.md).
+
+Without Docker, the environment variables are:
+
 | Variable | Default | |
 |---|---|---|
 | `CPEBOT_BIND` | `127.0.0.1` | never `0.0.0.0` |
@@ -137,7 +146,9 @@ The web app answers only to requests whose `Host` header (port ignored) is
 a web page on another site from reaching Registrar through your browser by
 re-pointing its own domain name at your address (DNS rebinding). If you
 reach Registrar by a name, for example `registrar.lan` or a VPN host name,
-add that name: `CPEBOT_ALLOWED_HOSTS=registrar.lan`.
+add that name: `CPEBOT_ALLOWED_HOSTS=registrar.lan`. An entry may carry a
+port, which is ignored. An IPv6 address with a port must be bracketed,
+`[fd00::2]:8762`; a bare `fd00::2:8762` is read as a different address.
 
 For a service that survives reboots, `systemd/` has two **user** unit
 templates. Replace the `<PLACEHOLDERS>` (each file's header lists them),
@@ -231,7 +242,8 @@ cpebot/report.py      renewal report and renewal packet
 cpebot/reminders.py   when to speak, and mostly when not to
 cpebot/validate.py    rules-based advisories (+ a disabled seam)
 tools/                demo data, live verification, mutation proof
-site/                 the ceu.tools landing page (static)
+site/                 the ceu.tools landing page (static) and site/app/, the built browser app
+webapp/               the browser app's source, tests and build (webapp/README.md)
 docs/                 Telegram setup, verification record, release notes
 systemd/              user-unit templates
 ```

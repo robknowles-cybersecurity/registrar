@@ -12,7 +12,7 @@
 # `caps_known` and engine.verdict().
 #
 # Units: bodies call their unit CPE / CEU / ECE / PDU / credit. Internally
-# cpebot has ONE unit, the "credit", and each track declares `unit_label` for
+# Registrar has ONE unit, the "credit", and each track declares `unit_label` for
 # display and `unit_note` for anything the label hides.
 #
 # Rates: a bucket either has `per_hour` (credits = hours * per_hour) or
@@ -96,7 +96,7 @@ credentials:
       annual_minimum: null
       annual_target: 40
       annual_target_advisory: true
-      annual_target_note: "ISC2 states 120 per three-year cycle as the binding requirement and suggests ~40/year as pacing. cpebot treats 40/yr as PACE GUIDANCE, not a hard floor, and says so on every report."
+      annual_target_note: "ISC2 states 120 per three-year cycle as the binding requirement and suggests ~40/year as pacing. Registrar treats 40/yr as PACE GUIDANCE, not a hard floor, and says so on every report."
     groups:
       - id: "group_a"
         name: "Group A — directly related to the CISSP domains"
@@ -164,7 +164,7 @@ credentials:
       annual_minimum: null
       annual_target: 20
       annual_target_advisory: true
-      annual_target_note: "CompTIA sets no annual floor; 20/yr is cpebot's even-pacing figure only."
+      annual_target_note: "CompTIA sets no annual floor; 20/yr is Registrar's even-pacing figure only."
       relevance_rule: "At least 50% of an activity's content must relate to the CySA+ exam objectives."
     groups: []
     buckets:
@@ -242,7 +242,7 @@ credentials:
         group: null
         per_item: 0.0
         cap: null
-        cap_note: "Value is per-certification from CompTIA's approved list; cpebot does not guess it. Enter the awarded CEUs as an explicit credits_override on the entry."
+        cap_note: "Value is per-certification from CompTIA's approved list; Registrar does not guess it. Enter the awarded CEUs as an explicit credits_override on the entry."
         value_is_override: true
         tags: ["cert_exam"]
         requires_markers: []
@@ -404,7 +404,7 @@ credentials:
       annual_minimum: null
       annual_target: 25
       annual_target_advisory: true
-      annual_target_note: "UMD sets no interim reporting and no annual floor; the whole 100 is due at the end of the four years. 25/yr is cpebot's pacing figure only."
+      annual_target_note: "UMD sets no interim reporting and no annual floor; the whole 100 is due at the end of the four years. 25/yr is Registrar's pacing figure only."
     groups:
       - id: "cint"
         name: "Counter-insider-threat related"
@@ -503,7 +503,7 @@ credentials:
     body_id: "atap"
     body_name: "ATAP"
     unit_label: "meeting"
-    unit_note: "Not a CPE scheme. The tracked quantity is qualifying MEETINGS attended per calendar year — the spec calls this 'ATAP meeting tracking'. It is modelled here because a lapsed membership is a prerequisite failure for the CTM track below."
+    unit_note: "Not a CPE scheme. The tracked quantity is qualifying MEETINGS attended per calendar year. It is modelled here because a lapsed membership is a prerequisite failure for the CTM track below."
     verified: false
     source_url: "https://www.atapworldwide.org/membership/howtojoin"
     verified_date: "2026-10-20"
@@ -571,7 +571,7 @@ credentials:
     verified_date: "2026-08-30"
     verification_note: "UNVERIFIED. Source: https://www.atapworldwide.org/page/CTM. www.atapworldwide.org/certification confirms 50 recertification points per cycle and that recertification runs through Certemy, but not the cycle length, the grace period (10 vs 30 days) or the caps. The five subcategory CAPS are NOT KNOWN — ATAP states each subsection has a maximum, and Registrar does not have those numbers."
     caps_known: false
-    caps_unknown_note: "ATAP publishes a per-subcategory maximum for each recertification subsection. Those maxima are not in cpebot. Until they are, this track's totals are ADVISORY ONLY and the engine will not emit a compliance verdict for it."
+    caps_unknown_note: "ATAP publishes a per-subcategory maximum for each recertification subsection. Those maxima are not in Registrar. Until they are, this track's totals are ADVISORY ONLY and the engine will not emit a compliance verdict for it."
     cycle:
       length_months: 24
       basis: "certification_anniversary"
@@ -732,7 +732,7 @@ credentials:
       verified: true
     submission:
       cadence: "annual_self_certification"
-      note: "SELF-CERTIFIED by the end of the member's anniversary month at ACFE.com/MyCPE. Proof of CPE must be retained for three years against a random compliance audit. Self-certification plus retention is exactly why cpebot hashes evidence: this is compliance, not convenience."
+      note: "SELF-CERTIFIED by the end of the member's anniversary month at ACFE.com/MyCPE. Proof of CPE must be retained for three years against a random compliance audit. Self-certification plus retention is exactly why Registrar hashes evidence: this is compliance, not convenience."
       window: null
       self_certified: true
       evidence_retention_years: 3

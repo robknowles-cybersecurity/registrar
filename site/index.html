@@ -21,7 +21,8 @@
 
 <main>
   <p class="note"><b>Early release.</b> Registrar works today, but it is
-  young and it is self-host only: there is no hosted version yet. Some
+  young. The browser version keeps everything on your device; there is
+  no hosted account version. Some
   bodies' rules could not be confirmed against their own published pages;
   the app marks those as unverified and does not hide it. Check anything
   important against your body's portal.</p>
@@ -42,12 +43,19 @@
       <li>Submission packets: each activity laid out in your body's form
           fields, plus a zip of your evidence. You sign in and submit
           yourself; Registrar never asks for your portal login.</li>
-      <li>Optional Telegram capture with your own bot.</li>
+      <li>Drop in a certificate PDF or take a photo: the date, hours,
+          provider and title are read on your device and filled in for
+          you to check.</li>
+      <li>Optional Telegram capture with your own bot (self-hosted).</li>
     </ul>
-    <a class="cta" href="https://github.com/robknowles-cybersecurity/registrar">Self-host Registrar</a>
-    <p class="small">Python 3 standard library only. Runs on your own
-    machine or private network, bound to localhost by default. Free
-    software under the GNU AGPL v3.</p>
+    <p class="ctas"><a class="cta" href="/app/">Try it in your browser</a>
+    <a class="cta secondary" href="https://github.com/robknowles-cybersecurity/registrar">Self-host Registrar</a></p>
+    <p class="small"><b>In your browser:</b> nothing to install and no
+    account. Your activities and evidence stay in that browser (export a
+    backup); certificates are read on your device. <b>Self-hosted:</b>
+    Python 3 standard library only, or one <code>docker compose up</code>;
+    runs on your own machine or private network, bound to localhost by
+    default. Both are free software under the GNU AGPL v3.</p>
   </section>
 
   <div class="later">More tools may join the suite later. Nothing to
@@ -57,7 +65,9 @@
 <footer>
   <p>&copy; 2026 Rob Knowles. ceu.tools and Registrar are not affiliated
   with or endorsed by any certifying body.</p>
-  <p>This site sets no cookies and runs no scripts or analytics.</p>
+  <p>This page sets no cookies and runs no scripts or analytics. The
+  browser app at /app runs its own scripts and keeps your data in your
+  browser; it has no analytics either.</p>
 </footer>
 
 </div>

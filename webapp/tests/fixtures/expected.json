@@ -1,0 +1,130 @@
+{
+ "01-isc2-webinar-centred.pdf": {
+  "activity_date": "2026-03-12",
+  "credential": "cissp",
+  "holder_name": "Jordan Sample",
+  "hours": 1.5,
+  "provider": "Example Security Institute",
+  "title": "Zero Trust Architecture in Practice"
+ },
+ "02-comptia-ceu-letter.pdf": {
+  "activity_date": "2026-01-27",
+  "credential": "cysa_plus",
+  "holder_name": "Alex Example",
+  "hours": 8,
+  "provider": "Placeholder Training Academy",
+  "title": "Threat Hunting with Packet Analysis"
+ },
+ "03-eccouncil-table.pdf": {
+  "activity_date": "2026-02-18",
+  "credential": "ceh",
+  "holder_name": "Riley Sample",
+  "hours": 4,
+  "provider": "Sample Cyber Range LLC",
+  "title": "Web Application Penetration Testing Lab"
+ },
+ "04-gcitp-pdu-insider.pdf": {
+  "activity_date": "2026-04-09",
+  "credential": "gcitp",
+  "holder_name": "Morgan Example",
+  "hours": 3,
+  "provider": "Example Insider Risk Council",
+  "title": "Behavioral Indicators of Insider Threat"
+ },
+ "05-atap-chapter-meeting.pdf": {
+  "activity_date": "2026-05-14",
+  "credential": "ctm",
+  "holder_name": "Casey Sample",
+  "hours": 2,
+  "provider": "Sample Chapter of ATAP",
+  "title": "Threat Assessment Case Review"
+ },
+ "06-acfe-fraud-ethics.pdf": {
+  "activity_date": "2026-06-03",
+  "credential": "cfe",
+  "holder_name": "Taylor Example",
+  "hours": 2,
+  "provider": "Example Fraud Examiners Forum",
+  "title": "Ethics for Fraud Examiners"
+ },
+ "07-conference-range.pdf": {
+  "activity_date": "2026-09-17",
+  "credential": "cissp",
+  "holder_name": "Jamie Sample",
+  "hours": 14,
+  "provider": "Example SecCon",
+  "title": "Example SecCon 2026"
+ },
+ "08-online-selfpaced-iso.pdf": {
+  "activity_date": "2026-07-21",
+  "credential": "cysa_plus",
+  "holder_name": "Drew Example",
+  "hours": 3.5,
+  "provider": "Sample Learning Platform Inc.",
+  "title": "Cloud Incident Response Fundamentals"
+ },
+ "09-two-column-block.pdf": {
+  "activity_date": "2026-08-05",
+  "credential": "cissp",
+  "holder_name": "Avery Sample",
+  "hours": 6,
+  "provider": "Placeholder Cyber Academy",
+  "title": "Malware Analysis Essentials"
+ },
+ "10-intl-date-dmy.pdf": {
+  "activity_date": "2026-03-24",
+  "credential": "cissp",
+  "holder_name": "Robin Example",
+  "hours": 7,
+  "provider": "Example European Security Forum",
+  "title": "GDPR Breach Response Workshop"
+ },
+ "11-presenter-letter.pdf": {
+  "activity_date": "2026-02-26",
+  "credential": "cissp",
+  "holder_name": "Sam Sample",
+  "hours": 1,
+  "provider": "Example ISSA Chapter",
+  "title": "Securing CI/CD Pipelines"
+ },
+ "12-ceu-conversion.pdf": {
+  "activity_date": "2026-10-02",
+  "credential": "cysa_plus",
+  "holder_name": "Quinn Example",
+  "hours": 15,
+  "provider": "Example University Extension",
+  "title": "Applied Cryptography for Practitioners"
+ },
+ "13-with-expiry-date.pdf": {
+  "activity_date": "2026-05-30",
+  "credential": "cysa_plus",
+  "holder_name": "Kai Sample",
+  "hours": 12,
+  "provider": "Sample Cloud Institute",
+  "title": "Cloud Security Practitioner Bootcamp"
+ },
+ "14-abbrev-month-hrs.pdf": {
+  "activity_date": "2026-11-04",
+  "credential": "cissp",
+  "holder_name": "Lee Example",
+  "hours": 2.5,
+  "provider": "Placeholder SOC Guild",
+  "title": "Detection Engineering Roundtable"
+ },
+ "15-acfe-table-fraud.pdf": {
+  "activity_date": "2026-08-19",
+  "credential": "cfe",
+  "holder_name": "Parker Sample",
+  "hours": 1.5,
+  "provider": "Example Audit Network",
+  "title": "Detecting Procurement Fraud"
+ },
+ "16-portrait-award.pdf": {
+  "activity_date": "2026-01-15",
+  "credential": "ceh",
+  "holder_name": "Charlie Example",
+  "hours": 5,
+  "provider": "Example Threat Intel Alliance",
+  "title": "Adversary Emulation Workshop"
+ }
+}

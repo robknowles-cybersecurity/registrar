@@ -1,0 +1,56 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /FR 4 0 R /FB 5 0 R /FT 6 0 R /FTB 7 0 R /FI 8 0 R >> >> /Contents 9 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
+endobj
+9 0 obj
+<< /Length 413 >>
+stream
+BT /FTB 26 Tf 117.5 680.0 Td (Example Threat Intel Alliance) Tj ET
+BT /FT 14 Tf 225.5 620.0 Td (This is to certify that) Tj ET
+BT /FTB 24 Tf 216.0 586.0 Td (Charlie Example) Tj ET
+BT /FT 13 Tf 221.5 542.0 Td (successfully completed the) Tj ET
+BT /FTB 16 Tf 194.0 520.0 Td (Adversary Emulation Workshop) Tj ET
+BT /FT 12 Tf 258.0 486.0 Td (January 15, 2026) Tj ET
+BT /FT 12 Tf 264.0 464.0 Td (Credits: 5 ECE) Tj ET
+
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000288 00000 n 
+0000000385 00000 n 
+0000000487 00000 n 
+0000000586 00000 n 
+0000000684 00000 n 
+0000000784 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R /Info << /Producer (Registrar synthetic fixture) >> >>
+startxref
+1248
+%%EOF

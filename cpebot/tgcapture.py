@@ -40,7 +40,7 @@ POLL_TIMEOUT = 50
 EX_CONFIG = 78
 
 HELP = (
-    "cpebot capture\n\n"
+    "Registrar capture\n\n"
     "Send an activity in one line:\n"
     "  8h SANS threat modelling workshop #training @domain_security\n\n"
     "Pieces, all optional except a title:\n"
@@ -72,7 +72,7 @@ def read_token(path=None):
     path = path or ENV_PATH
     if not os.path.isfile(path):
         raise ConfigError(
-            "no token file at %s — cpebot does not create one. See "
+            "no token file at %s — Registrar does not create one. See "
             "docs/TELEGRAM-SETUP.md for the exact format, then chmod 600 it."
             % path)
     mode = os.stat(path).st_mode & 0o777
@@ -342,7 +342,7 @@ class Bot(object):
         return len(updates)
 
     def announce(self):
-        print("cpebot telegram capture running (token %s, chat %s)"
+        print("Registrar telegram capture running (token %s, chat %s)"
               % (mask(self._token),
                  ("…%s" % self.chat_id[-4:]) if self.chat_id else "NONE"),
               flush=True)
@@ -372,7 +372,7 @@ def main():
     try:
         token = read_token()
     except ConfigError as exc:
-        sys.stderr.write("cpebot-tg: %s\n" % exc)
+        sys.stderr.write("registrar-tg: %s\n" % exc)
         return EX_CONFIG
     bot = Bot(token, os.environ.get("CPEBOT_TG_CHAT"))
     bot.led.init_schema()

@@ -1,0 +1,25 @@
+{
+  "name": "registrar-webapp",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Registrar in the browser: local-first CPE/CEU tracker with evidence capture.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs",
+    "build": "node tools/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "heldout": "node tests/heldout/score.mjs",
+    "e2e": "node e2e/verify.mjs",
+    "e2e:prove-fails": "node e2e/verify.mjs --break parser --skip-ocr; test $? -ne 0 && node e2e/verify.mjs --break import --skip-ocr; test $? -ne 0 && echo 'both mutated builds failed, as they must'",
+    "check-public": "python3 tools/check_public_text.py ../site/app",
+    "fixtures": "python3 tests/fixtures/make_fixtures.py && node tests/fixtures/make_image_fixtures.mjs && python3 tests/fixtures/make_image_pdf.py",
+    "serve": "node e2e/serve.mjs 8765"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "6.4.299",
+    "tesseract.js": "7.0.0",
+    "tesseract.js-core": "7.0.0",
+    "@tesseract.js-data/eng": "1.0.0"
+  }
+}

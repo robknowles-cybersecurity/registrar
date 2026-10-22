@@ -1,0 +1,11 @@
+{
+ "name": "Registrar (ceu.tools)",
+ "short_name": "Registrar",
+ "description": "Track CPEs, CEUs and PDUs with each body's caps and minimums. Your data stays in this browser.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#f7f6f2",
+ "theme_color": "#1f4e5f",
+ "icons": [{ "src": "../favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -1,4 +1,4 @@
-# How cpebot was verified
+# How Registrar was verified
 
 Four layers, in increasing order of how much they prove, as recorded for
 v0.2 (the browser management layer). The v1 release slice (deadline
@@ -23,7 +23,7 @@ test_yaml_equivalence.py               Ran 11 tests   OK
 ```
 
 Every capped credential has both a **naive trap** (a portfolio that a
-spreadsheet would score wrong and cpebot scores right) and a **negative case**
+spreadsheet would score wrong and Registrar scores right) and a **negative case**
 (a portfolio where the cap bites and the verdict must be BEHIND). The v0.2
 additions (`test_v02_units.py` and 28 new tests in `test_web.py`) cover VOID,
 supersede-over-HTTP, upload validation, evidence serving, CSRF, security

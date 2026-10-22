@@ -1,0 +1,20 @@
+[
+ {"name": "h1-webinar-email-style",
+  "text": "Your certificate is ready\nHi Jordan Sample,\nThanks for joining our live webinar Ransomware Negotiation Lessons on Wednesday, October 7, 2026.\nThis session qualifies for 1 CPE credit.\nSample Webinar Network",
+  "expect": {"activity_date": "2026-10-07", "hours": 1, "provider": "Sample Webinar Network", "title": "Ransomware Negotiation Lessons", "holder_name": "Jordan Sample"}},
+ {"name": "h2-ocr-noise",
+  "text": "CERTIFICATE 0F COMPLETION\nThis certifies that\nAlex Example\nhas completed\nIntro to Secure Code Review\nCompletion Date: 2026-04-02\nCPE Credits: 2\nExample Dev Security Academy",
+  "expect": {"activity_date": "2026-04-02", "hours": 2, "provider": "Example Dev Security Academy", "title": "Intro to Secure Code Review", "holder_name": "Alex Example"}},
+ {"name": "h3-dmy-written",
+  "text": "Example Privacy Society\nCertificate of Attendance\nRiley Sample\nattended the Privacy Engineering Summit\nheld on 3rd June 2026\n6 CPD hours",
+  "expect": {"activity_date": "2026-06-03", "hours": 6, "provider": "Example Privacy Society", "title": "Privacy Engineering Summit", "holder_name": "Riley Sample"}},
+ {"name": "h4-table-colons",
+  "text": "Name:\tMorgan Example\nCourse:\tIdentity Governance Basics\nDate:\t11/30/2026\nHours:\t3\nIssued by:\tPlaceholder IAM Institute",
+  "expect": {"activity_date": "2026-11-30", "hours": 3, "provider": "Placeholder IAM Institute", "title": "Identity Governance Basics", "holder_name": "Morgan Example"}},
+ {"name": "h5-minutes-only",
+  "text": "Sample Microlearning Co.\nCasey Sample completed Phishing Triage in 5 Steps\nTime spent: 45 minutes\nCompleted on Feb 2, 2026",
+  "expect": {"activity_date": "2026-02-02", "hours": 0.75, "provider": "Sample Microlearning Co.", "title": "Phishing Triage in 5 Steps", "holder_name": "Casey Sample"}},
+ {"name": "h6-two-dates-issue-and-event",
+  "text": "Example Fraud Academy\nCertificate of Completion\nTaylor Example\nfor completing Forensic Accounting Basics\nCourse date: March 2, 2026\nCertificate issued: March 9, 2026\nCPE: 4",
+  "expect": {"activity_date": "2026-03-02", "hours": 4, "provider": "Example Fraud Academy", "title": "Forensic Accounting Basics", "holder_name": "Taylor Example"}}
+]

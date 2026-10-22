@@ -122,7 +122,18 @@ class TestPagesRender(WebCase):
                      "/backfill", "/settings"):
             status, body, _ = self.get(path)
             self.assertEqual(status, 200, path)
-            self.assertIn(b"cpebot", body)
+            self.assertIn(b"Registrar", body)
+            # The package keeps its old name; nothing a user reads does.
+            self.assertNotIn(b"cpebot", body.lower(), path)
+
+    def test_every_page_starts_with_a_skip_link(self):
+        for path in ("/", "/entries", "/entry/new", "/settings"):
+            html = self.html(path)
+            body = html.split("<body>", 1)[1]
+            self.assertTrue(
+                body.startswith('<a class=skip href=#main>Skip to content</a>'),
+                path)
+            self.assertIn("<main id=main", html)
 
     def test_health_is_json_and_names_unverified_rules(self):
         status, body, headers = self.get("/health")
@@ -136,10 +147,18 @@ class TestPagesRender(WebCase):
         self.assertTrue(data["unverified"])
         self.assertIn("ctm", data["unverified"])
 
+    def test_health_does_not_reveal_filesystem_paths(self):
+        status, body, _ = self.get("/health")
+        data = json.loads(body)
+        self.assertNotIn("rules", data)
+        self.assertNotIn(self.dir.encode(), body)
+        self.assertNotIn(os.path.dirname(W.__file__).encode(), body)
+        self.assertNotIn(b"bodies.yaml", body)
+
     def test_health_and_server_header_report_v1(self):
         status, body, headers = self.get("/health")
         self.assertEqual(json.loads(body)["version"], "1.0.0")
-        self.assertTrue(headers["Server"].startswith("cpebot/1.0.0"),
+        self.assertTrue(headers["Server"].startswith("Registrar/1.0.0"),
                         headers["Server"])
 
     def test_rules_page_surfaces_unverified_in_the_ui(self):
@@ -529,12 +548,12 @@ class TestSecurityHeaders(WebCase):
             self.assertNotIn("<script", self.html(path), path)
 
     def test_stylesheet_is_self_hosted(self):
-        status, body, h = self.get("/static/cpebot.css")
+        status, body, h = self.get("/static/registrar.css")
         self.assertEqual(status, 200)
         self.assertIn("text/css", h["Content-Type"])
         self.assertIn(b"--accent", body)
         # and pages link it rather than inlining a <style> block
-        self.assertIn("/static/cpebot.css", self.html("/"))
+        self.assertIn("/static/registrar.css", self.html("/"))
 
 
 class TestHostAllowlist(WebCase):
@@ -582,7 +601,8 @@ class TestHostAllowlist(WebCase):
 
     def test_missing_malformed_or_duplicate_host_is_refused(self):
         self.assertEqual(self.raw("GET", "/", None)[0], 400)
-        for bad in ("", "::1", "[::1", "127.0.0.1:abc", "127.0.0.1.evil.example"):
+        for bad in ("", "::1", "[::1", "127.0.0.1:abc", "127.0.0.1.evil.example",
+                    "localhost..", "localhost..:%d" % self.port):
             self.assertEqual(self.raw("GET", "/", bad)[0], 400, bad)
         conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
         try:
@@ -682,6 +702,11 @@ class TestAllowedHostsConfig(unittest.TestCase):
         self.assertEqual(W._host_name("[::1]x"), "")
         self.assertEqual(W._host_name("::1"), "")
         self.assertEqual(W._host_name(None), "")
+        # One trailing dot is the absolute form of the same name; two is not
+        # a name at all and must not collapse to "localhost" (N5).
+        self.assertEqual(W._host_name("localhost.:8762"), "localhost")
+        self.assertNotEqual(W._host_name("localhost.."), "localhost")
+        self.assertNotEqual(W._host_name("localhost..:8762"), "localhost")
 
 
 class TestCSRF(WebCase):

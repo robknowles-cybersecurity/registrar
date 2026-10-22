@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://api.anthropic.com https://api.openai.com http://localhost:* http://127.0.0.1:*; img-src 'self' blob: data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Registrar · ceu.tools</title>
+<meta name="description" content="Registrar in your browser: track CPEs, CEUs and PDUs with each body's caps and minimums. Your data stays in this browser.">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#view">Skip to content</a>
+<div class="local" role="region" aria-label="Where your data lives">
+  <p><b>Your data lives in this browser.</b> There is no account and no server copy, and nothing is sent anywhere unless you turn on your own API key in Settings.
+  Clearing this site's data, or losing this device, loses it: export a backup.</p>
+  <p class="local-actions">
+    <button type="button" id="btn-export" class="secondary">Export</button>
+    <button type="button" id="btn-import" class="secondary">Import</button>
+    <input type="file" id="import-file" accept="application/json,.json" hidden aria-label="Import a Registrar JSON export">
+    <button type="button" id="btn-wipe" class="danger">Wipe</button>
+    <span id="storage-note" class="small mute"></span>
+  </p>
+</div>
+<header class="top">
+  <a class="brand" href="#/">Registrar</a>
+  <nav aria-label="Main">
+    <a href="#/">Credentials</a>
+    <a href="#/log">Log activity</a>
+    <a href="#/entries">Activities</a>
+    <a href="#/submissions">Submissions</a>
+    <a href="#/packets">Packets</a>
+    <a href="#/bodies">Rules</a>
+    <a href="#/settings">Settings</a>
+  </nav>
+</header>
+<main id="view" tabindex="-1"><p class="mute">Loading…</p><noscript><p>This app needs JavaScript. The self-hosted Python app needs none: see the README.</p></noscript></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<footer>
+  <p>Registrar runs entirely in your browser: rules from <code>bodies.yaml</code>, data in IndexedDB, evidence read on this device.
+  Anything marked <span class="badge unv">UNVERIFIED</span> was not confirmed on the body's own page: check it before you rely on it.
+  Registrar never asks for or stores your certifying-body portal login.</p>
+  <p>Free software under the GNU AGPL v3 · <a href="https://github.com/robknowles-cybersecurity/registrar">source</a> · <a href="../">ceu.tools</a> · not affiliated with any certifying body.</p>
+</footer>
+</body>
+</html>

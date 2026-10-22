@@ -85,7 +85,7 @@ systemctl --user enable --now cpebot-tg.service
 systemctl --user status cpebot-tg.service --no-pager
 ```
 
-A healthy first log line reads `cpebot telegram capture running (…)`, with the
+A healthy first log line reads `Registrar telegram capture running (…)`, with the
 token and chat id each shown only as their last four characters. That masked
 form is the only form this program will ever print.
 

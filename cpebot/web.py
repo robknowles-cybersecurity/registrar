@@ -7,11 +7,12 @@ private network IS the boundary. Adding a password here would add a
 credential to store, rotate and leak without adding a single attacker who
 could reach the port.
 
-    CPEBOT_BIND    default 127.0.0.1   (never 0.0.0.0)
-    CPEBOT_PORT    default 8762
-    CPEBOT_DB      default <repo>/cpebot.db
-    CPEBOT_EVIDENCE default <repo>/evidence
-    CPEBOT_BODIES  default <repo>/bodies.yaml
+    CPEBOT_BIND       default 127.0.0.1   (never 0.0.0.0 outside a container)
+    CPEBOT_PORT       default 8762
+    CPEBOT_DB         default ~/cpebot/var/cpebot.db
+    CPEBOT_EVIDENCE   default ~/cpebot/var/evidence
+    CPEBOT_BODIES     default <repo>/bodies.yaml
+    CPEBOT_PACKETMAPS default <repo>/packetmaps
     CPEBOT_ALLOWED_HOSTS  optional, comma-separated extra host names
 
 Every request is refused with a 400 unless its Host header (port ignored)
@@ -96,6 +97,9 @@ header b{font-size:1.05rem;letter-spacing:.01em}
 header a{color:var(--accent);text-decoration:none;font-size:.92rem}
 header a:hover{text-decoration:underline}
 main{max-width:1080px;margin:0 auto;padding:1.2rem 1rem 4rem}
+.skip{position:absolute;left:-999px;top:0;background:var(--card);padding:.5rem .8rem;
+z-index:10;border:2px solid var(--accent)}
+.skip:focus{left:.5rem;top:.5rem}
 h1{font-size:1.45rem;margin:.2rem 0 1rem;letter-spacing:-.01em}
 h2{font-size:1.15rem;margin:1.6rem 0 .5rem}
 h3{font-size:.85rem;margin:1.2rem 0 .4rem;color:var(--mute);
@@ -209,9 +213,11 @@ def _page(title, body, banner=None, csrf=None):
         body = _POST_FORM_RE.sub(lambda m: m.group(0) + field, body)
     return ("<!doctype html><html lang=en><head><meta charset=utf-8>"
             "<meta name=viewport content='width=device-width,initial-scale=1'>"
-            "<title>%s · cpebot</title>"
-            "<link rel=stylesheet href=/static/cpebot.css></head><body>"
-            "<header><b>cpebot</b>%s</header><main>%s%s</main>"
+            "<title>%s · Registrar</title>"
+            "<link rel=stylesheet href=/static/registrar.css></head><body>"
+            "<a class=skip href=#main>Skip to content</a>"
+            "<header><b>Registrar</b>%s</header>"
+            "<main id=main tabindex=-1>%s%s</main>"
             "<footer>Private-network only. No authentication by design — the "
             "network boundary is the access control. Rules render from <code>bodies.yaml</code>; "
             "anything marked UNVERIFIED was not confirmed against a primary "
@@ -370,7 +376,7 @@ class App(object):
         if rep["advisory_only"]:
             out.append('<div class="banner">This body\'s category caps could '
                        'not be verified, so the figure below is an UPPER BOUND '
-                       'and cpebot will not assert compliance.</div>')
+                       'and Registrar will not assert compliance.</div>')
         out.append(bar(a["awarded"], a["required"],
                        marker_fraction=p["elapsed_fraction"],
                        klass=klass if klass in ("ok", "warn", "bad") else ""))
@@ -1456,7 +1462,9 @@ def _host_name(value):
     name, _sep, port = v.partition(":")
     if port and not port.isdigit():
         return ""
-    return name.rstrip(".")
+    # Drop one trailing dot only: "localhost." is the same name, while
+    # "localhost.." is not a name and must not collapse into one.
+    return name[:-1] if name.endswith(".") else name
 
 
 def allowed_host_names(bind, extra=()):
@@ -1474,7 +1482,7 @@ def allowed_host_names(bind, extra=()):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "cpebot/" + VERSION
+    server_version = "Registrar/" + VERSION
     app = None
     # Set by build_server(); empty means every request is refused.
     allowed_hosts = frozenset()
@@ -1562,7 +1570,9 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.dumps({
                 "status": "ok",
                 "version": VERSION,
-                "rules": app.rules.path,
+                # The rules file's sweep date, not its path: the endpoint
+                # should not describe the host's filesystem.
+                "rules_swept": str(app.rules.sweep_date),
                 "credentials": len(app.rules.credentials),
                 "unverified": sorted(u["credential"]
                                      for u in app.rules.unverified()),
@@ -1570,7 +1580,7 @@ class Handler(BaseHTTPRequestHandler):
                 "capture_counts": app.led.capture_counts(),
             }, indent=2).encode()
             return self._send(payload, ctype="application/json")
-        if path == "/static/cpebot.css":
+        if path == "/static/registrar.css":
             return self._send(CSS.encode("utf-8"),
                               ctype="text/css; charset=utf-8",
                               headers={"Cache-Control": "max-age=300"})
@@ -1604,14 +1614,14 @@ class Handler(BaseHTTPRequestHandler):
                 X.entries_csv(app.led).encode("utf-8"),
                 ctype="text/csv; charset=utf-8",
                 headers={"Content-Disposition":
-                         'attachment; filename="cpebot-ledger-%s.csv"'
+                         'attachment; filename="registrar-ledger-%s.csv"'
                          % datetime.date.today()})
         if path == "/export/entries.json":
             return self._send(
                 X.entries_json(app.led).encode("utf-8"),
                 ctype="application/json",
                 headers={"Content-Disposition":
-                         'attachment; filename="cpebot-ledger-%s.json"'
+                         'attachment; filename="registrar-ledger-%s.json"'
                          % datetime.date.today()})
         if path.startswith("/export/credential/"):
             cid = path.split("/", 3)[3]
@@ -1768,7 +1778,7 @@ class Handler(BaseHTTPRequestHandler):
                 "Forbidden",
                 '<h1>403 — cross-site request rejected</h1>'
                 '<div class="card"><p>The POST arrived without the '
-                'anti-forgery token every cpebot form carries. Go back, '
+                'anti-forgery token every Registrar form carries. Go back, '
                 'reload the page, and resubmit.</p></div>'), 403)
 
         if path == "/entry/new":
@@ -1951,7 +1961,7 @@ def main():
     app = App()
     app.led.init_schema()
     srv = build_server(BIND, PORT, app)
-    print("cpebot listening on http://%s:%d (private network only)" % (BIND, PORT),
+    print("Registrar listening on http://%s:%d (private network only)" % (BIND, PORT),
           flush=True)
     print("answers to Host: %s" % ", ".join(sorted(srv.RequestHandlerClass.allowed_hosts)),
           flush=True)

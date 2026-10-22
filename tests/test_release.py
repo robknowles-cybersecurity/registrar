@@ -8,6 +8,7 @@ note stays one paragraph with no prices in it.
 """
 
 import os
+import json
 import re
 import sys
 import unittest
@@ -86,28 +87,47 @@ class TestLandingPage(unittest.TestCase):
     def test_no_pricing(self):
         self.assertIsNone(re.search(r"[$€£]\s?\d", self.html))
 
+    def _header_rules(self):
+        """site/_headers as {path: [(name, value)]}, Cloudflare Pages format."""
+        rules, cur = {}, None
+        for line in read("site", "_headers").splitlines():
+            if not line.strip() or line.lstrip().startswith("#"):
+                continue
+            if not line[0].isspace():
+                cur = rules.setdefault(line.strip(), [])
+                continue
+            self.assertRegex(line, r"^\s+[A-Za-z-]+: \S")
+            name, value = line.strip().split(": ", 1)
+            cur.append((name, value))
+        return rules
+
     def test_clacks_header_in_cloudflare_pages_format(self):
-        lines = read("site", "_headers").splitlines()
-        lines = [l for l in lines if l.strip() and not l.startswith("#")]
-        self.assertEqual(lines[0], "/*")
-        headers = [l for l in lines[1:]]
-        for h in headers:
-            self.assertRegex(h, r"^\s+[A-Za-z-]+: \S")
-        self.assertIn("X-Clacks-Overhead: GNU Terry Pratchett",
-                      [h.strip() for h in headers])
+        rules = self._header_rules()
+        self.assertIn(("X-Clacks-Overhead", "GNU Terry Pratchett"), rules["/*"])
 
     def test_csp_header_forbids_scripts(self):
-        csp = [l.strip() for l in read("site", "_headers").splitlines()
-               if l.strip().startswith("Content-Security-Policy:")]
-        self.assertEqual(len(csp), 1)
-        self.assertIn("default-src 'none'", csp[0])
-        self.assertNotIn("script-src", csp[0])
+        # Every matching rule applies on Cloudflare Pages, so a CSP on /*
+        # would stack with the app's. The landing page's own policy must
+        # allow no scripts; only /app/* may.
+        rules = self._header_rules()
+        self.assertNotIn("Content-Security-Policy", [n for n, _ in rules["/*"]])
+        for path in ("/", "/index.html"):
+            csp = [v for n, v in rules[path] if n == "Content-Security-Policy"]
+            self.assertEqual(len(csp), 1, path)
+            self.assertIn("default-src 'none'", csp[0])
+            self.assertNotIn("script-src", csp[0])
+        for path, hdrs in rules.items():
+            for n, v in hdrs:
+                if n == "Content-Security-Policy" and "script-src" in v:
+                    self.assertTrue(path.startswith("/app/"), path)
 
     def test_every_local_reference_exists(self):
         for url in self.p.urls:
             if url.startswith("/"):
-                self.assertTrue(os.path.isfile(os.path.join(SITE, url[1:])),
-                                url)
+                path = os.path.join(SITE, url[1:])
+                if url.endswith("/"):
+                    path = os.path.join(path, "index.html")
+                self.assertTrue(os.path.isfile(path), url)
 
 
 class TestPublicDocs(unittest.TestCase):
@@ -134,7 +154,16 @@ class TestPublicDocs(unittest.TestCase):
 
     def test_trademarks_and_thirdparty_exist(self):
         self.assertIn("Registrar", read("TRADEMARKS.md"))
-        self.assertIn("None", read("THIRDPARTY.md"))
+        self.assertIn("The Python app: none.", read("THIRDPARTY.md"))
+
+    def test_every_vendored_package_is_declared(self):
+        # The browser app vendors front-end libraries; each must be named in
+        # THIRDPARTY.md and pinned with its hash in docs/DEPENDENCIES.md.
+        manifest = json.loads(read("webapp", "src", "vendor", "MANIFEST.json"))
+        third, deps = read("THIRDPARTY.md"), read("docs", "DEPENDENCIES.md")
+        for f in manifest["files"]:
+            self.assertIn(f["package"].split("/")[-1], third, f["package"])
+            self.assertIn(f["sha256"], deps, f["path"])
 
     def test_default_bind_is_still_loopback(self):
         self.assertIn('os.environ.get("CPEBOT_BIND", "127.0.0.1")',
