@@ -29,6 +29,19 @@ test("Anthropic request carries the text and nothing else of yours", async () =>
   await assert.rejects(LLM.extractWithLlm("x", { fetchImpl: fakeFetch }), /no API key/);
 });
 
+test("Anthropic request headers: API version 2023-06-01, browser access, fallback beta", async () => {
+  LLM.configure({ provider: "anthropic", key: "sk-test-123" });
+  let headers;
+  await LLM.extractWithLlm("T", { fetchImpl: async (url, init) => {
+    headers = init.headers;
+    return { ok: true, json: async () => ({ stop_reason: "end_turn", content: [{ type: "text", text: "{}" }] }) };
+  } });
+  LLM.forget();
+  assert.equal(headers["anthropic-version"], "2023-06-01");
+  assert.equal(headers["anthropic-dangerous-direct-browser-access"], "true");
+  assert.equal(headers["content-type"], "application/json");
+});
+
 test("OpenAI-compatible request shape", async () => {
   LLM.configure({ provider: "openai", key: "k", model: "some-model", baseUrl: "http://localhost:11434/v1/" });
   let seen;

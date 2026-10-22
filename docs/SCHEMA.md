@@ -66,13 +66,23 @@ the Python side: same keys, same types, same totals from the Python engine).
 
 - `format` must be `cpebot-ledger-v0.2`; anything else is refused.
 - Every entry is checked first (uuid, real date, known status and source,
-  list-typed fields, 64-hex evidence hashes). One bad entry refuses the
-  whole import and writes nothing.
+  list-typed fields, 64-hex evidence hashes; `count` a whole number 0 or
+  more; `title`, `provider`, `notes` and evidence `filename` and `mime`
+  text when present). One bad entry refuses the whole import and writes
+  nothing.
+- Evidence filenames are stored through the same `safeFilename` as an
+  upload: any path is dropped and unusual characters become `_`.
+- The `sample_data` config key is never imported: it records what the
+  sample wrote into the ledger it was loaded into, and "Remove sample
+  data" must not act on it in another one.
 - An entry whose `uuid` is already in the browser is skipped, never
   overwritten.
 - A file in `registrar.files` is stored only if its bytes hash to the
   SHA-256 it is filed under. An altered file is refused and its evidence row
   shows as missing.
+- A file in `registrar.files` larger than 15 MB (the upload cap) is refused
+  on its encoded length, before it is decoded, and counted in
+  `files_too_large`.
 - Evidence rows with no file (any Python export) are kept as records and
   show "file not in this browser".
 

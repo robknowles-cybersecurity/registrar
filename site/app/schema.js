@@ -9,7 +9,8 @@
 // (optionally) the evidence files themselves, base64-encoded and keyed by
 // SHA-256. Readers that do not know the key ignore it. docs/SCHEMA.md has the
 // full description.
-import { LedgerError, STATES, SOURCES, blankEntry, now, sha256Hex, blobBytes, validateDate } from "./ledger.js";
+import { LedgerError, STATES, SOURCES, blankEntry, now, sha256Hex, blobBytes, validateDate, safeFilename, MAX_EVIDENCE_BYTES } from "./ledger.js";
+import { SAMPLE_CONFIG_KEY } from "./sample.js";
 
 export const FORMAT = "cpebot-ledger-v0.2";
 export const EXTENSION = "registrar-browser-1";
@@ -74,8 +75,17 @@ function checkEntry(e, i) {
   }
   if (e.applies_to != null && !Array.isArray(e.applies_to)) throw new LedgerError(`${where}.applies_to: expected a list or null`);
   if (!Number.isFinite(Number(e.hours ?? 0))) throw new LedgerError(`${where}.hours: not a number`);
+  if (e.count !== undefined && !(Number.isInteger(e.count) && e.count >= 0)) throw new LedgerError(`${where}.count: expected a whole number, 0 or more`);
+  // Absent is fine (the blank entry's default fills it); anything else must be text.
+  for (const k of ["title", "provider", "notes"]) {
+    if (e[k] !== undefined && typeof e[k] !== "string") throw new LedgerError(`${where}.${k}: expected text`);
+  }
+  if (e.evidence != null && !Array.isArray(e.evidence)) throw new LedgerError(`${where}.evidence: expected a list`);
   for (const ev of e.evidence || []) {
+    if (!ev || typeof ev !== "object") throw new LedgerError(`${where}.evidence: not an object`);
     if (!/^[0-9a-f]{64}$/.test(String(ev.sha256 || ""))) throw new LedgerError(`${where}.evidence: sha256 must be 64 hex characters`);
+    if (typeof ev.filename !== "string") throw new LedgerError(`${where}.evidence.filename: expected text`);
+    if (ev.mime !== undefined && typeof ev.mime !== "string") throw new LedgerError(`${where}.evidence.mime: expected text`);
   }
 }
 
@@ -91,12 +101,22 @@ export async function importLedger(led, doc) {
   if (!Array.isArray(doc.entries)) throw new LedgerError("entries must be a list");
   doc.entries.forEach(checkEntry);
   const ext = doc.registrar && doc.registrar.extension === EXTENSION ? doc.registrar : null;
-  const report = { entries_added: 0, entries_skipped: 0, evidence_rows: 0, files_stored: 0, files_refused: [], files_absent: 0, credential_state: 0, fees: 0, config: 0 };
+  const report = { entries_added: 0, entries_skipped: 0, evidence_rows: 0, files_stored: 0, files_refused: [], files_too_large: [], files_absent: 0, credential_state: 0, fees: 0, config: 0 };
 
   const files = (ext && ext.files) || {};
   const stored = new Set();
   for (const [sha, f] of Object.entries(files)) {
-    const bytes = fromBase64(f.data_base64 || "");
+    // The same 15 MB cap as an upload, checked on the encoded length before decoding.
+    const b64 = typeof f?.data_base64 === "string" ? f.data_base64 : "";
+    if (b64.length > Math.ceil(MAX_EVIDENCE_BYTES / 3) * 4 + 4) {
+      report.files_too_large.push(sha);
+      continue;
+    }
+    const bytes = fromBase64(b64);
+    if (bytes.length > MAX_EVIDENCE_BYTES) {
+      report.files_too_large.push(sha);
+      continue;
+    }
     if ((await sha256Hex(bytes)) !== sha) {
       report.files_refused.push(sha);
       continue;
@@ -118,9 +138,9 @@ export async function importLedger(led, doc) {
     await led.store.put("entries", e);
     report.entries_added += 1;
     for (const ev of raw.evidence || []) {
-      await led.store.put("evidence", { entry_uuid: e.uuid, filename: ev.filename, stored_path: "", sha256: ev.sha256, bytes: ev.bytes, mime: ev.mime || "", added_at: ev.added_at || "", note: ev.note || "" });
+      await led.store.put("evidence", { entry_uuid: e.uuid, filename: safeFilename(ev.filename), stored_path: "", sha256: ev.sha256, bytes: ev.bytes, mime: ev.mime || "", added_at: ev.added_at || "", note: ev.note || "" });
       report.evidence_rows += 1;
-      if (!stored.has(ev.sha256) && !(await led.store.get("files", ev.sha256))) report.files_absent += 1;
+      if (!stored.has(ev.sha256) && !report.files_too_large.includes(ev.sha256) && !(await led.store.get("files", ev.sha256))) report.files_absent += 1;
     }
   }
   if (ext) {
@@ -139,6 +159,9 @@ export async function importLedger(led, doc) {
       report.fees += 1;
     }
     for (const [k, v] of Object.entries(ext.config || {})) {
+      // The sample's record of what it wrote describes the ledger it was
+      // loaded into, not this one; "Remove sample data" here must not act on it.
+      if (k === SAMPLE_CONFIG_KEY) continue;
       if ((await led.getConfig(k)) == null) {
         await led.setConfig(k, v);
         report.config += 1;

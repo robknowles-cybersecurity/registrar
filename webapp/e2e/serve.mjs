@@ -5,20 +5,22 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8",
+export const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8", ".json": "application/json", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json",
   ".gz": "application/gzip", ".wasm": "application/wasm", ".txt": "text/plain; charset=utf-8", ".pdf": "application/pdf", ".png": "image/png",
   ".gif": "image/gif", ".ico": "image/x-icon" };
 
-function parseHeaders(text) {
+export function parseHeaders(text) {
   const rules = [];
   let cur = null;
   for (const raw of text.split("\n")) {
     const line = raw.replace(/\r$/, "");
     if (!line.trim() || line.trim().startsWith("#")) continue;
     if (!/^\s/.test(line)) {
-      cur = { path: line.trim(), headers: [] };
+      cur = { path: line.trim(), headers: [], unset: [] };
       rules.push(cur);
+    } else if (cur && /^\s*!\s/.test(line)) {
+      cur.unset.push(line.trim().slice(1).trim());
     } else if (cur) {
       const i = line.indexOf(":");
       cur.headers.push([line.slice(0, i).trim(), line.slice(i + 1).trim()]);
@@ -27,9 +29,30 @@ function parseHeaders(text) {
   return rules;
 }
 
-function matches(pattern, path) {
+export function matches(pattern, path) {
   const re = new RegExp("^" + pattern.split("*").map((s) => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$");
   return re.test(path);
+}
+
+/**
+ * The headers _headers gives a request path, the way Cloudflare Pages
+ * applies them: matching rules in file order; within a rule, "! Name"
+ * detaches first, then its headers are set. The first rule to set a name
+ * replaces any value; a later rule setting it again appends (", ").
+ */
+export function headersFor(rules, path) {
+  const out = {};
+  const seen = new Set();
+  for (const r of rules) {
+    if (!matches(r.path, path)) continue;
+    for (const k of r.unset || []) delete out[k.toLowerCase()];
+    for (const [k, v] of r.headers) {
+      const key = k.toLowerCase();
+      out[key] = seen.has(key) && key in out ? `${out[key]}, ${v}` : v;
+      seen.add(key);
+    }
+  }
+  return out;
 }
 
 export function serve(siteDir, port = 0) {
@@ -49,19 +72,19 @@ export function serve(siteDir, port = 0) {
     } else if (!existsSync(file) && existsSync(`${file}.html`)) {
       file = `${file}.html`; // Cloudflare Pages serves /privacy from privacy.html
     }
+    let status = 200;
     if (!file.startsWith(siteDir) || !existsSync(file)) {
-      res.writeHead(404, { "content-type": "text/plain" });
-      return res.end("not found");
-    }
-    const headers = { "content-type": TYPES[extname(file)] || "application/octet-stream" };
-    for (const r of rules) {
-      if (!matches(r.path, url.pathname)) continue;
-      for (const [k, v] of r.headers) {
-        const key = k.toLowerCase();
-        headers[key] = headers[key] && key !== "content-type" ? `${headers[key]}, ${v}` : v;
+      // Cloudflare Pages serves a top-level 404.html, with status 404, for
+      // any address with no file (and then does no single-page fallback).
+      file = join(siteDir, "404.html");
+      status = 404;
+      if (!existsSync(file)) {
+        res.writeHead(404, { "content-type": "text/plain" });
+        return res.end("not found");
       }
     }
-    res.writeHead(200, headers);
+    const headers = { "content-type": TYPES[extname(file)] || "application/octet-stream", ...headersFor(rules, url.pathname) };
+    res.writeHead(status, headers);
     res.end(readFileSync(file));
   });
   return new Promise((resolve) => server.listen(port, "127.0.0.1", () => resolve({ server, port: server.address().port, log })));

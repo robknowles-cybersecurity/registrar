@@ -1,6 +1,6 @@
 """cpebot — CPE/CEU/ECE/PDU registrar for a multi-body certification portfolio.
 
-Public name: Registrar. v1.2.1. v1.0.0 was the v1 release (deadlines calendar,
+Public name: Registrar. v1.2.2. v1.0.0 was the v1 release (deadlines calendar,
 submission packets and the bodies catalog, over the v0.2 browser layer and
 v0.1 ledger).
 Self-hosted, private-network-only, stdlib-first.
@@ -14,4 +14,4 @@ you are not, and it tells you that in the direction that costs you the
 credential. `engine.py` is the answer to that; everything else feeds it.
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

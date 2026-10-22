@@ -110,3 +110,76 @@ test("remove sample: only sample rows go; your own data stays", async () => {
   assert.equal((await led.getCredentialState("cissp")).anchor_date, null, "the start date the sample filled in is cleared again");
   assert.equal(await sampleState(led), null);
 });
+
+test("remove sample keeps a credential setting you changed after loading (F1)", async () => {
+  const led = new Ledger(new MemoryStore());
+  await led.setCredentialState("cfe", { anchor_date: null, active: 1, note: "mine" }); // held, start left for later
+  await loadSample(led, { today: TODAY });
+  // created by the sample, then edited by you
+  await led.setCredentialState("cissp", { anchor_date: "2025-03-01", carryover_in: 12 });
+  // created by the sample, edited only in a field the sample did not set
+  await led.setCredentialState("cysa_plus", { portal_credits: 40 });
+  // the start date the sample filled in, then edited by you
+  await led.setCredentialState("cfe", { anchor_date: "2026-02-02" });
+  const r = await removeSample(led);
+  assert.equal(r.kept, 3);
+  const by = Object.fromEntries((await led.allCredentialState()).map((s) => [s.credential, s]));
+  assert.deepEqual(Object.keys(by).sort(), ["cfe", "cissp", "cysa_plus"]);
+  assert.equal(by.cissp.anchor_date, "2025-03-01");
+  assert.equal(by.cissp.carryover_in, 12);
+  assert.equal(by.cysa_plus.portal_credits, 40);
+  assert.equal(by.cfe.anchor_date, "2026-02-02");
+  assert.equal(by.cfe.note, "mine");
+});
+
+test("remove sample undoes only the untouched settings, and reports none kept", async () => {
+  const led = new Ledger(new MemoryStore());
+  await led.setCredentialState("cfe", { anchor_date: null, active: 0, note: "mine" });
+  await loadSample(led, { today: TODAY });
+  await led.setCredentialState("cissp", { carryover_in: 5 }); // changed: kept
+  const r = await removeSample(led);
+  assert.equal(r.kept, 1);
+  const by = Object.fromEntries((await led.allCredentialState()).map((s) => [s.credential, s]));
+  assert.deepEqual(Object.keys(by).sort(), ["cfe", "cissp"], "the untouched CySA+ row the sample created is gone");
+  assert.equal(by.cfe.anchor_date, null, "the start date it filled in is cleared");
+  assert.equal(by.cfe.active, 0, "and the field it set is put back as it was");
+});
+
+test("a sample loaded by v1.2.1 (old record) still removes cleanly, keeping changed rows", async () => {
+  const led = new Ledger(new MemoryStore());
+  for (const c of SAMPLE_CREDENTIALS) {
+    await led.setCredentialState(c.id, { anchor_date: E.addMonths(TODAY, -c.monthsAgo), carryover_in: 0, active: 1, note: "sample data" });
+  }
+  await led.setCredentialState("cfe", { note: "my note" });
+  await led.setConfig("sample_data", JSON.stringify({ loaded_on: TODAY, created: SAMPLE_CREDENTIALS.map((c) => c.id), anchored: [] }));
+  const r = await removeSample(led);
+  assert.equal(r.kept, 1);
+  assert.deepEqual((await led.allCredentialState()).map((s) => s.credential), ["cfe"]);
+});
+
+test("import never carries the sample record: removing after an import deletes no setting (F1)", async () => {
+  const { exportLedger, importLedger } = await import("../src/schema.js");
+  // An export whose sample record claims it created every credential row,
+  // while the rows themselves are the user's own.
+  const src = new Ledger(new MemoryStore());
+  await src.setCredentialState("cissp", { anchor_date: "2025-01-01", carryover_in: 7, active: 1, note: "mine" });
+  await src.setCredentialState("cfe", { anchor_date: "2025-06-01", active: 1 });
+  const mine = await src.addEntry({ activity_date: "2026-05-05", title: "My own course", provider: "Real Provider", hours: 2, tags: ["training"], status: CONFIRMED });
+  await src.setConfig("sample_data", JSON.stringify({ loaded_on: TODAY, created: ["cissp", "cfe"], settings: [
+    { credential: "cissp", before: null, wrote: { anchor_date: "2025-01-01", carryover_in: 7, portal_credits: null, portal_checked: null, active: 1, note: "mine" } },
+    { credential: "cfe", before: null, wrote: { anchor_date: "2025-06-01", carryover_in: 0, portal_credits: null, portal_checked: null, active: 1, note: "" } },
+  ] }));
+  const doc = await exportLedger(src);
+  assert.ok("sample_data" in doc.registrar.config, "the export does carry the key");
+
+  const led = new Ledger(new MemoryStore());
+  const rep = await importLedger(led, JSON.parse(JSON.stringify(doc)));
+  assert.equal(rep.entries_added, 1);
+  assert.equal(await led.getConfig("sample_data"), null, "import skips the sample record");
+  assert.equal(await sampleState(led), null);
+  const before = JSON.stringify(await led.allCredentialState());
+  const r = await removeSample(led);
+  assert.deepEqual(r, { activities: 0, files: 0, kept: 0 });
+  assert.equal(JSON.stringify(await led.allCredentialState()), before, "no credential setting deleted or changed");
+  assert.deepEqual((await led.listEntries()).map((e) => e.uuid), [mine]);
+});

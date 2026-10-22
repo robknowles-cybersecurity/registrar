@@ -32,6 +32,7 @@ each of your credentials' cycles began.
 | `REGISTRAR_HOST_BIND` | `127.0.0.1` | host address the port is published on |
 | `REGISTRAR_HOST_PORT` | `8762` | host port |
 | `TZ` | `America/New_York` | what "today" means for cycles and deadlines |
+| `REGISTRAR_ALLOWED_HOSTS` | empty | set to the address or name you browse to; inside the container the bind is 0.0.0.0, so a VPN address needs this or you get 400 Bad Host header. Comma-separated |
 
 **Registrar has no login.** Inside the container it listens on the
 container's own interfaces; the host-side publish address is the boundary.
@@ -67,7 +68,31 @@ project prefix (the checkout directory's name by default).
 
 ## Demo data
 
-To try it with invented sample data instead of an empty ledger:
+To look around with invented sample data, run the demo as a separate
+container on its own volume and port, so your real ledger is never
+involved. (A second Compose project with `-p` does not work here: the
+Compose file fixes the container name `registrar` and port 8762.)
+
+```bash
+docker compose build              # builds registrar:local, if not built yet
+docker volume create registrar-demo-data
+docker run --rm -v registrar-demo-data:/data \
+  -v "$PWD/tools:/src/tools:ro" -v "$PWD/fixtures:/src/fixtures:ro" \
+  -e PYTHONPATH=/app registrar:local \
+  python3 /src/tools/demo.py --db /data/registrar.db
+docker run -d --name registrar-demo -p 127.0.0.1:8763:8762 \
+  -v registrar-demo-data:/data --read-only --tmpfs /tmp \
+  --cap-drop ALL --security-opt no-new-privileges:true registrar:local
+```
+
+Then open <http://127.0.0.1:8763/>. To remove the demo:
+`docker rm -f registrar-demo && docker volume rm registrar-demo-data`.
+
+On a fresh install with nothing in it yet, you can instead load the demo
+into the main volume:
+
+> **Fresh installs only: this deletes your ledger and evidence.**
+> `docker compose down -v` removes the `registrar-data` volume.
 
 ```bash
 docker compose down -v

@@ -127,7 +127,7 @@ class TestRfc5545(IcsCase):
     def test_calendar_header(self):
         self.assertEqual(props(self.cal, "VERSION"), ["2.0"])
         self.assertEqual(props(self.cal, "PRODID"),
-                         ["-//ceu.tools//Registrar 1.2.1//EN"])
+                         ["-//ceu.tools//Registrar 1.2.2//EN"])
         self.assertEqual(props(self.cal, "CALSCALE"), ["GREGORIAN"])
         self.assertEqual(props(self.cal, "METHOD"), ["PUBLISH"])
 

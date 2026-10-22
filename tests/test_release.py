@@ -46,7 +46,10 @@ NAV_LINKS = (SELF_HOST, SELF_HOST + "/releases", REPORT_URL,
              SELF_HOST + "/blob/main/webapp/README.md#threat-model",
              GUIDE_SOURCE, CC_BY) + PROVIDERS + _program_urls() + (
              # canonical URLs of the site's own pages
-             "https://ceu.tools/", "https://ceu.tools/privacy")
+             "https://ceu.tools/", "https://ceu.tools/privacy",
+             # the other addresses the landing page's banner names
+             "https://cpe.insiderthreatanalyst.com/",
+             "https://robknowles-cybersecurity.github.io/registrar/")
 TRACKERS = ("google-analytics", "googletagmanager", "gtag(", "plausible",
             "cloudflareinsights", "facebook", "doubleclick", "segment.",
             "hotjar", "matomo", "clarity.ms", "umami")
@@ -234,10 +237,42 @@ class TestLandingPage(unittest.TestCase):
         for must in ("api.anthropic.com", "api.openai.com", "20,000 characters",
                      "never asks for, stores or uses a certifying body's portal login"):
             self.assertIn(must, text)
-        csp = [v for n, v in self._header_rules()["/privacy"]
-               if n == "Content-Security-Policy"]
+        csp = self._headers_for("/privacy").get("content-security-policy", [])
         self.assertEqual(len(csp), 1)
         self.assertNotIn("script-src", csp[0])
+
+    def test_landing_and_privacy_html_ask_for_no_transform(self):
+        # The edge must not rewrite these pages; the app's caching is its own.
+        for path in ("/", "/index.html", "/privacy", "/privacy.html"):
+            self.assertEqual(self._headers_for(path).get("cache-control"), ["no-transform"], path)
+        for path in ("/app/", "/app/index.html", "/app/app.js", "/style.css"):
+            self.assertNotIn("no-transform", " ".join(self._headers_for(path).get("cache-control", [])), path)
+
+    def test_every_page_has_one_canonical_on_ceu_tools(self):
+        # The site is also served at another address and mirrored; search
+        # engines should treat ceu.tools as the original.
+        want = {"index.html": "https://ceu.tools/", "privacy.html": "https://ceu.tools/privacy",
+                "404.html": "https://ceu.tools/", "app/index.html": "https://ceu.tools/app/"}
+        pages = sorted(os.path.relpath(os.path.join(d, f), SITE).replace(os.sep, "/")
+                       for d, _, fs in os.walk(SITE) if "vendor" not in d for f in fs if f.endswith(".html"))
+        self.assertEqual(pages, sorted(want))
+        for page, url in want.items():
+            found = re.findall(r'<link rel="canonical" href="([^"]*)">', read("site", *page.split("/")))
+            self.assertEqual(found, [url], page)
+
+    def test_landing_says_where_your_data_lives_per_address(self):
+        banner = re.search(r'<aside class="alias-banner"[^>]*>(.*?)</aside>', self.html, re.S)
+        self.assertIsNotNone(banner)
+        self.assertEqual(re.sub(r"<[^>]+>", "", banner.group(1)),
+                         "Served at ceu.tools, cpe.insiderthreatanalyst.com and a GitHub Pages "
+                         "mirror. Your data lives in your browser under "
+                         "whichever address you use; export before switching.")
+
+    def test_footers_say_built_with_ai_assisted_development(self):
+        # Same sentence as the README's last line, as plain text.
+        for page in ("index.html", "privacy.html"):
+            footer = re.search(r"<footer>(.*?)</footer>", read("site", page), re.S).group(1)
+            self.assertIn("<p>Built with AI-assisted development.</p>", footer, page)
 
     def test_security_txt(self):
         txt = read("site", ".well-known", "security.txt")
@@ -258,27 +293,60 @@ class TestLandingPage(unittest.TestCase):
             if not line[0].isspace():
                 cur = rules.setdefault(line.strip(), [])
                 continue
+            if line.strip().startswith("! "):   # detach a header set by an earlier rule
+                self.assertRegex(line, r"^\s+! [A-Za-z-]+$")
+                cur.append(("!", line.strip()[2:]))
+                continue
             self.assertRegex(line, r"^\s+[A-Za-z-]+: \S")
             name, value = line.strip().split(": ", 1)
             cur.append((name, value))
         return rules
+
+    def _headers_for(self, path):
+        """What Cloudflare Pages sends for a path: matching rules in file
+        order; within a rule "! Name" detaches first; a name set again by a
+        later rule is appended. Each value is a list: two CSPs = two items."""
+        import fnmatch
+        out, seen = {}, set()
+        for pattern, hdrs in self._header_rules().items():
+            if not fnmatch.fnmatchcase(path, pattern):
+                continue
+            for n, v in hdrs:
+                if n == "!":
+                    out.pop(v.lower(), None)
+            for n, v in hdrs:
+                if n == "!":
+                    continue
+                key = n.lower()
+                out[key] = out.get(key, []) + [v] if key in seen else [v]
+                seen.add(key)
+        return out
 
     def test_clacks_header_in_cloudflare_pages_format(self):
         rules = self._header_rules()
         self.assertIn(("X-Clacks-Overhead", "GNU Terry Pratchett"), rules["/*"])
 
     def test_csp_header_forbids_scripts(self):
-        # Every matching rule applies on Cloudflare Pages, so a CSP on /*
-        # would stack with the app's. The landing page's own policy must
-        # allow no scripts; only /app/* may.
+        # Every matching rule applies on Cloudflare Pages, and two CSPs on
+        # one response are both enforced. The script-free policy sits on /*
+        # so every page has it, 404.html at any address included; every
+        # other policy must detach it first. Only /app/* may allow scripts.
         rules = self._header_rules()
-        self.assertNotIn("Content-Security-Policy", [n for n, _ in rules["/*"]])
-        for path in ("/", "/index.html"):
-            csp = [v for n, v in rules[path] if n == "Content-Security-Policy"]
+        self.assertIn("Content-Security-Policy", [n for n, _ in rules["/*"]])
+        for path in ("/", "/index.html", "/privacy", "/privacy.html", "/404.html",
+                     "/no-such-page", "/deep/no/such/page"):
+            csp = self._headers_for(path).get("content-security-policy", [])
             self.assertEqual(len(csp), 1, path)
             self.assertIn("default-src 'none'", csp[0])
             self.assertNotIn("script-src", csp[0])
+        for path in ("/app/", "/app/index.html", "/app/app.js"):
+            csp = self._headers_for(path).get("content-security-policy", [])
+            self.assertEqual(len(csp), 1, path)
+            self.assertIn("script-src 'self'", csp[0])
         for path, hdrs in rules.items():
+            sets = [n for n, _ in hdrs].count("Content-Security-Policy")
+            if path != "/*" and sets:
+                self.assertIn(("!", "Content-Security-Policy"), hdrs, f"{path} sets a CSP without detaching the /* one")
             for n, v in hdrs:
                 if n == "Content-Security-Policy" and "script-src" in v:
                     self.assertTrue(path.startswith("/app/"), path)
@@ -367,10 +435,14 @@ class TestPublicDocs(unittest.TestCase):
 
     def test_changelog_and_release_notes(self):
         log = read("CHANGELOG.md")
-        for head in ("## v1.2.1", "## v1.2.0", "## v1.1.0", "## v1.0.0"):
+        for head in ("## v1.2.2 — 2026-10-22", "## v1.2.1", "## v1.2.0", "## v1.1.0", "## v1.0.0"):
             self.assertIn(head, log)
+        self.assertNotIn("unreleased", log.lower())
+        self.assertLess(log.index("## v1.2.2"), log.index("## v1.2.1"))
         self.assertLess(log.index("## v1.2.1"), log.index("## v1.2.0"))
         self.assertLess(log.index("v1.2.0"), log.index("## v1.1.0"))
+        self.assertTrue(read("docs", "release-notes", "v1.2.2.md").startswith(
+            "# Registrar v1.2.2\n\nReleased 2026-10-22.\n"))
         notes = read("docs", "release-notes", "v1.2.0.md")
         self.assertIn("# Registrar v1.2.0", notes)
         self.assertIn("private vulnerability reporting", notes)

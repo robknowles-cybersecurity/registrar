@@ -28,8 +28,10 @@ function n(v) {
   return s === "-0" ? "0" : s;
 }
 
+/** The evidence file's name inside the zip: one flat name, no path separators, no "..". */
 export function bundleName(entry, ev) {
-  return `${entry.activity_date}_${entry.uuid.slice(0, 8)}_${ev.filename}`;
+  const name = String(ev.filename || "file").replace(/\.\.+/g, "").replace(/[\\/]+/g, "_") || "file";
+  return `${entry.activity_date}_${entry.uuid.slice(0, 8)}_${name}`;
 }
 
 /** One packet-map field's value for one entry (Python packets._resolve). */

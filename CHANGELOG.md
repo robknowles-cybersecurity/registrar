@@ -5,6 +5,57 @@ at <https://ceu.tools/app>. Versions follow
 [Semantic Versioning](https://semver.org/) and are tagged on this
 repository as a whole; the browser app shows its version in its footer.
 
+## v1.2.2 — 2026-10-22
+
+Fixes from the post-publish review of v1.2.1 (finding numbers F1 to F13
+are the reviewer's; F11 and F12 were not in this round). Release notes:
+[docs/release-notes/v1.2.2.md](docs/release-notes/v1.2.2.md).
+
+### Fixed
+
+- **F1:** "Remove sample data" deleted every credential setting the sample
+  had created and cleared every start date it had filled in, even ones you
+  had changed since. The sample now records each setting exactly as it
+  wrote it, and removal undoes only those still unchanged; the message says
+  how many it kept. Import no longer carries the sample's record
+  (`sample_data`) into another ledger. A sample loaded by v1.2.1 is
+  handled the same way.
+- **F2:** the bring-your-own-key request to Anthropic sends
+  `anthropic-version: 2023-06-01`.
+- **F3:** the activity page escapes the Count field, and import refuses
+  entries whose count is not a whole number or whose title, provider,
+  notes, evidence filename or MIME type is not text.
+- **F4:** imported evidence filenames go through the same sanitizing as
+  uploads, and packet zips never put a path separator or `..` in a file
+  name.
+- **F5:** an upload over 15 MB is refused before it is read; image-only PDF
+  pages render at no more than about 25 megapixels; OCR stops after 60
+  seconds per file with "OCR timed out"; an imported file over 15 MB is
+  refused before it is decoded.
+- **F6:** the self-hosting guide's demo-data steps no longer begin by
+  deleting your data volume: the demo runs in its own container and
+  volume, and the delete-and-reload route is marked "fresh installs only".
+- **F7:** the self-hosting guide lists `REGISTRAR_ALLOWED_HOSTS` (needed
+  to browse to a VPN address or a name, or you get 400 Bad Host header).
+- **F8:** the API key field asks browsers and password managers not to save
+  it, and the privacy page says Registrar never stores it.
+- **F9:** ceu.tools has a 404 page (which also ends the single-page
+  fallback), and its script-free Content-Security-Policy now covers every
+  address, with the app's own policy replacing it under /app/.
+- **F10:** the privacy page says a model on your own machine is reached
+  over plain HTTP, not HTTPS.
+
+### Changed
+
+- **F13:** the landing page and the privacy page now say "Built with
+  AI-assisted development." in their footers, as the README does.
+- The landing page and privacy page are sent with `Cache-Control:
+  no-transform`, asking Cloudflare's edge not to rewrite them.
+- Every page names its ceu.tools address as canonical. The site is also
+  served at cpe.insiderthreatanalyst.com and mirrored on GitHub Pages; the
+  landing page and the app say that your data lives in your browser under
+  whichever address you use, so export before switching.
+
 ## v1.2.1
 
 The landing page's per-body rules, readable at any width. Release notes:

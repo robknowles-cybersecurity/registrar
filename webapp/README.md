@@ -66,7 +66,28 @@ npm ci --ignore-scripts     # pinned dev packages; see docs/DEPENDENCIES.md
 npm run vendor              # only when changing a library version: re-copies vendor/ and MANIFEST.json
 npm run build               # -> ../site/app/ (checks every vendored file's SHA-256 first)
 npm run check-public        # fails if anything under site/ carries internal wording
+npm run build:mirror        # -> dist/mirror/: site/ for GitHub Pages under BASE_PATH (default /registrar/)
+npm run serve:mirror        # serves dist/mirror/ at http://127.0.0.1:8766/registrar/, as GitHub Pages would
 ```
+
+`build:mirror` builds the mirror at
+`https://robknowles-cybersecurity.github.io/registrar/`, for networks whose
+proxies block newly registered domains like ceu.tools. It reads `site/` and
+never writes it. The output is the same files at the same version, with
+these changes:
+
+- every root-absolute URL moves under `BASE_PATH`;
+- every page gets a canonical link to its ceu.tools page;
+- a one-line static banner goes on the app; the landing page keeps
+  site/'s own banner, which already names the mirror (one banner per page);
+- each page's Content-Security-Policy from `site/_headers` is carried as a
+  `<meta>`, because GitHub Pages sends no custom headers. A meta policy
+  cannot express `frame-ancestors`, and the other `_headers` lines
+  (X-Frame-Options, Permissions-Policy, Cross-Origin-Opener-Policy,
+  X-Clacks-Overhead) cannot be sent at all;
+- `.nojekyll` and a `404.html` are added.
+
+`tests/mirror.test.mjs` checks all of this.
 
 `site/app/` is committed and deploys with the rest of `site/` on Cloudflare
 Pages. Never edit it by hand; rebuild.
@@ -86,12 +107,15 @@ npm test                    # unit tests (node:test), including:
                             #     export -> wipe -> import with files; Python reads the browser's export
                             #   parser: 16 synthetic certificates (tests/fixtures/), every v1 body
 npm run heldout             # parser score on held-out certificates it was not tuned on (a score, not a gate)
-npm run e2e                 # the built app in headless Chromium, under the real CSP (57 checks; 53 with --skip-ocr)
-npm run e2e:prove-fails     # the same against three deliberately broken builds: all must fail
-npm run e2e:site            # landing page, /privacy, share card, icons, security.txt, and the
-                            #   "How each body counts" section at 360-1600 px (85 checks)
-npm run e2e:site:prove-fails  # a site without og.png, one loading a third-party image, and one
-                              #   whose rules grid has no breakpoint: all three must fail
+npm run e2e                 # the built app in headless Chromium, under the real CSP (67 checks; 62 with --skip-ocr)
+npm run e2e:prove-fails     # the same against six deliberately broken builds (parser, import, export,
+                            #   and the v1.2.2 fixes F1, F3, F4 reverted): all must fail
+npm run e2e:site            # landing page, /privacy, 404, share card, icons, security.txt, one CSP
+                            #   on every page and address, canonical links, and the
+                            #   "How each body counts" section at 360-1600 px (92 checks)
+npm run e2e:site:prove-fails  # a site without og.png, one loading a third-party image, one whose
+                              #   rules grid has no breakpoint, and one with the script-free CSP
+                              #   off /*: all four must fail
 node e2e/keyboard.mjs       # keyboard-only walk of the core flow, focus visible at every stop
 AXE=/path/to/axe.min.js npm run a11y   # axe-core on every screen, light and dark
 ```
@@ -100,7 +124,10 @@ AXE=/path/to/axe.min.js npm run a11y   # axe-core on every screen, light and dar
 others: the first-run question; log an activity, attach a fixture PDF, the
 parsed hours appear, export, wipe, import, the activity is back with
 verified evidence; sample data load, the three reports, export, wipe,
-import, sample data back, remove sample data; packet
+import, sample data back, remove sample data (and a credential setting you
+changed after loading it survives the removal); a crafted import (markup in
+count, a path in a filename) is refused or sanitized; an upload over 15 MB is
+refused before it is read; OCR past its deadline stops; packet
 zip contents; OCR of a photo and of an image-only PDF; a Python export
 imports; offline reload; BYOK sends text only and stores no key; no request
 to any other origin; no CSP violation. It uses the machine's Playwright

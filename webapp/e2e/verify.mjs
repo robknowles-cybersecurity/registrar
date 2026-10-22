@@ -13,6 +13,9 @@
 //   node e2e/verify.mjs --break parser  # a mutated build: must FAIL
 //   node e2e/verify.mjs --break import  # a mutated build: must FAIL
 //   node e2e/verify.mjs --break export  # a mutated build: must FAIL
+//   node e2e/verify.mjs --break sample  # a mutated build (F1 reverted): must FAIL
+//   node e2e/verify.mjs --break escape  # a mutated build (F3 reverted): must FAIL
+//   node e2e/verify.mjs --break filename  # a mutated build (F4 reverted): must FAIL
 //   node e2e/verify.mjs --skip-ocr      # skip the two OCR checks (faster)
 import { createRequire } from "node:module";
 import { execSync, execFileSync } from "node:child_process";
@@ -55,6 +58,18 @@ if (breakWhat) {
   if (breakWhat === "parser") mutate("parser.js", "hours: bestHours(lines) || none,", "hours: none,");
   else if (breakWhat === "import") mutate("schema.js", "await led.store.put(\"entries\", e);", "/* mutated: entries dropped */");
   else if (breakWhat === "export") mutate("exports.js", "export const ALARM_DAYS = [90, 30];", "export const ALARM_DAYS = [90];");
+  // F1 reverted: remove sample data undoes every setting it wrote, changed or not
+  else if (breakWhat === "sample") mutate("sample.js", "if (!sameRow(cur, s.wrote, s.fields)) {", "if (false) {");
+  // F4 reverted: imported filenames stored raw, zip names not flattened
+  else if (breakWhat === "filename") {
+    mutate("schema.js", "filename: safeFilename(ev.filename),", "filename: ev.filename,");
+    mutate("packets.js", ".replace(/\\.\\.+/g, \"\").replace(/[\\\\/]+/g, \"_\")", "");
+  }
+  // F3 reverted: count rendered unescaped, import does not type-check it
+  else if (breakWhat === "escape") {
+    mutate("app.js", "<dd>${esc(e.count)}</dd>", "<dd>${e.count}</dd>");
+    mutate("schema.js", "if (e.count !== undefined &&", "if (false &&");
+  }
   else throw new Error(`unknown --break ${breakWhat}`);
   console.log(`MUTATED BUILD (--break ${breakWhat}): this run must FAIL\n`);
 }
@@ -199,6 +214,20 @@ try {
     await ingestDone(180000);
     check("OCR of a photo: hours 6", (await val("#f-hours")) === "6", `${await val("#f-hours")} | ${await page.locator("#ingest-status").innerText()}`);
     check("OCR of a photo: date 2026-06-18", (await val("#f-activity_date")) === "2026-06-18", await val("#f-activity_date"));
+    // F5: OCR that runs past its deadline is stopped and says so; the next OCR
+    // (the image-only PDF below) gets a fresh worker and still works.
+    const timedOut = await page.evaluate(async (b64) => {
+      const { extractText } = await import("./ingest.js");
+      const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+      const t0 = performance.now();
+      try {
+        await extractText({ type: "image/png" }, bytes, { ocrTimeoutMs: 1 });
+        return { ok: false, why: "no timeout" };
+      } catch (err) {
+        return { ok: err.message === "OCR timed out", why: err.message, ms: Math.round(performance.now() - t0) };
+      }
+    }, readFileSync(join(fixtures, "images", "photo-cert.png")).toString("base64"));
+    check("F5: OCR past its deadline stops with 'OCR timed out'", timedOut.ok, JSON.stringify(timedOut));
     await go("#/entries");
     await go("#/log");
     await page.setInputFiles("#file-input", join(fixtures, "images", "scan-cert-image-only.pdf"));
@@ -220,6 +249,8 @@ try {
   await go("#/log");
   check("BYOK is off by default", (await page.locator("#ask-llm").count()) === 0);
   await go("#/settings");
+  const keyAttrs = await page.evaluate(() => { const k = document.getElementById("l-key"); return [k.getAttribute("autocomplete"), k.hasAttribute("data-1p-ignore"), k.getAttribute("data-lpignore")]; });
+  check("F8: the key field asks password managers not to save it", JSON.stringify(keyAttrs) === JSON.stringify(["new-password", true, "true"]), JSON.stringify(keyAttrs));
   const KEY = "sk-test-not-a-real-key-0000";
   await page.fill("#l-key", KEY);
   await page.click('#llm-form button[type="submit"]');
@@ -267,6 +298,21 @@ try {
   await ingestDone(30000);
   check("evidence parsing works offline", (await val("#f-hours")) === "4", await val("#f-hours"));
   await context.setOffline(false);
+
+  // == F5: an upload over 15 MB is refused before any of it is read ==
+  await go("#/log");
+  await page.evaluate(() => {
+    window.__reads = 0;
+    const orig = Blob.prototype.arrayBuffer;
+    Blob.prototype.arrayBuffer = function (...a) { window.__reads += 1; return orig.apply(this, a); };
+  });
+  const big = Buffer.alloc(16 * 1024 * 1024, 0x20);
+  big.write("%PDF-1.4\n");
+  await page.setInputFiles("#file-input", { name: "big.pdf", mimeType: "application/pdf", buffer: big });
+  await page.waitForFunction(() => /too large/.test(document.querySelector("#ingest-status")?.textContent || ""));
+  const bigStatus = await page.locator("#ingest-status").innerText();
+  const reads = await page.evaluate(() => window.__reads);
+  check("F5: a 16 MB upload is refused by its size, before it is read", reads === 0 && /16\.0 MB \(cap 15 MB\)/.test(bigStatus), `${reads} reads; ${bigStatus}`);
 
   // == SAMPLE DATA: onboarding -> load sample -> reports -> export -> wipe -> import -> remove ==
   await page.click("#btn-wipe");
@@ -317,8 +363,86 @@ try {
     files: (await window.__registrar.led.store.getAll("files")).length,
     creds: (await window.__registrar.led.allCredentialState()).map((s) => `${s.credential}:${s.anchor_date}`).sort(),
   }));
-  check("remove sample data: activities and certificates gone, your CISSP and CFE kept",
-    afterRemove.entries === 0 && afterRemove.files === 0 && afterRemove.creds.join() === "cfe:null,cissp:2025-09-01", JSON.stringify(afterRemove));
+  // An import never carries the sample's record of what it wrote, so the
+  // credential settings that came in with the import are all kept (F1).
+  check("remove sample data after an import: activities and certificates gone, every imported credential setting kept",
+    afterRemove.entries === 0 && afterRemove.files === 0 && afterRemove.creds.length === 3 && afterRemove.creds.includes("cissp:2025-09-01") &&
+    afterRemove.creds.every((c) => !c.endsWith(":null")), JSON.stringify(afterRemove));
+
+  // == F1: a credential setting you change after loading the sample survives its removal ==
+  await page.click("#btn-wipe");
+  await page.waitForFunction(() => document.querySelector("main h1")?.textContent === "Which credentials do you hold?");
+  await page.click("#welcome-skip");
+  await page.waitForFunction(() => document.querySelector("#sample-load"));
+  await page.click("#sample-load");
+  await page.waitForFunction(() => document.querySelector("#sample-remove"));
+  await go("#/settings");
+  await page.fill("#a-cysa_plus", "2025-02-03");
+  await page.fill("#co-cysa_plus", "4");
+  await page.click('#settings-form button[type="submit"]');
+  await page.waitForFunction(() => location.hash === "#/" && document.querySelector("#sample-remove"));
+  await page.click("#sample-remove");
+  await page.waitForFunction(() => !document.querySelector("#sample-remove"));
+  const toastText = await page.locator("#toast").innerText();
+  const kept = await page.evaluate(async () => (await window.__registrar.led.allCredentialState()).map((s) => `${s.credential}:${s.anchor_date}:${s.carryover_in}`).sort());
+  check("F1: a sample-created credential you edited keeps your values after Remove sample data", kept.join() === "cysa_plus:2025-02-03:4", kept.join());
+  check("F1: the toast says it kept the setting you changed", toastText.includes("Kept 1 credential setting you changed"), toastText);
+
+  // == F3: a crafted import is refused with a reason, and count renders as text ==
+  const crafted = (entries) => {
+    const f = join(dirname(exportFile), `crafted-${Math.random().toString(16).slice(2)}.json`);
+    writeFileSync(f, JSON.stringify({ format: "cpebot-ledger-v0.2", entries }));
+    return f;
+  };
+  const evil = "<img src=x onerror=\"window.__pwned=1\">";
+  const craftedEntry = { uuid: "feedfacefeedfacefeedfacefeedface", activity_date: "2026-05-05", title: "Crafted", provider: "X", hours: 1, count: evil, tags: ["training"], markers: [], submitted_to: [], notes: "", status: "confirmed", capture_source: "web", evidence: [] };
+  const entriesBefore = await entryCount();
+  await page.evaluate(() => (document.getElementById("toast").textContent = ""));
+  await page.setInputFiles("#import-file", crafted([craftedEntry]));
+  await page.waitForFunction(() => /Imported|refused/.test(document.getElementById("toast").textContent));
+  const refusedText = await page.locator("#toast").innerText();
+  check("F3: an import whose count is markup is refused, naming the field", /Import refused: entries\[0\]\.count/.test(refusedText) && (await entryCount()) === entriesBefore, refusedText);
+  await page.evaluate(() => (document.getElementById("toast").textContent = ""));
+  await page.setInputFiles("#import-file", crafted([{ ...craftedEntry, count: 1, title: { html: evil } }]));
+  await page.waitForFunction(() => /Imported|refused/.test(document.getElementById("toast").textContent));
+  check("F3: an import whose title is not text is refused", /Import refused: entries\[0\]\.title/.test(await page.locator("#toast").innerText()), await page.locator("#toast").innerText());
+  // Defence in depth: a row that is already stored with markup in count still renders as text.
+  await page.evaluate(async (e) => {
+    const { blankEntry } = await import("./ledger.js");
+    await window.__registrar.led.store.put("entries", { ...blankEntry(), ...e, evidence: undefined });
+  }, craftedEntry);
+  await go(`#/entry/${craftedEntry.uuid}`);
+  const countCell = await page.evaluate(() => {
+    const dt = [...document.querySelectorAll("main dt")].find((d) => d.textContent === "Count");
+    return { text: dt.nextElementSibling.textContent, imgs: dt.nextElementSibling.querySelectorAll("img").length, pwned: Boolean(window.__pwned) };
+  });
+  check("F3: a stored count is escaped on the activity page (no element, no script)", countCell.imgs === 0 && !countCell.pwned && countCell.text === evil, JSON.stringify(countCell));
+  await page.evaluate(async (u) => window.__registrar.led.store.delete("entries", u), craftedEntry.uuid);
+
+  // == F4: an imported filename with a path in it reaches the packet zip as one flat, safe name ==
+  const evilPdf = Buffer.from("%PDF-1.4 sample evidence for the filename check\n");
+  const { createHash } = await import("node:crypto");
+  const evilSha = createHash("sha256").update(evilPdf).digest("hex");
+  const travDoc = {
+    format: "cpebot-ledger-v0.2",
+    entries: [{ ...craftedEntry, uuid: "bada55edbada55edbada55edbada55ed", title: "Path traversal check", count: 1, submitted_to: [],
+      evidence: [{ sha256: evilSha, filename: "x/../../../.bashrc", bytes: evilPdf.length, mime: "application/pdf", added_at: "", note: "" }] }],
+    registrar: { extension: "registrar-browser-1", credential_state: [{ credential: "cissp", anchor_date: "2025-09-01", active: 1 }], fees: [], config: {},
+      files: { [evilSha]: { mime: "application/pdf", data_base64: evilPdf.toString("base64") } } },
+  };
+  const travFile = join(dirname(exportFile), "traversal.json");
+  writeFileSync(travFile, JSON.stringify(travDoc));
+  await page.evaluate(() => (document.getElementById("toast").textContent = ""));
+  await page.setInputFiles("#import-file", travFile);
+  await page.waitForFunction(() => /Imported|refused/.test(document.getElementById("toast").textContent));
+  const storedName = await page.evaluate(async () => (await window.__registrar.led.listEvidence()).map((r) => r.filename));
+  check("F4: an imported filename 'x/../../../.bashrc' is stored as '.bashrc'", storedName.join() === ".bashrc", storedName.join());
+  await go("#/packets");
+  const travZip = readZip(new Uint8Array(await downloadOf(() => page.click('[data-zip="isc2"]'))));
+  const travNames = travZip.map((f) => f.name);
+  const travEv = travNames.filter((n) => n.startsWith("evidence/"));
+  check("F4: the packet zip entry is evidence/<date>_<uuid8>_.bashrc, with no '..', no '\\' and no deeper path",
+    travEv.join() === "evidence/2026-05-05_bada55ed_.bashrc" && travNames.every((n) => !n.includes("..") && !n.includes("\\") && n.split("/").length <= 2), travNames.join(", "));
 } catch (err) {
   check("verification ran to the end", false, err.stack.split("\n").slice(0, 3).join(" | "));
 }

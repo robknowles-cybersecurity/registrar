@@ -6,10 +6,11 @@
 //   node e2e/site.mjs --break og     # a copy of the site without og.png: must FAIL
 //   node e2e/site.mjs --break csp    # a copy whose landing page loads a third-party image: must FAIL
 //   node e2e/site.mjs --break breakpoint  # a copy whose rules grid has no breakpoint: must FAIL
+//   node e2e/site.mjs --break csp-all     # a copy with the script-free CSP on / only, not /*: must FAIL
 //   node e2e/site.mjs --shots DIR    # also save a screenshot of the rules section at each width
 import { createRequire } from "node:module";
 import { execSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -43,6 +44,13 @@ if (breakWhat) {
     const css = readFileSync(p, "utf8");
     if (!css.includes(`@media (min-width: ${BREAKPOINT}px) {`)) throw new Error("the rules breakpoint is not in style.css");
     writeFileSync(p, css.replace(`@media (min-width: ${BREAKPOINT}px) {`, "@media all {"));
+  } else if (breakWhat === "csp-all") {
+    // F9 reverted: the script-free policy back on / and /privacy only, not /*
+    const p = join(siteDir, "_headers");
+    const h = readFileSync(p, "utf8");
+    const line = /\n(  Content-Security-Policy: default-src 'none'; style-src 'self';[^\n]*)\n\n# The landing page/.exec(h);
+    if (!line) throw new Error("the /* policy line is not in _headers");
+    writeFileSync(p, h.replace(`${line[1]}\n`, "").replace("/\n  Permissions-Policy", `/\n${line[1]}\n  Permissions-Policy`));
   } else throw new Error(`unknown --break ${breakWhat}`);
   console.log(`MUTATED SITE (--break ${breakWhat}): this run must FAIL\n`);
 }
@@ -60,6 +68,14 @@ const local = (u) => (u.startsWith(PUBLIC) ? base + u.slice(PUBLIC.length) : u);
 async function get(path) {
   const res = await fetch(base + path, { redirect: "manual" });
   return { status: res.status, type: res.headers.get("content-type") || "", headers: res.headers, body: Buffer.from(await res.arrayBuffer()) };
+}
+
+function walkHtml(dir, prefix = "") {
+  return readdirSync(join(dir, prefix), { withFileTypes: true }).flatMap((d) => {
+    const rel = prefix ? `${prefix}/${d.name}` : d.name;
+    if (d.isDirectory()) return rel === "app/vendor" ? [] : walkHtml(dir, rel);
+    return d.name.endsWith(".html") ? [rel] : [];
+  }).sort();
 }
 
 function pngSize(buf) {
@@ -93,6 +109,47 @@ try {
   check("/privacy has the landing page's script-free CSP", /default-src 'none'/.test(priv.headers.get("content-security-policy") || "") && !/script-src/.test(priv.headers.get("content-security-policy") || ""));
   const privText = priv.body.toString("utf8");
   check("/privacy states what BYOK sends and to whom", privText.includes("api.anthropic.com") && privText.includes("api.openai.com") && /What is never sent/.test(privText) && /20,000 characters/.test(privText));
+
+  // -- F9: every HTML file under site/, at each address it is served from,
+  // and any address with no file (404.html), carries exactly one CSP
+  const htmlFiles = walkHtml(siteDir);
+  const addresses = htmlFiles.flatMap((rel) => {
+    if (rel === "index.html") return ["/", "/index.html"];
+    if (rel.endsWith("/index.html")) return [`/${rel.slice(0, -"index.html".length)}`, `/${rel}`];
+    return [`/${rel}`, `/${rel.replace(/\.html$/, "")}`];
+  });
+  const noCsp = [];
+  for (const a of [...addresses, "/no-such-page", "/deep/no/such/page.html", "/app/no-such-file"]) {
+    const r = await get(a);
+    const csp = r.headers.get("content-security-policy") || "";
+    const policies = csp ? csp.split(/,\s*(?=default-src)/).length : 0;
+    const appArea = a.startsWith("/app/"); // the app's own policy, for a missing file there too
+    if (policies !== 1 || (!appArea && /script-src/.test(csp)) || (appArea && !/script-src 'self'/.test(csp))) noCsp.push(`${a} (${r.status}): ${policies} policies${csp ? `, ${csp.slice(0, 40)}…` : ""}`);
+  }
+  check(`F9: each of ${addresses.length + 3} addresses (${htmlFiles.length} HTML files and 3 missing ones) has exactly one CSP, script-free outside /app/`, noCsp.length === 0, noCsp.join(" | "));
+  // B: every page names its ceu.tools address as canonical; the landing page
+  // carries the static "served at" banner (no script)
+  const ALIAS_TEXT = "Served at ceu.tools, cpe.insiderthreatanalyst.com and a GitHub Pages mirror. Your data lives in your browser under whichever address you use; export before switching.";
+  const canonicalOf = { "index.html": "/", "404.html": "/" };
+  const badCanonical = [];
+  for (const rel of htmlFiles) {
+    const want = PUBLIC + (canonicalOf[rel] || (rel.endsWith("/index.html") ? `/${rel.slice(0, -"index.html".length)}` : `/${rel.replace(/\.html$/, "")}`));
+    const found = [...readFileSync(join(siteDir, rel), "utf8").matchAll(/<link rel="canonical" href="([^"]*)">/g)].map((m) => m[1]);
+    if (found.length !== 1 || found[0] !== want) badCanonical.push(`${rel}: ${JSON.stringify(found)}, want ${want}`);
+  }
+  check(`B: each of the ${htmlFiles.length} HTML pages has one canonical link to its ceu.tools address`, badCanonical.length === 0, badCanonical.join(" | "));
+  const landingHtml = (await get("/")).body.toString("utf8");
+  const aliasBanner = /<aside class="alias-banner"[^>]*>([\s\S]*?)<\/aside>/.exec(landingHtml);
+  check("B: the landing page's banner says the data is per address (static HTML)", aliasBanner && aliasBanner[1].replace(/<[^>]+>/g, "") === ALIAS_TEXT && !/<script/i.test(landingHtml));
+
+  // A: the landing and privacy HTML ask the edge not to rewrite them; /app/ is unchanged
+  const ct = [];
+  for (const a of ["/", "/index.html", "/privacy", "/privacy.html", "/app/", "/app/app.js"]) ct.push([a, (await get(a)).headers.get("cache-control")]);
+  check("A: Cache-Control: no-transform on / and /privacy, not on /app/", ct.every(([a, v]) => (a.startsWith("/app/") ? !/no-transform/.test(v || "") : v === "no-transform")), JSON.stringify(ct));
+  const nf = await get("/no-such-page");
+  const nfText = nf.body.toString("utf8");
+  check("F9: a missing address gets 404.html with status 404 (no single-page fallback), linking to / and /app/",
+    nf.status === 404 && nf.type.startsWith("text/html") && nfText.includes("<h1>Page not found</h1>") && nfText.includes('href="/"') && nfText.includes('href="/app/"'), `${nf.status} ${nf.type}`);
 
   // -- pages in a browser
   for (const path of ["/", "/privacy"]) {
@@ -146,6 +203,30 @@ try {
       check("landing: runs no scripts", (await page.locator("script").count()) === 0);
     }
     await context.close();
+  }
+
+  // -- B: the app's local-data notice carries the same sentence at any other
+  // address, and hides it when the app is served as ceu.tools. Chromium is
+  // told that ceu.tools is this local server, so no request leaves it.
+  {
+    const appText = async (b, url) => {
+      const ctx = await b.newContext({ serviceWorkers: "block" });
+      const pg = await ctx.newPage();
+      await pg.goto(url);
+      await pg.waitForFunction(() => document.querySelector("main h1"));
+      const r = await pg.evaluate(() => { const n = document.getElementById("alias-note"); return { visible: n.getClientRects().length > 0, text: n.textContent.replace(/\s+/g, " ").trim(), host: location.hostname }; });
+      await ctx.close();
+      return r;
+    };
+    const here = await appText(browser, `${base}/app/`);
+    check("B: the app's local-data notice shows the 'served at' sentence at 127.0.0.1", here.visible && here.text === ALIAS_TEXT, JSON.stringify(here));
+    const asCeu = await chromium.launch({ args: [`--host-resolver-rules=MAP ceu.tools 127.0.0.1:${port}`] });
+    try {
+      const there = await appText(asCeu, "http://ceu.tools/app/");
+      check("B: the app hides that sentence when served as ceu.tools", there.host === "ceu.tools" && !there.visible, JSON.stringify(there));
+    } finally {
+      await asCeu.close();
+    }
   }
 
   // -- "How each body counts": no horizontal scroll at any width, cards

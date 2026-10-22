@@ -6,8 +6,10 @@
 // generated on the spot and carry "SAMPLE CERTIFICATE - NOT A REAL RECORD".
 // Sample rows are marked capture_source "fixture" and capture_ref
 // SAMPLE_REF, and "Remove sample data" deletes exactly those rows (and any
-// correction of them), the evidence attached to them, and the credential
-// settings the sample created. Your own activities are never touched.
+// correction of them) and the evidence attached to them. The sample records
+// each credential setting it wrote, as written; removing it undoes only the
+// settings that still read exactly that way. A setting you changed after
+// loading is kept. Your own activities are never touched.
 //
 // Dates are relative to the day you load the sample, so the activities always
 // fall inside the current cycle.
@@ -15,7 +17,7 @@ import { CAPTURED, CONFIRMED } from "./ledger.js";
 import { addDays, addMonths, todayISO } from "./engine.js";
 
 export const SAMPLE_REF = "registrar-sample";
-const CONFIG_KEY = "sample_data";
+export const SAMPLE_CONFIG_KEY = "sample_data";
 
 /** The credentials the sample holds, and how long ago each cycle began. */
 export const SAMPLE_CREDENTIALS = [
@@ -100,7 +102,7 @@ export function sampleCertificate(a, date, holder = "Jordan Sample") {
 // ------------------------------------------------------------ load / remove
 
 export async function sampleState(led) {
-  const raw = await led.getConfig(CONFIG_KEY);
+  const raw = await led.getConfig(SAMPLE_CONFIG_KEY);
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -109,21 +111,28 @@ export async function sampleState(led) {
   }
 }
 
+/** Whether there is sample data to remove: the record of a load, or sample rows (an import brings rows, never the record). */
+export async function sampleLoaded(led) {
+  if (await sampleState(led)) return true;
+  return (await led.store.getAll("entries")).some((e) => e.capture_ref === SAMPLE_REF);
+}
+
 /** Seed the sample. Refuses if it is already loaded. Returns what it added. */
 export async function loadSample(led, { today = todayISO() } = {}) {
   if (await sampleState(led)) throw new Error("the sample data is already loaded");
-  const created = [];
-  const anchored = [];
+  // wrote: the whole row as the sample left it. before: the fields it
+  // changed, as they were (null when the sample created the row).
+  const settings = [];
   for (const c of SAMPLE_CREDENTIALS) {
     const st = await led.getCredentialState(c.id);
     const anchor = addMonths(today, -c.monthsAgo);
-    if (!st) {
-      await led.setCredentialState(c.id, { anchor_date: anchor, carryover_in: 0, active: 1, note: "sample data" });
-      created.push(c.id);
-    } else if (!st.anchor_date) {
-      await led.setCredentialState(c.id, { anchor_date: anchor, active: 1 });
-      anchored.push(c.id);
-    }
+    let fields = null;
+    if (!st) fields = { anchor_date: anchor, carryover_in: 0, active: 1, note: "sample data" };
+    else if (!st.anchor_date) fields = { anchor_date: anchor, active: 1 };
+    if (!fields) continue;
+    const before = st ? Object.fromEntries(Object.keys(fields).map((k) => [k, st[k] ?? null])) : null;
+    const wrote = rowOf(await led.setCredentialState(c.id, fields));
+    settings.push({ credential: c.id, before, wrote });
   }
   let files = 0;
   for (const a of SAMPLE_ACTIVITIES) {
@@ -148,14 +157,41 @@ export async function loadSample(led, { today = todayISO() } = {}) {
       files += 1;
     }
   }
-  await led.setConfig(CONFIG_KEY, JSON.stringify({ loaded_on: today, created, anchored }));
-  return { activities: SAMPLE_ACTIVITIES.length, files, credentials: created.length + anchored.length };
+  await led.setConfig(SAMPLE_CONFIG_KEY, JSON.stringify({ loaded_on: today, settings }));
+  return { activities: SAMPLE_ACTIVITIES.length, files, credentials: settings.length };
+}
+
+const STATE_FIELDS = ["anchor_date", "carryover_in", "portal_credits", "portal_checked", "active", "note"];
+
+function rowOf(st) {
+  return Object.fromEntries(STATE_FIELDS.map((k) => [k, st[k] ?? null]));
+}
+
+function sameRow(a, b, fields = STATE_FIELDS) {
+  return fields.every((k) => (a[k] ?? null) === (b[k] ?? null));
+}
+
+// A sample loaded by v1.2.1 or earlier recorded only which credentials it
+// created or gave a start date. What it wrote then is known from loaded_on;
+// for a start date it filled in, only the two fields it set are compared.
+function settingsOf(state) {
+  if (!state) return [];
+  if (Array.isArray(state.settings)) return state.settings;
+  const months = Object.fromEntries(SAMPLE_CREDENTIALS.map((c) => [c.id, c.monthsAgo]));
+  const anchor = (id) => (months[id] != null && state.loaded_on ? addMonths(state.loaded_on, -months[id]) : undefined);
+  return [
+    ...(state.created || []).map((id) => ({ credential: id, before: null, wrote: { anchor_date: anchor(id), carryover_in: 0, portal_credits: null, portal_checked: null, active: 1, note: "sample data" } })),
+    ...(state.anchored || []).map((id) => ({ credential: id, before: { anchor_date: null }, wrote: { anchor_date: anchor(id), active: 1 }, fields: ["anchor_date", "active"] })),
+  ];
 }
 
 /**
  * Remove every sample row: entries carrying SAMPLE_REF (corrections of them
  * carry it too), their evidence rows, files no other evidence uses, and the
- * credential settings the sample created. Nothing else is touched.
+ * credential settings the sample wrote, but only those still exactly as it
+ * wrote them: a created row is deleted, a filled-in start date is put back
+ * the way it was. A setting changed since is kept and counted in `kept`.
+ * Nothing else is touched.
  */
 export async function removeSample(led) {
   const state = await sampleState(led);
@@ -167,10 +203,17 @@ export async function removeSample(led) {
   const stillUsed = new Set(evidence.filter((r) => !gone.has(r.entry_uuid)).map((r) => r.sha256));
   for (const sha of new Set(dropped.map((r) => r.sha256))) if (!stillUsed.has(sha)) await led.store.delete("files", sha);
   for (const uuid of gone) await led.store.delete("entries", uuid);
-  if (state) {
-    for (const id of state.created || []) await led.store.delete("credential_state", id);
-    for (const id of state.anchored || []) await led.setCredentialState(id, { anchor_date: null });
+  let kept = 0;
+  for (const s of settingsOf(state)) {
+    const cur = await led.getCredentialState(s.credential);
+    if (!cur) continue;
+    if (!sameRow(cur, s.wrote, s.fields)) {
+      kept += 1;
+      continue;
+    }
+    if (s.before) await led.setCredentialState(s.credential, s.before);
+    else await led.store.delete("credential_state", s.credential);
   }
-  await led.store.delete("config", CONFIG_KEY);
-  return { activities: gone.size, files: dropped.length };
+  await led.store.delete("config", SAMPLE_CONFIG_KEY);
+  return { activities: gone.size, files: dropped.length, kept };
 }

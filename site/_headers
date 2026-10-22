@@ -1,42 +1,50 @@
 # Cloudflare Pages headers file.
 #
-# Every rule whose path matches a request applies, so the Content-Security-
-# Policy is set per area, never on /*: two policies on one response would
-# both be enforced, and the landing page's script-free policy would break the
-# browser app.
+# Every rule whose path matches a request applies, in file order. A header
+# set by two rules is joined with a comma, and two Content-Security-Policies
+# on one response are both enforced. So the script-free policy is set once on
+# /* (every page, including 404.html at any address), and each area with a
+# different policy first detaches it ("! Content-Security-Policy", which
+# Cloudflare applies before that rule's own headers) and then sets its own.
 
 /*
   X-Clacks-Overhead: GNU Terry Pratchett
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
 
-# The landing page: no scripts at all.
+# The landing page and the privacy page: no scripts at all (the /* policy).
+# no-transform asks Cloudflare's edge to serve the HTML as written, without
+# injecting anything (such as a Web Analytics beacon) into it.
 /
-  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+  Cache-Control: no-transform
 /index.html
-  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
-# The privacy page: same policy as the landing page.
+  Cache-Control: no-transform
 /privacy
-  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+  Cache-Control: no-transform
 /privacy.html
-  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+  Cache-Control: no-transform
 /favicon.svg
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'
 /style.css
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'
 /.well-known/security.txt
   Content-Type: text/plain; charset=utf-8
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'
 
 # The browser app: its own scripts only (plus WebAssembly for OCR); network
 # only to this origin and, when the person turns on "use my own API key", to
 # the model provider they chose.
 /app/*
+  ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://api.anthropic.com https://api.openai.com http://localhost:* http://127.0.0.1:*; img-src 'self' blob: data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), microphone=(), geolocation=(), camera=(self)
   Cross-Origin-Opener-Policy: same-origin
