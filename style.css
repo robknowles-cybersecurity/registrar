@@ -1,0 +1,261 @@
+:root {
+  --bg: #f7f6f2;
+  --card: #ffffff;
+  --ink: #1d2328;
+  --mute: #5b6670;
+  --line: #e2dfd6;
+  --accent: #1f4e5f;
+  --accent-soft: #e6eef0;
+  --note: #8a5a00;
+  --note-soft: #fbf3e2;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #13171a;
+    --card: #1b2126;
+    --ink: #e7ebee;
+    --mute: #9aa6b0;
+    --line: #2b333a;
+    --accent: #7fc1d3;
+    --accent-soft: #1d2d33;
+    --note: #f0c56b;
+    --note-soft: #2a2416;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+}
+.wrap { max-width: 44rem; margin: 0 auto; padding: 0 16px; }
+header { padding: 3.5rem 0 1.5rem; }
+.brand { font-weight: 700; letter-spacing: -.01em; font-size: 1.05rem;
+         color: var(--accent); margin: 0 0 1.75rem; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15;
+     letter-spacing: -.02em; margin: 0 0 1rem; }
+.lede { font-size: 1.15rem; color: var(--mute); margin: 0; }
+.note {
+  margin: 2rem 0;
+  padding: .85rem 1rem;
+  border-left: 3px solid var(--note);
+  background: var(--note-soft);
+  border-radius: 0 8px 8px 0;
+  font-size: .95rem;
+}
+.note b { color: var(--note); }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+     color: var(--mute); margin: 2.5rem 0 .75rem; }
+.tool {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.tool .num { font-size: .8rem; color: var(--mute); margin: 0 0 .25rem; }
+.tool h3 { font-size: 1.5rem; margin: 0 0 .35rem; letter-spacing: -.01em; }
+.tool .tag { font-size: 1.1rem; margin: 0 0 1rem; }
+.tool ul { margin: 0 0 1.25rem; padding-left: 1.1rem; }
+.tool li { margin: .3rem 0; }
+.cta {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+  font-weight: 600;
+  padding: .6rem 1.1rem;
+  border-radius: 8px;
+}
+.cta:focus-visible, a:focus-visible { outline: 3px solid var(--note);
+                                      outline-offset: 2px; }
+.small { font-size: .9rem; color: var(--mute); }
+.later {
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: var(--mute);
+  margin-top: 1rem;
+}
+a { color: var(--accent); }
+footer { margin: 3.5rem 0 2.5rem; padding-top: 1.25rem;
+         border-top: 1px solid var(--line); font-size: .85rem;
+         color: var(--mute); }
+footer p { margin: .3rem 0; }
+.ctas { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0 .5rem; }
+.ctas .cta { margin: 0; }
+.cta.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+/* skip link, sections, figures, the coverage table */
+.skip { position: absolute; left: -999px; top: .5rem; background: var(--card);
+        color: var(--accent); padding: .5rem .8rem; border-radius: 6px; z-index: 2; }
+.skip:focus { left: .5rem; }
+.mt0 { margin-top: 0; }
+.points { padding-left: 1.1rem; }
+.points li { margin: .45rem 0; }
+.example {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  margin: 1rem 0;
+}
+.example p { margin: 0; }
+figure { margin: 1.25rem 0 2rem; }
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+figcaption { font-size: .9rem; color: var(--mute); margin-top: .5rem; }
+.scroll { overflow-x: auto; }
+.scroll:focus-visible { outline: 3px solid var(--note); outline-offset: 2px; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; vertical-align: top; padding: .5rem .6rem;
+         border-bottom: 1px solid var(--line); }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+     color: var(--mute); }
+.badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--note);
+  background: var(--note-soft);
+  border: 1px solid var(--note);
+  border-radius: 4px;
+  padding: 0 .3rem;
+  white-space: nowrap;
+}
+.links { padding-left: 1.1rem; }
+.links li { margin: .3rem 0; }
+code { font-size: .92em; }
+.scroll table { min-width: 34rem; }
+
+/* the guide: contents, per-body table, checklist, steps, glossary */
+.toc { margin: 1.5rem 0 0; padding: .85rem 1rem; background: var(--card);
+       border: 1px solid var(--line); border-radius: 10px; }
+.toc-head { margin: 0 0 .35rem; font-size: .8rem; text-transform: uppercase;
+            letter-spacing: .08em; color: var(--mute); }
+.toc ul { margin: 0; padding: 0; list-style: none; columns: 2 12rem;
+          column-gap: 1.5rem; font-size: .95rem; }
+.toc li { margin: .15rem 0; break-inside: avoid; }
+.bridge { margin: 1.1rem 0 0; padding: .7rem 1rem; font-size: .95rem;
+          border-left: 3px solid var(--accent); background: var(--accent-soft);
+          border-radius: 0 8px 8px 0; }
+.bridge b { color: var(--accent); }
+.bridge a { white-space: nowrap; }
+.check { list-style: none; padding-left: 0; }
+.check li { position: relative; margin: .5rem 0; padding-left: 1.75rem; }
+.check li::before { content: ""; position: absolute; left: 0; top: .3rem;
+                    width: .95rem; height: .95rem; border: 2px solid var(--accent);
+                    border-radius: 3px; }
+.steps { padding-left: 1.3rem; }
+.steps li { margin: .55rem 0; }
+.gloss dt { font-weight: 700; margin-top: .8rem; }
+.gloss dd { margin: .15rem 0 0; }
+.attrib { margin: 2rem 0 0; }
+
+/* How each body counts: one card per body below 960px, a comparison grid
+   above it. Same markup for both; the filter is checkboxes and CSS (this
+   page runs no scripts). */
+.vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.rules-board { margin: 1rem 0 0; overflow-wrap: anywhere; }
+.rules-filter { margin: 0 0 .75rem; }
+.rules-filter fieldset { position: relative; border: 0; margin: 0; padding: 0;
+                         display: flex; flex-wrap: wrap; gap: .4rem; }
+.rules-filter legend { padding: 0; margin: 0 0 .45rem; font-size: .8rem;
+                       text-transform: uppercase; letter-spacing: .08em; color: var(--mute); }
+.chip-input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.chip { display: inline-flex; align-items: center; min-height: 2.25rem;
+        padding: .25rem .8rem; border: 1px solid var(--line); border-radius: 999px;
+        background: var(--card); color: var(--ink); font: inherit; font-size: .9rem;
+        line-height: 1.2; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip-input:checked + .chip,
+.rules-filter:not(:has(.chip-input:checked)) .chip-all {
+  background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.chip-input:checked + .chip::before { content: "\2713\00a0" / ""; }
+.chip-input:focus-visible + .chip, .chip-all:focus-visible {
+  outline: 3px solid var(--note); outline-offset: 2px; }
+.rules-count { margin: .55rem 0 0; font-size: .9rem; color: var(--mute); }
+.rn { display: none; }
+.rn-0 { display: inline; }
+.rules-badge-key { margin: 0 0 .75rem; }
+.nowrap { white-space: nowrap; }
+.rules-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+.rb { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+      padding: .9rem 1rem; }
+.rb-head { padding: 0; }
+.rb-head h3 { margin: 0; font-size: 1.15rem; letter-spacing: -.01em; }
+.rb-unit, .rb-creds { margin: .15rem 0 0; font-size: .82rem; color: var(--mute); }
+.rb-facts { margin: .75rem 0 0; display: grid; gap: .6rem 1rem; font-size: .92rem;
+            grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); }
+.rb-facts > div { min-width: 0; }
+.rb-annual-minimum, .rb-categories, .rb-submission, .rb-policy { grid-column: 1 / -1; }
+.rb-facts dt { font-size: .72rem; font-weight: 600; text-transform: uppercase;
+               letter-spacing: .05em; color: var(--mute); }
+.rb-facts dd { margin: .1rem 0 0; }
+.rb-colheads { display: none; }
+
+/* rules-breakpoint: the grid needs about 48rem of columns, so it starts at
+   960px, where the board breaks out of the reading column (up to 1200px). */
+@media (min-width: 960px) {
+  .rules-board { width: min(1200px, 100vw - 32px);
+                 margin-left: calc(50% - min(600px, 50vw - 16px)); }
+  .rules-table { display: grid; column-gap: 0; font-size: .88rem;
+    grid-template-columns: minmax(8.5rem, 1.1fr) minmax(5rem, .6fr) minmax(6.5rem, 1fr)
+                           minmax(6.5rem, 1fr) minmax(8rem, 1.7fr) minmax(8rem, 1.7fr)
+                           minmax(5.5rem, .7fr); }
+  .rb-colheads, .rules-cards, .rb, .rb > article, .rb-facts {
+    display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; gap: 0; }
+  .rb-facts { grid-column: 2 / -1; margin: 0; font-size: inherit; }
+  .rb { padding: 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+        background: transparent; }
+  .rb:nth-child(even) { background: var(--card); }
+  .rb-colheads { border-bottom: 2px solid var(--line); }
+  .rb-colheads > span { font-size: .72rem; font-weight: 600; text-transform: uppercase;
+                        letter-spacing: .05em; color: var(--mute); }
+  .rb-colheads > span, .rb-head, .rb-facts > div { padding: .55rem .6rem; min-width: 0; }
+  .rb-head h3 { font-size: .98rem; }
+  .rb-annual-minimum, .rb-categories, .rb-submission, .rb-policy { grid-column: auto; }
+  .rb-facts dt { position: absolute; width: 1px; height: 1px; margin: -1px;
+                 overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .rb-facts dd { margin: 0; }
+}
+
+/* rules-filter:begin (built from bodies.yaml by npm run build; do not edit by hand) */
+.rules-board:has(.chip-input:checked):not(:has(#rf-isc2:checked)) .rb-isc2,
+.rules-board:has(.chip-input:checked):not(:has(#rf-isaca:checked)) .rb-isaca,
+.rules-board:has(.chip-input:checked):not(:has(#rf-comptia:checked)) .rb-comptia,
+.rules-board:has(.chip-input:checked):not(:has(#rf-giac:checked)) .rb-giac,
+.rules-board:has(.chip-input:checked):not(:has(#rf-eccouncil:checked)) .rb-eccouncil,
+.rules-board:has(.chip-input:checked):not(:has(#rf-pmi:checked)) .rb-pmi,
+.rules-board:has(.chip-input:checked):not(:has(#rf-iapp:checked)) .rb-iapp,
+.rules-board:has(.chip-input:checked):not(:has(#rf-acfe:checked)) .rb-acfe,
+.rules-board:has(.chip-input:checked):not(:has(#rf-atap:checked)) .rb-atap,
+.rules-board:has(.chip-input:checked):not(:has(#rf-umd:checked)) .rb-umd { display: none; }
+.rules-filter:has(.chip-input:checked) .rn-0 { display: none; }
+.rules-filter:has(.chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked)) .rn-1 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-2 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-3 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-4 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-5 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-6 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-7 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-8 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked):not(:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked)) .rn-9 { display: inline; }
+.rules-filter:has(.chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked ~ .chip-input:checked) .rn-10 { display: inline; }
+/* rules-filter:end */
+
+/* mirror:begin (GitHub Pages mirror build only, tools/build_mirror.mjs) */
+.mirror-banner { margin: 0; padding: .45rem 16px; background: var(--note-soft); color: var(--ink);
+  border-bottom: 1px solid var(--line); font-size: .9rem; line-height: 1.4; text-align: center; }
+.mirror-banner p { margin: 0; }
+.mirror-banner a { color: var(--accent); }
+/* mirror:end */

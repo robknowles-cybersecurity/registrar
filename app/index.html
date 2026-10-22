@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://api.anthropic.com https://api.openai.com http://localhost:* http://127.0.0.1:*; img-src 'self' blob: data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="canonical" href="https://ceu.tools/app/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Registrar · ceu.tools</title>
+<meta name="description" content="Registrar in your browser: track CPEs, CEUs and PDUs with each body's caps and minimums. Your data stays in this browser.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ceu.tools">
+<meta property="og:url" content="https://ceu.tools/app/">
+<meta property="og:title" content="Registrar in your browser · ceu.tools">
+<meta property="og:description" content="Track CPEs, CEUs and PDUs with each body's caps and minimums applied. No account; your data stays in this browser.">
+<meta property="og:image" content="https://ceu.tools/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ceu.tools/og.png">
+<meta name="theme-color" content="#1f4e5f">
+<link rel="icon" href="../favicon.ico" sizes="48x48">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="app.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#view">Skip to content</a>
+<aside class="mirror-banner" aria-label="About this mirror"><p>Mirror of <a href="https://ceu.tools/app/">ceu.tools</a> for networks that block new domains. Same files, same version.</p></aside>
+<div class="local" role="region" aria-label="Where your data lives">
+  <p><b>Your data lives in this browser.</b> There is no account and no server copy, and nothing is sent anywhere unless you turn on your own API key in Settings.
+  Clearing this site's data, or losing this device, loses it: export a backup.</p>
+  <p class="local-actions">
+    <button type="button" id="btn-export" class="secondary">Export</button>
+    <button type="button" id="btn-import" class="secondary">Import</button>
+    <input type="file" id="import-file" accept="application/json,.json" hidden aria-label="Import a Registrar JSON export">
+    <button type="button" id="btn-wipe" class="danger">Wipe</button>
+    <span id="storage-note" class="small mute"></span>
+  </p>
+</div>
+<header class="top">
+  <a class="brand" href="#/">Registrar</a>
+  <nav aria-label="Main">
+    <a href="#/">Credentials</a>
+    <a href="#/log">Log activity</a>
+    <a href="#/entries">Activities</a>
+    <a href="#/submissions">Submissions</a>
+    <a href="#/packets">Packets</a>
+    <a href="#/bodies">Rules</a>
+    <a href="#/settings">Settings</a>
+  </nav>
+</header>
+<main id="view" tabindex="-1"><p class="mute">Loading…</p><noscript><p>This app needs JavaScript. The self-hosted Python app needs none: see the README.</p></noscript></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<footer>
+  <p>Registrar runs entirely in your browser: rules from <code>bodies.yaml</code>, data in IndexedDB, evidence read on this device.
+  Anything marked <span class="badge unv">UNVERIFIED</span> was not confirmed on the body's own page: check it before you rely on it.
+  Registrar never asks for or stores your certifying-body portal login.</p>
+  <p>Free software under the GNU AGPL v3 · <a href="https://github.com/robknowles-cybersecurity/registrar">source</a> · <a href="../">ceu.tools</a> · <a href="../privacy.html">privacy</a> · not affiliated with any certifying body.</p>
+  <p id="version" class="small"></p>
+</footer>
+</body>
+</html>
