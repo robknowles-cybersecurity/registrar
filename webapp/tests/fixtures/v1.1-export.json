@@ -1,0 +1,864 @@
+{
+ "exported_at": "2026-10-21 12:00:00",
+ "format": "cpebot-ledger-v0.2",
+ "entries": [
+  {
+   "uuid": "a06c09ca86ac46bd9ac918934b3ffa2e",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-09-12",
+   "title": "SAMPLE — Cloud security architecture deep dive",
+   "provider": "Example Security Institute",
+   "hours": 8,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [
+    "eccouncil"
+   ],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 2",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {
+    "eccouncil": "2026-10-22"
+   },
+   "evidence": []
+  },
+  {
+   "uuid": "fa41d2460b2848abbe309f0511ec468c",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-09-24",
+   "title": "SAMPLE — Regional chapter meeting",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "chapter_meeting"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 3",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "0cdb9e6caefa46ca88bba275cb73b9fa",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-10-02",
+   "title": "SAMPLE — Detection engineering webinar",
+   "provider": "Placeholder Labs",
+   "hours": 1.5,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 4",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "fc9fdab4201c430a93843b5aea931a77",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-10-15",
+   "title": "SAMPLE — Wrote a blog post on log tampering",
+   "provider": "Self",
+   "hours": 0,
+   "count": 1,
+   "tags": [
+    "authoring_blog"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 5",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "675841aa44094fe0b65d647871aaf9fd",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-11-06",
+   "title": "SAMPLE — Fraud examination refresher",
+   "provider": "Example Fraud Academy",
+   "hours": 6,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "fraud"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 6",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "e45d18c3a35f47aaa6c5365049e0ddda",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-11-20",
+   "title": "SAMPLE — Ethics in investigations",
+   "provider": "Example Fraud Academy",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "fraud",
+    "ethics"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "One hour of this is the ethics floor",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 7",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "1c8eee4f2c7e4a9babe4c460f8cd4374",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2025-12-04",
+   "title": "SAMPLE — Presented an internal SOC briefing",
+   "provider": "Example Employer",
+   "hours": 1,
+   "count": 1,
+   "tags": [
+    "teaching"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 8",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "57503152edf045db9095456fc6a990ed",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-01-14",
+   "title": "SAMPLE — Behavioural threat assessment seminar",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 7,
+   "count": 1,
+   "tags": [
+    "conference"
+   ],
+   "markers": [
+    "threat_management",
+    "cint"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 9",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "0b50a67593344b1eb75486bb74e8185b",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-01-29",
+   "title": "SAMPLE — Chapter meeting",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "chapter_meeting"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 10",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "e119ff33fd764895992653f2309d16ba",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-02-11",
+   "title": "SAMPLE — Read four professional articles",
+   "provider": "Various",
+   "hours": 0,
+   "count": 4,
+   "tags": [
+    "reading"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Per-item activity",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 11",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "6f9b5f21adf74edebee09ea07f7c43ff",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-02-26",
+   "title": "SAMPLE — Incident response tabletop",
+   "provider": "Placeholder Labs",
+   "hours": 4,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 12",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "6ad0d53cc39d406298f53bc4a7376995",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-03-10",
+   "title": "SAMPLE — Chapter meeting",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "chapter_meeting"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 13",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "edd4e7ef94f3479fa9614e9ea45937ec",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-03-25",
+   "title": "SAMPLE — Volunteer mentoring session",
+   "provider": "Example Mentoring Program",
+   "hours": 3,
+   "count": 1,
+   "tags": [
+    "volunteer"
+   ],
+   "markers": [],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Non-domain: falls to Group B on CISSP",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 14",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "e8f1718092ed4ceca5d569e21b3867c7",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-04-08",
+   "title": "SAMPLE — Vendor product training",
+   "provider": "Placeholder Vendor",
+   "hours": 6,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Non-domain: falls to Group B on CISSP",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 15",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "97c030267e394faf8e5b416ab0f3bdf3",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-04-22",
+   "title": "SAMPLE — Non-domain project management course",
+   "provider": "Example Business School",
+   "hours": 10,
+   "count": 1,
+   "tags": [
+    "professional_dev"
+   ],
+   "markers": [],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Non-domain: Group B",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 16",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "50c3f21e51a943a6abb887cf64185aee",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-05-06",
+   "title": "SAMPLE — Another non-domain course",
+   "provider": "Example Business School",
+   "hours": 10,
+   "count": 1,
+   "tags": [
+    "professional_dev"
+   ],
+   "markers": [],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Deliberately pushes Group B past its cap",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 17",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "3cf1eb143fb14e379b484bccbde32922",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-05-19",
+   "title": "SAMPLE — Threat management case review",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 5,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 18",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": []
+  },
+  {
+   "uuid": "fdf73f049fc546dab01f64c09e34422f",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-06-03",
+   "title": "SAMPLE — Fraud data analytics workshop",
+   "provider": "Example Fraud Academy",
+   "hours": 8,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "fraud"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 19",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    }
+   ]
+  },
+  {
+   "uuid": "fe6d821f193b4e1b84273cfde0f30c78",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-06-17",
+   "title": "SAMPLE — Chapter meeting",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "chapter_meeting"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 20",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    }
+   ]
+  },
+  {
+   "uuid": "93b9cb6d14a3476bb3e7d848a31204c3",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-07-08",
+   "title": "SAMPLE — Insider threat conference",
+   "provider": "Example Conference Co",
+   "hours": 12,
+   "count": 1,
+   "tags": [
+    "conference"
+   ],
+   "markers": [
+    "domain_security",
+    "cint"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 21",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    }
+   ]
+  },
+  {
+   "uuid": "9c7d21bc5af14e2b9d850899aea8a124",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-07-23",
+   "title": "SAMPLE — Wrote an article on interview technique",
+   "provider": "Self",
+   "hours": 0,
+   "count": 1,
+   "tags": [
+    "authoring_article"
+   ],
+   "markers": [
+    "fraud"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Per-item activity",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 22",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    }
+   ]
+  },
+  {
+   "uuid": "5ad4ed3f829a4429adc9dd5c9e6426a6",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-08-05",
+   "title": "SAMPLE — Security operations training",
+   "provider": "Placeholder Labs",
+   "hours": 6,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 23",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    }
+   ]
+  },
+  {
+   "uuid": "4530217a2a774954a7df2df3fbe84ab6",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-08-19",
+   "title": "SAMPLE — Chapter meeting",
+   "provider": "Example Threat Assessment Chapter",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "chapter_meeting"
+   ],
+   "markers": [
+    "threat_management"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fictional demo row",
+   "status": "confirmed",
+   "capture_source": "backfill",
+   "capture_ref": "csv:line 24",
+   "confirmed_at": "2026-10-22 02:01:15",
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "sample-certificate.txt",
+     "sha256": "8b9612592446a21e0372cd2b70addf9afe2f5cea1499aab71f73964de0714624",
+     "bytes": 55,
+     "mime": "text/plain",
+     "added_at": "2026-10-22 02:01:15",
+     "note": "Fixture evidence"
+    },
+    {
+     "filename": "03-eccouncil-table.pdf",
+     "sha256": "2d1c5062c5da105cd7e77083a7b5ecad5089c5d451e61b6e0362e492395ff7c5",
+     "bytes": 1826,
+     "mime": "application/pdf",
+     "added_at": "2026-10-21 12:00:00",
+     "note": ""
+    }
+   ]
+  },
+  {
+   "uuid": "e613e1040bef46238e7f1b4894f5a348",
+   "created_at": "2026-10-22 02:01:15",
+   "updated_at": "2026-10-22 02:01:15",
+   "activity_date": "2026-08-28",
+   "title": "SAMPLE — Awaiting confirmation: vendor briefing",
+   "provider": "Placeholder Vendor",
+   "hours": 2,
+   "count": 1,
+   "tags": [
+    "training"
+   ],
+   "markers": [
+    "domain_security"
+   ],
+   "applies_to": null,
+   "overrides": {},
+   "submitted_to": [],
+   "notes": "Fixture row; not counted as a real capture.",
+   "status": "captured",
+   "capture_source": "telegram",
+   "capture_ref": "",
+   "confirmed_at": null,
+   "supersedes": null,
+   "cost_usd": null,
+   "voided_at": null,
+   "submitted_dates": {},
+   "evidence": [
+    {
+     "filename": "01-isc2-webinar-centred.pdf",
+     "sha256": "26481041b390a920baf9a1e3021d6e7d735425d257b8d8030db6c363b7c21144",
+     "bytes": 1762,
+     "mime": "application/pdf",
+     "added_at": "2026-10-21 12:00:00",
+     "note": ""
+    }
+   ]
+  }
+ ],
+ "registrar": {
+  "extension": "registrar-browser-1",
+  "credential_state": [
+   {
+    "credential": "atap_membership",
+    "anchor_date": "2026-01-01",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "ceh",
+    "anchor_date": "2025-01-01",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "cfe",
+    "anchor_date": "2026-01-01",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "cissp",
+    "anchor_date": "2025-09-01",
+    "carryover_in": 0,
+    "portal_credits": 96,
+    "portal_checked": "2026-08-20",
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "ctm",
+    "anchor_date": "2025-01-01",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "cysa_plus",
+    "anchor_date": "2025-06-15",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   },
+   {
+    "credential": "gcitp",
+    "anchor_date": "2025-08-01",
+    "carryover_in": 0,
+    "portal_credits": null,
+    "portal_checked": null,
+    "active": 1,
+    "note": ""
+   }
+  ],
+  "fees": [
+   {
+    "credential": "cissp",
+    "name": "Sample annual fee",
+    "amount_usd": 135,
+    "due_date": "2026-09-01",
+    "paid_on": null,
+    "note": "",
+    "id": 9
+   }
+  ],
+  "config": {
+   "attendee_name": "Jordan Sample"
+  },
+  "files": {
+   "2d1c5062c5da105cd7e77083a7b5ecad5089c5d451e61b6e0362e492395ff7c5": {
+    "mime": "application/pdf",
+    "data_base64": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GUiA0IDAgUiAvRkIgNSAwIFIgL0ZUIDYgMCBSIC9GVEIgNyAwIFIgL0ZJIDggMCBSID4+ID4+IC9Db250ZW50cyA5IDAgUiA+PgplbmRvYmoKNCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjUgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjYgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvVGltZXMtUm9tYW4gL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjcgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvVGltZXMtQm9sZCAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyA+PgplbmRvYmoKOCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9UaW1lcy1JdGFsaWMgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjkgMCBvYmoKPDwgL0xlbmd0aCA2NzMgPj4Kc3RyZWFtCkJUIC9GQiAyMCBUZiA3Mi4wIDcwMC4wIFRkIChDRVJUSUZJQ0FURSBPRiBQQVJUSUNJUEFUSU9OKSBUaiBFVApCVCAvRkIgMTIgVGYgNzIuMCA2MDAuMCBUZCAoUGFydGljaXBhbnQ6KSBUaiBFVApCVCAvRlIgMTIgVGYgMjUwLjAgNjAwLjAgVGQgKFJpbGV5IFNhbXBsZSkgVGogRVQKQlQgL0ZCIDEyIFRmIDcyLjAgNTc4LjAgVGQgKENvdXJzZSBUaXRsZTopIFRqIEVUCkJUIC9GUiAxMiBUZiAyNTAuMCA1NzguMCBUZCAoV2ViIEFwcGxpY2F0aW9uIFBlbmV0cmF0aW9uIFRlc3RpbmcgTGFiKSBUaiBFVApCVCAvRkIgMTIgVGYgNzIuMCA1NTYuMCBUZCAoVHJhaW5pbmcgUHJvdmlkZXI6KSBUaiBFVApCVCAvRlIgMTIgVGYgMjUwLjAgNTU2LjAgVGQgKFNhbXBsZSBDeWJlciBSYW5nZSBMTEMpIFRqIEVUCkJUIC9GQiAxMiBUZiA3Mi4wIDUzNC4wIFRkIChDb21wbGV0aW9uIERhdGU6KSBUaiBFVApCVCAvRlIgMTIgVGYgMjUwLjAgNTM0LjAgVGQgKDIwMjYtMDItMTgpIFRqIEVUCkJUIC9GQiAxMiBUZiA3Mi4wIDUxMi4wIFRkIChFQ0UgQ3JlZGl0czopIFRqIEVUCkJUIC9GUiAxMiBUZiAyNTAuMCA1MTIuMCBUZCAoNCkgVGogRVQKQlQgL0ZCIDEyIFRmIDcyLjAgNDkwLjAgVGQgKERlbGl2ZXJ5OikgVGogRVQKQlQgL0ZSIDEyIFRmIDI1MC4wIDQ5MC4wIFRkIChWaXJ0dWFsKSBUaiBFVAoKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgMTAKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDAwNjQgMDAwMDAgbiAKMDAwMDAwMDEyMSAwMDAwMCBuIAowMDAwMDAwMjg4IDAwMDAwIG4gCjAwMDAwMDAzODUgMDAwMDAgbiAKMDAwMDAwMDQ4NyAwMDAwMCBuIAowMDAwMDAwNTg2IDAwMDAwIG4gCjAwMDAwMDA2ODQgMDAwMDAgbiAKMDAwMDAwMDc4NCAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDEwIC9Sb290IDEgMCBSIC9JbmZvIDw8IC9Qcm9kdWNlciAoUmVnaXN0cmFyIHN5bnRoZXRpYyBmaXh0dXJlKSA+PiA+PgpzdGFydHhyZWYKMTUwOAolJUVPRgo="
+   },
+   "26481041b390a920baf9a1e3021d6e7d735425d257b8d8030db6c363b7c21144": {
+    "mime": "application/pdf",
+    "data_base64": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA3OTIgNjEyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GUiA0IDAgUiAvRkIgNSAwIFIgL0ZUIDYgMCBSIC9GVEIgNyAwIFIgL0ZJIDggMCBSID4+ID4+IC9Db250ZW50cyA5IDAgUiA+PgplbmRvYmoKNCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjUgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjYgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvVGltZXMtUm9tYW4gL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjcgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvVGltZXMtQm9sZCAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyA+PgplbmRvYmoKOCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9UaW1lcy1JdGFsaWMgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgPj4KZW5kb2JqCjkgMCBvYmoKPDwgL0xlbmd0aCA2MDkgPj4Kc3RyZWFtCkJUIC9GVEIgMzAgVGYgMjA4LjUgNTIwLjAgVGQgKENlcnRpZmljYXRlIG9mIENvbXBsZXRpb24pIFRqIEVUCkJUIC9GSSAxNCBUZiAzMjkuNSA0NzAuMCBUZCAoVGhpcyBjZXJ0aWZpZXMgdGhhdCkgVGogRVQKQlQgL0ZUQiAyNiBUZiAzMTEuNSA0MzYuMCBUZCAoSm9yZGFuIFNhbXBsZSkgVGogRVQKQlQgL0ZUIDE0IFRmIDI2My4wIDM5Ni4wIFRkIChoYXMgc3VjY2Vzc2Z1bGx5IGNvbXBsZXRlZCB0aGUgd2ViaW5hcikgVGogRVQKQlQgL0ZUQiAxOCBUZiAyMjkuNSAzNzAuMCBUZCAoXDIyM1plcm8gVHJ1c3QgQXJjaGl0ZWN0dXJlIGluIFByYWN0aWNlXDIyNCkgVGogRVQKQlQgL0ZUIDEzIFRmIDM0MC44IDMzNC4wIFRkIChvbiBNYXJjaCAxMiwgMjAyNikgVGogRVQKQlQgL0ZUIDEzIFRmIDI0OS44IDMwOC4wIFRkIChhbmQgaXMgYXdhcmRlZCAxLjUgQ1BFIGNyZWRpdHMgXChJU0MyIEdyb3VwIEFcKSkgVGogRVQKQlQgL0ZCIDEyIFRmIDMxOC4wIDI0OC4wIFRkIChFeGFtcGxlIFNlY3VyaXR5IEluc3RpdHV0ZSkgVGogRVQKQlQgL0ZSIDEwIFRmIDI4My41IDIzMC4wIFRkIChQcm92aWRlciBvZiBjb250aW51aW5nIHByb2Zlc3Npb25hbCBlZHVjYXRpb24pIFRqIEVUCgplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCAxMAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDA2NCAwMDAwMCBuIAowMDAwMDAwMTIxIDAwMDAwIG4gCjAwMDAwMDAyODggMDAwMDAgbiAKMDAwMDAwMDM4NSAwMDAwMCBuIAowMDAwMDAwNDg3IDAwMDAwIG4gCjAwMDAwMDA1ODYgMDAwMDAgbiAKMDAwMDAwMDY4NCAwMDAwMCBuIAowMDAwMDAwNzg0IDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgMTAgL1Jvb3QgMSAwIFIgL0luZm8gPDwgL1Byb2R1Y2VyIChSZWdpc3RyYXIgc3ludGhldGljIGZpeHR1cmUpID4+ID4+CnN0YXJ0eHJlZgoxNDQ0CiUlRU9GCg=="
+   }
+  }
+ }
+}

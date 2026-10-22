@@ -4,7 +4,7 @@ The app ships to a public site, so it must carry no local paths, no
 private-network addresses or hostnames, and no old project name outside the
 export format ID.
 
-    python3 webapp/tools/check_public_text.py site/app
+    python3 webapp/tools/check_public_text.py site      # the whole site, app included
 """
 
 import os
@@ -31,7 +31,7 @@ def main(root):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
         for name in filenames:
             if not name.endswith((".json", ".js", ".mjs", ".html", ".css",
-                                  ".webmanifest")):
+                                  ".webmanifest", ".txt", ".svg")):
                 continue
             path = os.path.join(dirpath, name)
             with open(path, encoding="utf-8") as fh:

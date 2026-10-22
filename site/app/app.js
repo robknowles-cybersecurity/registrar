@@ -8,10 +8,14 @@ import { parseCertificate } from "./parser.js";
 import { extractText } from "./ingest.js";
 import { bodyPacket, packetZip, coverSheet } from "./packets.js";
 import * as LLM from "./llm.js";
+import { loadSample, removeSample, sampleState } from "./sample.js";
+import { ledgerCsv, ledgerXlsx, cycleEndCalendar } from "./exports.js";
 
 const view = document.getElementById("view");
 let led;
 let rules;
+let build = { version: "", build: "" };
+const RELEASES = "https://github.com/robknowles-cybersecurity/registrar/releases";
 
 // ---------------------------------------------------------------- helpers
 
@@ -60,6 +64,27 @@ async function tracked() {
   return states.filter((s) => s.anchor_date && Number(s.active ?? 1) && rules.byId[s.credential]);
 }
 
+/** Credentials the person holds (ticked at first run or in Settings), cycle start or not. */
+async function held() {
+  const states = await led.allCredentialState();
+  return states.filter((s) => Number(s.active ?? 1) && rules.byId[s.credential]);
+}
+
+/** Rules' credentials with the ones you hold first. */
+async function heldFirst() {
+  const mine = new Set((await held()).map((s) => s.credential));
+  return [...rules.credentials].sort((a, b) => Number(mine.has(b.id)) - Number(mine.has(a.id))).map((c) => ({ c, mine: mine.has(c.id) }));
+}
+
+/** A fresh browser: never answered the first-run question, holds nothing, has no activities. */
+let settled = false; // once false, a first run cannot come back until a wipe
+async function firstRun() {
+  if (settled) return false;
+  const fresh = (await led.getConfig("onboarding")) == null && !(await led.allCredentialState()).length && !(await led.store.getAll("entries")).length;
+  settled = !fresh;
+  return fresh;
+}
+
 async function assessAll() {
   const entries = await led.engineEntries();
   const out = [];
@@ -85,11 +110,29 @@ async function screenHome() {
   const rows = await assessAll();
   const stats = await led.stats();
   const pending = stats.entries[CAPTURED] || 0;
+  const nEntries = Object.values(stats.entries).reduce((x, y) => x + y, 0);
+  const sample = await sampleState(led);
+  const noStart = (await held()).filter((s) => !s.anchor_date);
   let html = `<h1>Credentials</h1>`;
+  if (sample) html += `<div class="banner sample"><p class="m0"><b>Sample data is loaded.</b> The activities titled “SAMPLE —” and their certificates are invented, to show how Registrar counts. Remove them before you log your own, or keep them while you look around.</p>
+    <div class="actions"><button type="button" class="secondary" id="sample-remove">Remove sample data</button></div></div>`;
   if (pending) html += `<div class="banner">${pending} captured ${pending === 1 ? "activity is" : "activities are"} awaiting confirmation: nothing counts until you confirm it. <a href="#/entries?status=captured">Review</a></div>`;
-  if (!rows.length) {
-    html += `<div class="card"><p><b>Nothing tracked yet.</b> Open <a href="#/settings">Settings</a>, tick the credentials you hold and record the date each one's current cycle began.
+  for (const s of noStart) {
+    const c = rules.get(s.credential);
+    html += `<section class="card" aria-labelledby="start-${esc(c.id)}"><h2 class="mt0" id="start-${esc(c.id)}">${esc(c.name)} <span class="small mute">${esc(c.body_name)}</span>${unverifiedBadge(c)}</h2>
+      <form class="start-form" data-start="${esc(c.id)}" novalidate><label for="start-date-${esc(c.id)}">When did your current ${esc(c.name)} cycle begin?</label>
+      <p class="small mute m0">Usually your certification or renewal date. Progress, pace and the calendar need it.</p>
+      <div class="flexrow"><input type="date" id="start-date-${esc(c.id)}" required><button type="submit">Save</button></div></form></section>`;
+  }
+  if (!rows.length && !noStart.length) {
+    html += `<div class="card"><p class="mt0"><b>Nothing tracked yet.</b> Open <a href="#/settings">Settings</a>, tick the credentials you hold and record the date each one's current cycle began.
       Then <a href="#/log">log an activity</a>, or <b>Import</b> an export from the self-hosted Registrar.</p></div>`;
+  }
+  if (!nEntries) {
+    html += `<section class="card empty" aria-labelledby="try-h"><h2 class="mt0" id="try-h">New here? Try it with sample data</h2>
+      <p>Load three sample credentials (CISSP, CySA+ and CFE) and nine invented activities with sample certificates, to see caps, minimums, pace and packets at work. Everything is marked SAMPLE, and one click removes it.</p>
+      <div class="actions"><button type="button" id="sample-load">Load sample data</button></div>
+      <p class="small">Or try evidence capture: <a href="sample/try-capture-certificate.pdf" download="sample-certificate.pdf" id="try-capture">try capture with this sample certificate</a>, then drop it on <a href="#/log">Log activity</a>. It is read on this device.</p></section>`;
   }
   html += `<div class="grid">`;
   for (const { cred, a, pace } of rows) {
@@ -108,7 +151,114 @@ async function screenHome() {
     </section>`;
   }
   html += `</div>`;
+  if (nEntries) html += reportsCard();
   view.innerHTML = html;
+  bindReports();
+  if ($("#sample-load")) $("#sample-load").addEventListener("click", async (ev) => {
+    ev.target.disabled = true;
+    try {
+      const r = await loadSample(led);
+      toast(`Sample data loaded: ${r.activities} activities, ${r.files} certificates.`);
+    } catch (err) {
+      toast(err.message);
+    }
+    route();
+  });
+  if ($("#sample-remove")) $("#sample-remove").addEventListener("click", async () => {
+    const r = await removeSample(led);
+    toast(`Sample data removed: ${r.activities} activities. Your own data was not touched.`);
+    route();
+  });
+  $$(".start-form").forEach((f) => f.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const input = f.querySelector('input[type="date"]');
+    if (!input.value) {
+      input.focus();
+      toast("Enter the date the cycle began.");
+      return;
+    }
+    try {
+      await led.setCredentialState(f.dataset.start, { anchor_date: input.value, active: 1 });
+      route();
+    } catch (err) {
+      toast(err.message);
+    }
+  }));
+}
+
+// -- reports: CSV, .xlsx and .ics, made here in the browser
+
+function reportsCard() {
+  return `<section class="card reports" aria-labelledby="reports-h"><h2 class="mt0" id="reports-h">Reports</h2>
+    <p class="small mute">Made in this browser from your ledger. For a backup you can import again, use <b>Export</b> at the top.</p>
+    <div class="actions"><button type="button" class="secondary" id="dl-csv">Activities (.csv)</button>
+    <button type="button" class="secondary" id="dl-xlsx">Workbook (.xlsx)</button>
+    <button type="button" class="secondary" id="dl-ics">Cycle ends calendar (.ics)</button></div></section>`;
+}
+
+function bindReports() {
+  if (!$("#dl-csv")) return;
+  const day = E.todayISO();
+  $("#dl-csv").addEventListener("click", async () => {
+    download(`registrar-activities-${day}.csv`, new TextEncoder().encode(await ledgerCsv(led)), "text/csv;charset=utf-8");
+  });
+  $("#dl-xlsx").addEventListener("click", async () => {
+    download(`registrar-${day}.xlsx`, await ledgerXlsx(led, rules), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  });
+  $("#dl-ics").addEventListener("click", async () => {
+    const cal = await cycleEndCalendar(led, rules, { version: build.version });
+    if (!cal.events.length) {
+      toast("No cycle start recorded yet: add one for each credential you hold.");
+      return;
+    }
+    download(`registrar-cycle-ends-${day}.ics`, new TextEncoder().encode(cal.text), "text/calendar;charset=utf-8");
+    toast(`Calendar: ${cal.events.length} cycle end(s), each with alerts 90 and 30 days before${cal.skipped.length ? `; no start date for ${cal.skipped.join(", ")}` : ""}.`);
+  });
+}
+
+// -- first run
+
+/** To the Credentials screen, rendering it once (a hash change routes by itself). */
+function goHome() {
+  if ((location.hash || "#/") === "#/") route();
+  else location.hash = "#/";
+}
+
+async function screenWelcome() {
+  view.innerHTML = `<h1>Which credentials do you hold?</h1>
+    <p>Registrar counts each credential by its own body's rules. Tick the ones you hold: your progress, the activity form, packets, the calendar and the reports all follow from this. You can change it any time in Settings.</p>
+    <form id="welcome-form" novalidate>
+      <fieldset><legend>Credentials Registrar can count</legend>
+      ${rules.credentials.map((c) => `<div class="hold">
+        <label class="plain"><input type="checkbox" name="hold" value="${esc(c.id)}"> <b>${esc(c.name)}</b> <span class="small mute">${esc(c.long_name || "")} · ${esc(c.body_name)}</span>${unverifiedBadge(c)}</label>
+        <div class="when" id="when-${esc(c.id)}" hidden><label for="w-${esc(c.id)}">Current ${esc(c.name)} cycle began <span class="small mute">(optional: you can add it later)</span></label>
+        <input type="date" id="w-${esc(c.id)}" name="anchor-${esc(c.id)}"></div></div>`).join("")}
+      </fieldset>
+      <div id="welcome-error" role="alert"></div>
+      <div class="actions"><button type="submit">Continue</button><button type="button" class="secondary" id="welcome-skip">Skip for now</button></div>
+      <p class="small mute">Just looking? Skip, then press <b>Load sample data</b>. Have a backup? Use <b>Import</b> at the top.</p>
+    </form>`;
+  $$('input[name="hold"]').forEach((cb) => cb.addEventListener("change", () => {
+    $(`#when-${cb.value}`).hidden = !cb.checked;
+  }));
+  $("#welcome-skip").addEventListener("click", async () => {
+    await led.setConfig("onboarding", "skipped");
+    goHome();
+  });
+  $("#welcome-form").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    try {
+      for (const id of fd.getAll("hold")) {
+        await led.setCredentialState(id, { anchor_date: fd.get(`anchor-${id}`) || null, carryover_in: 0, active: 1 });
+      }
+      await led.setConfig("onboarding", "done");
+      toast(fd.getAll("hold").length ? "Saved. Log an activity, or load the sample data to look around." : "Saved.");
+      goHome();
+    } catch (err) {
+      $("#welcome-error").innerHTML = `<div class="banner bad">${esc(err.message)}</div>`;
+    }
+  });
 }
 
 async function screenCredential(id) {
@@ -432,12 +582,16 @@ async function screenEntries(query) {
   const status = query.get("status") || "";
   const rows = await led.listEntries(status ? { status } : {});
   const ev = await led.listEvidence();
+  const sample = await sampleState(led);
   view.innerHTML = `<h1>Activities</h1>
+    ${sample ? `<div class="banner sample">Sample data is loaded: activities titled “SAMPLE —” are invented. Remove them on the <a href="#/">Credentials</a> screen.</div>` : ""}
     <p><label for="status-filter" class="inline">Show</label>
     <select id="status-filter" class="auto"><option value="">every state</option>${STATES.map((s) => `<option ${s === status ? "selected" : ""}>${s}</option>`).join("")}</select></p>
     <div class="scroll"><table><thead><tr><th>Date</th><th>Activity</th><th>Hours</th><th>State</th><th>Evidence</th></tr></thead><tbody>
     ${rows.map((e) => `<tr><td>${esc(e.activity_date)}</td><td><a href="#/entry/${esc(e.uuid)}">${esc(e.title || "(untitled)")}</a><div class="small mute">${esc(e.provider)}</div></td><td>${fmt(e.hours)}</td><td><span class="pill ${esc(e.status)}">${esc(e.status)}</span></td><td>${ev.filter((x) => x.entry_uuid === e.uuid).length}</td></tr>`).join("") || `<tr><td colspan=5 class="mute">No activities${status ? ` in state ${esc(status)}` : ""}.</td></tr>`}
-    </tbody></table></div>`;
+    </tbody></table></div>
+    ${rows.length ? reportsCard() : ""}`;
+  bindReports();
   $("#status-filter").addEventListener("change", (ev2) => { location.hash = ev2.target.value ? `#/entries?status=${ev2.target.value}` : "#/entries"; });
 }
 
@@ -498,7 +652,7 @@ async function screenBodies() {
     <p>The same rules file as the self-hosted Registrar (<code>bodies.yaml</code>, swept ${esc(rules.sweep_date)}). Every figure carries its source.
     Registrar does not read certifying bodies' websites or portals on your behalf: submission is assisted fill only, and it never asks for a portal login.</p>
     <h2>Tracked credentials</h2>
-    ${rules.credentials.map((c) => `<section class="card"><h3 class="mt0">${esc(c.name)} <span class="small mute">${esc(c.long_name || "")} · ${esc(c.body_name)}</span>${unverifiedBadge(c)}</h3>
+    ${(await heldFirst()).map(({ c, mine }) => `<section class="card"><h3 class="mt0">${esc(c.name)} <span class="small mute">${esc(c.long_name || "")} · ${esc(c.body_name)}</span>${unverifiedBadge(c)}${mine ? ' <span class="badge held">you hold this</span>' : ""}</h3>
       <p class="small">${fmt(c.cycle_total)} ${esc(c.unit_label)} per ${c.cycle_months} months (${esc(String(c.cycle.basis || "").replace(/_/g, " "))}); grace ${c.grace_period_days} days.
       ${/^https?:/i.test(c.source_url || "") ? `<a href="${esc(c.source_url)}" rel="noreferrer noopener" target="_blank">Source</a>` : ""} ${c.verified_date ? `verified ${esc(c.verified_date)}` : ""}</p>
       ${c.caps_known === false ? `<div class="banner">Category caps are not known for this credential: totals are an upper bound and no compliance verdict is given.</div>` : ""}
@@ -527,9 +681,9 @@ async function screenSettings() {
       <p class="small mute">Used to check that a certificate is yours and to fill the attendee field in packets.</p>
       <h2>Credentials you hold</h2>
       <p class="small mute">Tick each one you hold and enter the date its current cycle began (certification or membership date).</p>
-      ${rules.credentials.map((c) => {
+      ${(await heldFirst()).map(({ c }) => {
         const s = states[c.id] || {};
-        const on = s.anchor_date && Number(s.active ?? 1);
+        const on = s.credential && Number(s.active ?? 1);
         return `<fieldset><legend>${esc(c.name)} <span class="small mute">${esc(c.body_name)}</span>${unverifiedBadge(c)}</legend>
           <label class="plain"><input type="checkbox" name="track-${esc(c.id)}" ${on ? "checked" : ""}> I hold ${esc(c.name)}</label>
           <div class="row"><div><label for="a-${esc(c.id)}">Cycle start</label><input type="date" id="a-${esc(c.id)}" name="anchor-${esc(c.id)}" value="${esc(s.anchor_date || "")}"></div>
@@ -584,7 +738,6 @@ async function screenSettings() {
       for (const c of rules.credentials) {
         const on = fd.get(`track-${c.id}`) === "on";
         const anchor = fd.get(`anchor-${c.id}`) || null;
-        if (on && !anchor) throw new LedgerError(`${c.name}: enter the date its current cycle began`);
         if (on || states[c.id]) {
           await led.setCredentialState(c.id, { anchor_date: anchor, carryover_in: Number(fd.get(`carry-${c.id}`) || 0), active: on ? 1 : 0 });
         }
@@ -630,6 +783,7 @@ async function doWipe() {
   if (!confirm("Wipe everything Registrar holds in this browser: every activity, evidence file and setting? This cannot be undone. Export first if you want a copy.")) return;
   await led.wipe();
   LLM.forget();
+  settled = false;
   toast("Wiped. This browser holds no Registrar data now.");
   location.hash = "#/";
   route();
@@ -656,7 +810,8 @@ async function route() {
   setNav(`#${path}`);
   let m;
   try {
-    if (path === "/" || path === "") await screenHome();
+    if (await firstRun()) await screenWelcome();
+    else if (path === "/" || path === "" || path === "/welcome") await screenHome();
     else if ((m = /^\/credential\/([\w-]+)$/.exec(path))) await screenCredential(m[1]);
     else if (path === "/log") await screenLog();
     else if ((m = /^\/entry\/([0-9a-f]{32})\/edit$/.exec(path))) await screenLog({ uuid: m[1] });
@@ -681,6 +836,15 @@ async function route() {
 async function main() {
   const data = await (await fetch("./data.json")).json();
   rules = E.loadRules(data);
+  try {
+    build = await (await fetch("./version.json")).json();
+  } catch {
+    /* a source checkout served as-is has no version.json */
+  }
+  const ver = document.getElementById("version");
+  if (ver && build.version) {
+    ver.innerHTML = `Registrar <a href="${RELEASES}/tag/v${esc(build.version)}">v${esc(build.version)} release notes</a> · build <code title="SHA-256 of the built files, first 16 hex digits">${esc(build.build)}</code>`;
+  }
   led = new Ledger(await IdbStore.open());
   window.__registrar = { led, rules }; // for the automated check in e2e/verify.mjs
   document.getElementById("btn-export").addEventListener("click", doExport);

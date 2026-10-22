@@ -157,8 +157,8 @@ class TestPagesRender(WebCase):
 
     def test_health_and_server_header_report_v1(self):
         status, body, headers = self.get("/health")
-        self.assertEqual(json.loads(body)["version"], "1.0.0")
-        self.assertTrue(headers["Server"].startswith("Registrar/1.0.0"),
+        self.assertEqual(json.loads(body)["version"], "1.2.0")
+        self.assertTrue(headers["Server"].startswith("Registrar/1.2.0"),
                         headers["Server"])
 
     def test_rules_page_surfaces_unverified_in_the_ui(self):

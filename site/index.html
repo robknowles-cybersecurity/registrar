@@ -3,23 +3,419 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ceu.tools</title>
-<meta name="description" content="ceu.tools: small, self-hostable tools for keeping professional credentials current. Tool one is Registrar: track your CPEs, CEUs and PDUs in one place.">
+<title>ceu.tools: a practical guide to CPEs, CEUs and PDUs, and a tracker that counts them the way your body does</title>
+<meta name="description" content="How continuing education credits work, how ten certifying bodies count them, what survives an audit and what usually doesn't count. Plus Registrar, a free tracker that runs in your browser and keeps your data there.">
+<link rel="canonical" href="https://ceu.tools/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ceu.tools">
+<meta property="og:url" content="https://ceu.tools/">
+<meta property="og:title" content="Registrar: track CPEs, CEUs and PDUs the way your body counts them">
+<meta property="og:description" content="A practical guide to continuing education credits, and a free tracker that applies each body's caps, minimums and deadlines. Runs in your browser; your data stays there.">
+<meta property="og:image" content="https://ceu.tools/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ceu.tools: Registrar's credentials screen, showing counted credits next to the naive sum of hours.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Registrar: track CPEs, CEUs and PDUs the way your body counts them">
+<meta name="twitter:description" content="A practical guide to continuing education credits, and a free tracker that runs in your browser; your data stays there.">
+<meta name="twitter:image" content="https://ceu.tools/og.png">
+<meta name="theme-color" content="#1f4e5f">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 
 <header>
   <p class="brand">ceu.tools</p>
-  <h1>Tools for keeping your professional credentials current.</h1>
-  <p class="lede">Every certifying body counts continuing education
-  differently: caps, minimums, windows, its own name for the unit. These
-  tools do that arithmetic so you do not find out at renewal time.</p>
+  <h1>Keeping a certification means keeping count.</h1>
+  <p class="lede">Most professional certifications lapse unless you earn
+  continuing education every cycle. Each certifying body counts it its own
+  way, and a plain sum of hours is usually wrong in the direction that
+  costs you the credential. These tools do the counting.</p>
+  <p>This page is a working guide to continuing education credits: how
+  they work, how ten bodies count them, what to keep for an audit and what
+  usually doesn't count. Registrar, the free tracker further down, does the
+  arithmetic. <a href="/app/">Open Registrar</a> or read on.</p>
+  <nav class="toc" aria-label="On this page">
+    <p class="toc-head">On this page</p>
+    <ul>
+      <li><a href="#problem">The problem</a></li>
+      <li><a href="#basics">The two-minute version</a></li>
+      <li><a href="#habits">Habits that save you</a></li>
+      <li><a href="#rules">How each body counts</a></li>
+      <li><a href="#audit">Audit-ready records</a></li>
+      <li><a href="#surprises">Common surprises</a></li>
+      <li><a href="#first90">Your first 90 days</a></li>
+      <li><a href="#earn">Where to earn credits</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+      <li><a href="#suite">Registrar</a></li>
+    </ul>
+  </nav>
 </header>
 
-<main>
+<main id="main">
+  <section aria-labelledby="problem">
+    <h2 id="problem">The problem</h2>
+    <p>Security, fraud, privacy and project-management certifications ask
+    you to keep learning: so many credits every one to four years, under a
+    name that changes from body to body (CPE, CEU, PDU). The rules behind
+    that number are where people get caught:</p>
+    <ul class="points">
+      <li><b>Caps.</b> Some kinds of activity count only up to a limit per
+      cycle. Hours past the cap are logged, but they are not credit.</li>
+      <li><b>Minimums.</b> A share of the total must come from the core
+      subject of the credential. General hours cannot make up for it.</li>
+      <li><b>Windows and deadlines.</b> Some bodies want credits reported
+      each year by a fixed date; others want the whole total at the end,
+      sometimes with a grace period, usually with a fee.</li>
+      <li><b>Evidence.</b> Audits ask for certificates long after the
+      event. A folder of PDFs you cannot match to entries is not much help.</li>
+    </ul>
+    <div class="example" role="group" aria-label="A worked example">
+      <p class="mt0"><b>Example.</b> A CISSP needs 120 CPEs in three years,
+      at least 90 of them in Group A (the CISSP domains), with Group B
+      (general development) counting for at most 30. Log 80 hours of
+      domain training and 40 of general development and a spreadsheet says
+      120 of 120. The real count is 110: ten Group B hours are forfeited,
+      and Group A is 10 short. More general hours will not fix that.</p>
+    </div>
+    <p class="small">Body rules change; your body's own portal is always
+    the authority. <a href="https://insiderthreatanalyst.com/cpe">More on CPE rules</a>.</p>
+    <p class="bridge"><b>In Registrar:</b> the counted total sits next to the
+    plain sum for every credential, with the forfeited hours and any short
+    minimum named, so you see the 110 while there is still time to fix it.
+    <a href="/app/">Try it with sample data</a></p>
+  </section>
+
+  <section aria-labelledby="basics">
+    <h2 id="basics">The two-minute version</h2>
+    <p>If you have just passed your first certification exam, this is the
+    part to read. Every body has its own vocabulary, but the mechanics are
+    much the same everywhere.</p>
+    <ul class="points">
+      <li><b>You earn credits by learning, and you need a set number per
+      cycle.</b> The cycle is one to four years depending on the body. Some
+      bodies also set a floor for every year inside the cycle; most only
+      care about the total at the end.</li>
+      <li><b>One hour, one credit, usually.</b> Most bodies award one credit
+      per hour of qualifying activity. Not all of them: ISACA's CPE hour is
+      50 minutes, and EC-Council's policy does not tie a credit to a clock
+      hour at all. Find out before you round anything up.</li>
+      <li><b>Domain credits and general credits.</b> Most bodies separate
+      learning tied to the credential's subject from general professional
+      development. ISC2 calls them Group A (activity in your
+      certification's domains) and Group B (the skills around the skills:
+      leadership, communication, management). The split matters because
+      general credits are usually capped and domain credits usually have a
+      floor.</li>
+      <li><b>Credits reach your record in one of three ways.</b> Some
+      providers report them for you: at ISC2, its own events and its listed
+      CPE Partners can submit on your behalf, which is why conferences ask
+      for your member number at registration. Others give you a certificate
+      of attendance to upload yourself. Everything else (a book, a podcast,
+      a paper, a chapter meeting) you claim yourself, with whatever
+      documentation you have and a short summary of what you learned. ISC2
+      asks for that summary on Group A claims.</li>
+      <li><b>One activity can count more than once.</b> ISC2 applies credits
+      it adds to your account to all your ISC2 certifications in their
+      active cycle (not to one that is in its grace period). EC-Council
+      applies credits across all the EC-Council certifications you hold.
+      Between bodies, the same certificate can usually support a claim at
+      each, if each body's rules accept that kind of activity. You still
+      report it to each body separately.</li>
+    </ul>
+    <p class="bridge"><b>In Registrar:</b> log an activity once, tick the
+    credentials it applies to, and see what it is worth to each under that
+    body's own rules. <a href="/app/">Log an activity</a></p>
+  </section>
+
+  <section aria-labelledby="habits">
+    <h2 id="habits">Habits that save you</h2>
+    <ul class="points">
+      <li><b>Log it the week it happens.</b> Not in the month your cycle
+      ends. A week later you still know the title, the hours, the provider
+      and where the certificate went. Two years later you do not, and two
+      years later is when the audit letter arrives.</li>
+      <li><b>Keep one evidence folder.</b> Every certificate, receipt,
+      agenda and confirmation email in one place, named so you can match
+      each file to its entry. Bodies audit, and "I know I went" is not
+      evidence.</li>
+      <li><b>Read your body's handbook once.</b> Cycle lengths, annual
+      minimums, caps and categories differ from body to body, and they
+      change. Read the current maintenance policy end to end once, and
+      again when the body announces a change. For ISC2 that is the
+      <a href="https://www.isc2.org/policies-procedures/member-policies">member policies</a>;
+      the table below links every other body's page.</li>
+      <li><b>Grace periods are parachutes, not plans.</b> Many bodies give
+      you a little time after the cycle ends: ISC2 90 days, CompTIA 30. That
+      time often comes with a fee or a suspended credential, and some
+      bodies state no grace period at all. Plan to finish without it.</li>
+      <li><b>Touch the system weekly.</b> A spreadsheet, a folder of PDFs, a
+      portal, this tool: the only tracking system that works is the one you
+      open every week. Ten minutes on a Friday is enough.</li>
+    </ul>
+    <p class="bridge"><b>In Registrar:</b> drop in a certificate and the
+    date, hours, provider and title are read on your device and filled in
+    for you to check. The file is attached to the entry and hashed, so the
+    folder and the log cannot drift apart. <a href="/app/">Attach a certificate</a></p>
+  </section>
+
+  <section aria-labelledby="rules">
+    <h2 id="rules">How each body counts</h2>
+    <p>The ten bodies whose rules Registrar knows, side by side. Totals are
+    for one cycle of one credential; where a body has many credentials the
+    range is shown with common examples. Each body's name links to its own
+    policy page.</p>
+    <p class="note"><b>Rules change; confirm with your body before you rely
+    on a number.</b> These figures come from Registrar's rules file,
+    <code>bodies.yaml</code>, which records where and when each value was
+    checked.</p>
+    <p class="small"><span class="badge">UNVERIFIED</span> means that value
+    could not be confirmed on the body's own published pages: it is shown,
+    but you should check it before you rely on it.</p>
+    <div class="scroll" role="region" aria-label="Table of how each certifying body counts credits" tabindex="0">
+    <table class="rules">
+      <thead><tr><th scope="col">Body and unit</th><th scope="col">Cycle</th><th scope="col">Cycle total</th><th scope="col">Annual minimum</th><th scope="col">Categories and caps</th><th scope="col">How you submit</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><a href="https://www.isc2.org/policies-procedures/member-policies">ISC2</a><br><span class="unit">CPE</span></th><td>3 years</td><td>45 to 140 by certification; CISSP 120</td><td>None (ISC2 suggests a yearly pace); Associates of ISC2: 15 a year, all Group A</td><td>CISSP: at least 90 Group A, at most 30 Group B. Rollover <span class="badge">UNVERIFIED</span></td><td>CPE Portal. ISC2's own activities and its CPE Partners submit for you; you upload the rest. 90-day grace.</td></tr>
+        <tr><th scope="row"><a href="https://www.isaca.org/credentialing/cisa/maintain-cisa-certification">ISACA</a><br><span class="unit">CPE hour</span></th><td>3 years</td><td>120; AAIA and AAISM 30</td><td>20 every year (AAIA and AAISM 10)</td><td>A CPE hour is 50 minutes. From 2027: at least 90 tied to the credential, at most 30 other. Carryover: none <span class="badge">UNVERIFIED</span></td><td>MyISACA. Hours ISACA tracks pre-load; chapter and other sponsors' hours you report yourself.</td></tr>
+        <tr><th scope="row"><a href="https://www.comptia.org/en-us/resources/ce/learn/how-to-renew/">CompTIA</a><br><span class="unit">CEU</span></th><td>3 years</td><td>15 to 75; Security+ 50, CySA+ 60</td><td>None</td><td>Caps by activity type, for example work experience at most 9; at least half of a training's content must match the exam objectives. No carryover stated.</td><td>CE portal. You upload every activity yourself; no one can do it for you. Accepted on upload, audited at random. 30-day grace.</td></tr>
+        <tr><th scope="row"><a href="https://www.giac.org/renewal/cpe-information">GIAC</a><br><span class="unit">CPE</span></th><td>4 years</td><td>36</td><td>None</td><td>Per-category caps: SANS and GIAC programs 36, other training 18, work experience 12, community participation 12, cyber ranges 12, NetWars 12. No grace period or carryover stated.</td><td>GIAC account. SANS and GIAC activities are added for you; submit the rest with documents at least 30 days before expiry.</td></tr>
+        <tr><th scope="row"><a href="https://cert.eccouncil.org/cpe-policy.html">EC-Council</a><br><span class="unit">CPE</span></th><td>3 years</td><td>120 per certification</td><td>No floor, but each calendar year's credits must be registered by 1 February of the next</td><td>No category caps stated. Credits apply across all your EC-Council certifications; an activity counts in one window only.</td><td>Aspen portal; you register credits yourself.</td></tr>
+        <tr><th scope="row"><a href="https://www.pmi.org/-/media/pmi/documents/public/pdf/certifications/resources/ccr-certification-requirements-handbook.pdf?rev=4fb44c29242e428ab7776469c59efb4a">PMI</a><br><span class="unit">PDU</span></th><td>3 years</td><td>15 to 60; PMP 60, CAPM 15; PMI-CP, PMI-CPMAI and PMI-PMOCP 30 <span class="badge">UNVERIFIED</span></td><td>None</td><td>PMP: at least 35 Education (8 each in Ways of Working, Power Skills and Business Acumen); Giving Back at most 25. PDUs from the final 12 months can carry over (PMP up to 20).</td><td>CCRS. Approved providers can submit claims for you; ProjectManagement.com reports automatically once linked. From the 2022 handbook.</td></tr>
+        <tr><th scope="row"><a href="https://iapp.org/certify/cpe-policy">IAPP</a><br><span class="unit">CPE</span></th><td>2 years <span class="badge">UNVERIFIED</span></td><td>20 <span class="badge">UNVERIFIED</span></td><td>None stated</td><td>At least 10 syllabus-specific, at most 10 general <span class="badge">UNVERIFIED</span>; reading capped at 5 and teaching at 16 <span class="badge">UNVERIFIED</span>. Up to 10 can carry over.</td><td>MyIAPP. IAPP events and webinars post automatically; you report the rest.</td></tr>
+        <tr><th scope="row"><a href="https://www.acfe.com/cfe-credential/continuing-professional-education-cpe-requirements">ACFE</a><br><span class="unit">CPE</span></th><td>1 year</td><td>20</td><td>20 (the cycle is one year)</td><td>At least 10 on fraud, at least 2 on ethics; one course can count toward both. Up to 10 extra carry over.</td><td>Certify compliance at MyCPE by the end of your anniversary month. ACFE keeps no record of your activities: keep your proof for 3 years. A 30-day extension can be requested.</td></tr>
+        <tr><th scope="row"><a href="https://www.atapworldwide.org/page/certificationexam">ATAP</a><br><span class="unit">credit (CTM)</span></th><td>2 years <span class="badge">UNVERIFIED</span></td><td>50</td><td>None stated</td><td>Category caps <span class="badge">UNVERIFIED</span>, so Registrar treats the CTM total as advisory.</td><td>Certemy. 30-day grace <span class="badge">UNVERIFIED</span>.</td></tr>
+        <tr><th scope="row"><a href="https://gcitp.umd.edu/gcitp-certification/maintain-certification">University of Maryland</a><br><span class="unit">PDU (GCITP)</span></th><td>4 years</td><td>100</td><td>None</td><td>At least 60 in counter-insider-threat, at most 40 other; no single activity counts for more than 45. No carryover stated.</td><td>A PDU Tracking Form on LearningBuilder, submitted once before the last day of the cycle.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="bridge"><b>In Registrar:</b> these rules are built in, and the
+    app flags the same unverified values where they affect your count.
+    Tick the credentials you hold and add each cycle's start date.
+    <a href="/app/">Pick your credentials</a></p>
+  </section>
+
+  <section aria-labelledby="audit">
+    <h2 id="audit">Audit-ready records</h2>
+    <p>An audit is a request to prove what you claimed. It can come years
+    after the activity, and you usually get a fixed window to answer (ACFE
+    gives 60 days). For each activity, keep:</p>
+    <ul class="check">
+      <li><b>The certificate or confirmation.</b> A certificate of
+      attendance, a completion email, a transcript line or a registration
+      receipt with the agenda. Something with your name on it, from someone
+      other than you.</li>
+      <li><b>The date.</b> The day it happened, not the day you logged it.
+      It decides which cycle, and which year, the credit belongs to.</li>
+      <li><b>The hours.</b> And how you got them: the session times on the
+      agenda, not the length of the day.</li>
+      <li><b>The provider.</b> Who ran it, and their provider number if your
+      body uses one.</li>
+      <li><b>One line on what you learned.</b> It turns a self-claim into
+      evidence, and it is what ISC2 asks for on Group A claims. Write it the
+      same week, while you remember.</li>
+      <li><b>Where you claimed it.</b> Which credential, which category, and
+      the date you reported it.</li>
+    </ul>
+    <p>Keep the records for as long as your body says, counted from the
+    right date: ACFE 3 years, PMI 18 months after the cycle ends, ISACA 12
+    months after the cycle ends. Keeping everything for the life of the
+    credential is simpler and costs nothing.</p>
+    <p class="bridge"><b>In Registrar:</b> every entry holds these fields
+    (the notes field takes the "what I learned" line), with the evidence
+    attached. When the audit letter arrives, export the packet: each
+    activity laid out in your body's form fields, plus a zip of the
+    evidence. <a href="/app/">Export a packet</a></p>
+  </section>
+
+  <section aria-labelledby="surprises">
+    <h2 id="surprises">Common surprises: what usually doesn't count</h2>
+    <p>None of these is universal. Each is a rule at enough bodies to catch
+    people out, so treat every one as a question for your own body.</p>
+    <ul class="points">
+      <li><b>Doing your day job.</b> Ordinary work rarely earns credit, and
+      where it does it is capped low: CompTIA counts work experience up to
+      9, GIAC up to 12, PMI up to 8 per cycle for PMP. Check your body's rule.</li>
+      <li><b>Hours past a cap.</b> They stay in your log and they are not
+      credit. Ten extra webinars do not help once the category is full.
+      Check your body's rule.</li>
+      <li><b>General hours where a domain floor applies.</b> The CISSP
+      example above: no amount of Group B fills a Group A gap. Check your
+      body's rule.</li>
+      <li><b>The whole conference day.</b> Credit is for the sessions, not
+      for travel, meals, breaks or the expo floor. A nine-to-five day is
+      rarely eight credits. Check your body's rule.</li>
+      <li><b>Sales pitches.</b> A product demo or a sponsor session that is
+      mostly marketing is often excluded, or questioned at audit. Check
+      your body's rule.</li>
+      <li><b>The same thing twice.</b> Repeating a course you already
+      claimed, or claiming one activity in two cycles. EC-Council, for one,
+      lets an activity count in only one window. Check your body's rule.</li>
+      <li><b>The wrong cycle.</b> Credit usually belongs to the cycle in
+      which the activity happened. Carryover, where it exists, is limited
+      (ACFE up to 10; PMI only from the final 12 months). Check your body's
+      rule.</li>
+      <li><b>Rounding up.</b> Forty-five minutes is not an hour, and at
+      ISACA a CPE hour is 50 minutes. Some bodies accept fractions, some
+      round down. Check your body's rule.</li>
+      <li><b>A claim with nothing behind it.</b> A self-claim with no
+      documentation can be disallowed at audit, and the credit goes with
+      it. Check your body's rule.</li>
+    </ul>
+    <p class="bridge"><b>In Registrar:</b> forfeited hours and short
+    minimums show as soon as you log, next to the plain sum, so the
+    surprise comes early instead of at renewal.
+    <a href="/app/">See your count</a></p>
+  </section>
+
+  <section aria-labelledby="first90">
+    <h2 id="first90">Your first 90 days with a new cert</h2>
+    <ol class="steps">
+      <li><b>Week one: find your dates.</b> In the body's portal, note the
+      cycle start and end, the total, any annual minimum and when the
+      maintenance fee is due. Work out when the grace period, if there is
+      one, would end, and then forget it. Make the evidence folder now,
+      while it is empty.</li>
+      <li><b>First month: read the rules.</b> Read the maintenance handbook
+      once. Write down the caps and floors that apply to you. Give your
+      member number to the providers you use, so the ones that report
+      credits for you can. Turn on two-factor sign-in where the portal
+      offers it.</li>
+      <li><b>By day 90: set a pace and a habit.</b> Divide the total by the
+      months in the cycle: 120 over 36 months is about 3.3 a month; 20 a
+      year is under 2 a month. Pick one steady source (a chapter meeting, a
+      monthly webinar series) and put a ten-minute weekly reminder in your
+      calendar to log what you did.</li>
+    </ol>
+    <p class="bridge"><b>In Registrar:</b> add the credential with its cycle
+    start and the app works out pace per month, the deadlines and grace
+    dates, and a calendar file (.ics) you can import.
+    <a href="/app/">Add your credential</a></p>
+  </section>
+
+  <section aria-labelledby="earn">
+    <h2 id="earn">Where to earn credits</h2>
+    <p>This list leans toward insider threat and investigations work,
+    where nearly everything you learn counts somewhere: the field sits
+    between security, behavioural science, law and investigations. Most of
+    it serves any security credential.</p>
+    <ul class="points">
+      <li><a href="https://www.nationalinsiderthreatsig.org/">NITSIG</a>
+      (National Insider Threat Special Interest Group). Free membership and
+      the largest network of insider threat practitioners: meetings in the
+      Washington, DC area (JHU-APL in Laurel, and Herndon), webinars, and
+      the annual Insider Threat Symposium &amp; Expo. The most
+      insider-threat-dense hours you can log.</li>
+      <li><a href="https://www.cisa.gov/topics/physical-security/insider-threat-mitigation">CISA Insider Threat Mitigation</a>.
+      Free federal resources, training and self-assessment tools.</li>
+      <li><a href="https://www.sei.cmu.edu/">CMU SEI / CERT</a>. The
+      research group behind much of the field's foundational work, with
+      paid courses and certificates for program builders and analysts.</li>
+      <li><a href="https://www.cinrmcoe-cdecgrin.ca/solutions">CInRM CoE</a>
+      (Canadian Insider Risk Management Centre of Excellence). Practical
+      certificates in insider risk management (screening and risk factors,
+      investigations, organizational integration, OSINT) that build toward
+      a professional certificate, developed with Carleton University's
+      Norman Paterson School of International Affairs. Each practical
+      certificate carries 12 ASIS-recognized CPE credits.</li>
+      <li><a href="https://www.secureworld.io/">SecureWorld</a>. Regional
+      conferences worth 6 to 18 CPEs depending on the pass, and free
+      hour-long Remote Sessions webcasts with downloadable certificates.</li>
+      <li><a href="https://www.guidepointsecurity.com/gpsec/">GuidePoint GPSEC</a>.
+      Free one-day regional conferences with insider threat content. Give
+      your ISC2 number at registration and the credits post for you. The
+      monthly Brick House webinar adds steady hours.</li>
+      <li><a href="https://www.gartner.com/en/webinars">Gartner</a>. Free
+      research webinars, plus the Security &amp; Risk Management and IAM
+      summits. Not an official ISC2 provider: ask for the certificate of
+      attendance and submit it yourself.</li>
+      <li><a href="https://www.fsisac.com/">FS-ISAC</a> for the financial
+      sector, and your local ISC2 and ISACA chapters. Member events and
+      monthly chapter meetings are quiet, steady sources of credit.</li>
+    </ul>
+    <p><b>Give some back.</b> Presenting, publishing and volunteering earn
+    credit at most bodies. Preparing a conference talk counts; so does
+    writing for, or maintaining, a community resource. Mind the caps: PMI,
+    for example, counts Giving Back up to 25 of the PMP's 60.</p>
+    <p class="small">Provider details were current when the source page
+    was checked in July 2026. Offerings change: confirm eligibility with
+    the provider and with your body.</p>
+    <p class="bridge"><b>In Registrar:</b> log each event the week you
+    attend; the certificate attaches to the entry, and the packet lays it
+    out in your body's form fields when you report it.
+    <a href="/app/">Log this week's event</a></p>
+  </section>
+
+  <section aria-labelledby="glossary">
+    <h2 id="glossary">Glossary</h2>
+    <dl class="gloss">
+      <dt>CPE</dt>
+      <dd>Continuing Professional Education. The unit at ISC2, ISACA, GIAC,
+      EC-Council, IAPP and ACFE. Usually one per hour of activity; at ISACA,
+      one per 50 minutes.</dd>
+      <dt>CEU</dt>
+      <dd>Continuing Education Unit. CompTIA's name for its credit. In some
+      other fields a CEU means ten contact hours, so a CEU at one body is
+      not automatically one credit at another.</dd>
+      <dt>PDU</dt>
+      <dd>Professional Development Unit. PMI's unit, one per hour; the
+      University of Maryland uses the same name for GCITP.</dd>
+      <dt>CPD</dt>
+      <dd>Continuing Professional Development. The general term, common in
+      the UK and the Commonwealth, and the name some bodies give their whole
+      scheme.</dd>
+      <dt>Cycle total</dt>
+      <dd>The number of credits you need by the end of the cycle (one to
+      four years).</dd>
+      <dt>Annual minimum</dt>
+      <dd>A floor you must meet every year inside the cycle, whatever your
+      total looks like. ISACA (20 a year) and ACFE (20, on a one-year
+      cycle) have one; ISC2 has one only for Associates.</dd>
+      <dt>Group A and Group B</dt>
+      <dd>ISC2's split between credits in your certification's domains (A)
+      and general professional development (B). Other bodies make the same
+      distinction under other names.</dd>
+      <dt>Cap and floor</dt>
+      <dd>A cap is the most a category can contribute; a floor is the least
+      a category must contribute.</dd>
+      <dt>Carryover</dt>
+      <dd>Credits beyond the requirement moved into the next cycle. Some
+      bodies allow a limited amount, some none.</dd>
+      <dt>Grace period</dt>
+      <dd>Time after the cycle ends to finish earning or reporting, often
+      with a fee or a suspended credential. Not every body has one.</dd>
+      <dt>Audit</dt>
+      <dd>A request to document what you claimed: certificates, dates,
+      hours, providers. Usually random, sometimes years later.</dd>
+    </dl>
+    <p class="bridge"><b>In Registrar:</b> every total is shown in the body's
+    own unit, and every rule behind it is on the Rules screen with its
+    source. <a href="/app/">Open the Rules screen</a></p>
+  </section>
+
+  <p class="small attrib">Adapted from the <a href="https://insiderthreatanalyst.com/cpe">CPE Resources page at insiderthreatanalyst.com</a>
+  (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>).
+  The per-body table comes from Registrar's own rules file.</p>
+
+  <section aria-labelledby="who">
+    <h2 id="who">Who it is for</h2>
+    <ul class="points">
+      <li>People who hold one or more certifications and renew them
+      themselves: security analysts, investigators, fraud examiners,
+      threat-assessment and insider-risk professionals.</li>
+      <li>Anyone holding two credentials whose cycles, units and caps do
+      not line up, who wants one record that answers "am I on track for
+      each?"</li>
+      <li>People who would rather not hand their training history and
+      certificates to another online account.</li>
+    </ul>
+  </section>
+
   <p class="note"><b>Early release.</b> Registrar works today, but it is
   young. The browser version keeps everything on your device; there is
   no hosted account version. Some
@@ -27,7 +423,7 @@
   the app marks those as unverified and does not hide it. Check anything
   important against your body's portal.</p>
 
-  <h2>The suite</h2>
+  <h2 id="suite">The suite</h2>
 
   <section class="tool" aria-labelledby="registrar">
     <p class="num">Tool #1</p>
@@ -56,6 +452,88 @@
     Python 3 standard library only, or one <code>docker compose up</code>;
     runs on your own machine or private network, bound to localhost by
     default. Both are free software under the GNU AGPL v3.</p>
+  </section>
+
+  <section aria-labelledby="see">
+    <h2 id="see">See it</h2>
+    <figure>
+      <img src="/media/capture.gif" width="720" height="496" alt="The Log activity screen. A certificate PDF is dropped on the Evidence area; the date, hours, title and provider fill in, each with a confidence note, and the certificate holder is checked against your name. Nothing is saved until you press Save.">
+      <figcaption>Drop a certificate: the fields are read on your device and
+      filled in for you to check. Nothing is saved until you confirm.</figcaption>
+    </figure>
+    <figure>
+      <img src="/media/progress.png" width="1200" height="780" loading="lazy" alt="The Credentials screen for three credentials. Each card shows a verdict, a progress bar with a pace marker, the counted total next to the naive sum of hours, credits forfeited to caps, any category minimum that is short, and the cycle dates.">
+      <figcaption>Every credential shows the counted total next to the
+      naive sum, and what was forfeited to caps.</figcaption>
+    </figure>
+    <figure>
+      <img src="/media/cissp-detail.png" width="1200" height="780" loading="lazy" alt="The CISSP detail screen: verdict, progress, pace per month, cycle and grace dates, an unverified-rule notice for the carryover figure, and tables of categories and groups with the Group A shortfall.">
+      <figcaption>One credential in detail: pace, grace period, categories
+      and group minimums. All sample data.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="bodies">
+    <h2 id="bodies">Credentials covered</h2>
+    <p>Registrar counts these seven credentials in full. Every rule lives
+    in one data file, <code>bodies.yaml</code>, with a source link and the
+    date it was checked.</p>
+    <p class="small"><span class="badge">UNVERIFIED</span> means that value
+    could not be confirmed on the body's own published pages: it is shown,
+    but you should check it before you rely on it.</p>
+    <div class="scroll" role="region" aria-label="Table of credentials covered" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Credential</th><th scope="col">Body</th><th scope="col">Cycle</th><th scope="col">Requirement</th><th scope="col">Rules</th></tr></thead>
+      <tbody>
+        <tr><td>CISSP</td><td>ISC2</td><td>3 years</td><td>120 CPE (at least 90 Group A, at most 30 Group B)</td><td>checked; rollover <span class="badge">UNVERIFIED</span></td></tr>
+        <tr><td>CySA+</td><td>CompTIA</td><td>3 years</td><td>60 CEU, capped by activity type</td><td>checked</td></tr>
+        <tr><td>CEH</td><td>EC-Council</td><td>3 years</td><td>120 CPE, registered each year by 1 February</td><td>checked</td></tr>
+        <tr><td>GCITP</td><td>University of Maryland</td><td>4 years</td><td>100 PDU (at least 60 counter-insider-threat)</td><td>checked; rollover <span class="badge">UNVERIFIED</span></td></tr>
+        <tr><td>ATAP membership</td><td>ATAP</td><td>calendar year</td><td>1 qualifying meeting</td><td><span class="badge">UNVERIFIED</span></td></tr>
+        <tr><td>CTM</td><td>ATAP</td><td>2 years</td><td>50 credits; category caps unknown, so advisory only</td><td><span class="badge">UNVERIFIED</span></td></tr>
+        <tr><td>CFE</td><td>ACFE</td><td>1 year</td><td>20 CPE (at least 10 fraud, at least 2 ethics)</td><td>checked</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="small">The Rules screen also lists the unit and cycle length
+    for 95 certifications from ten bodies (ISC2, ISACA, CompTIA, GIAC,
+    EC-Council, PMI, IAPP, ACFE, ATAP and the University of Maryland), so
+    you can see how a credential you hold is counted even before its
+    detailed rules are in.</p>
+  </section>
+
+  <section aria-labelledby="local">
+    <h2 id="local">Your data stays in your browser</h2>
+    <ul class="points">
+      <li>The browser app has no account and no server copy. Your
+      activities, settings and certificates are stored in your browser, on
+      your device, and nowhere else.</li>
+      <li>Certificates are read on your device. The PDF reader and the
+      text-recognition engine come from this site, not from a third-party
+      server, and the site's security policy stops the app from talking to
+      any other site.</li>
+      <li>There are no analytics, no tracking and no cookies. Nothing is
+      backed up for you either: clearing site data or losing the device
+      loses the ledger, so use <b>Export</b> now and then.</li>
+      <li>One optional feature sends data out: if you add your own AI
+      provider key, the text read from one certificate goes to that
+      provider when you ask. Never the file, and the key is never saved.</li>
+      <li>Registrar never asks for, stores or uses your certifying body's
+      portal login. You submit to your body yourself.</li>
+    </ul>
+    <p><a href="/privacy">Privacy and threat model</a>: what stays local,
+    and exactly what the optional AI feature sends and to whom.</p>
+  </section>
+
+  <section aria-labelledby="links">
+    <h2 id="links">Links</h2>
+    <ul class="links">
+      <li><a href="/app/">Open Registrar in your browser</a></li>
+      <li><a href="https://github.com/robknowles-cybersecurity/registrar">Source code on GitHub</a> (free software, GNU AGPL v3)</li>
+      <li><a href="https://github.com/robknowles-cybersecurity/registrar/releases">Release notes</a></li>
+      <li><a href="/privacy">Privacy and threat model</a></li>
+      <li><a href="https://github.com/robknowles-cybersecurity/registrar/security/advisories/new">Report a vulnerability privately</a></li>
+    </ul>
   </section>
 
   <div class="later">More tools may join the suite later. Nothing to

@@ -3,15 +3,91 @@
 **Track your CPEs, CEUs and PDUs in one place, with the arithmetic each
 certifying body actually uses.**
 
-Registrar is a self-hosted continuing-education tracker for people who hold
-one or more professional certifications. It is tool #1 of
+Registrar is a continuing-education tracker for people who hold one or
+more professional certifications. It runs in your browser, with nothing to
+install, or self-hosted on your own machine. It is tool #1 of
 [ceu.tools](https://ceu.tools). It is an **early release**: usable, tested,
 and honest about what it does not yet know.
 
 (The Python package is called `cpebot`, its name before release.)
 
-**Try it in your browser:** <https://ceu.tools/app>. Nothing to install, and
-your ledger and evidence stay in your browser.
+![The Credentials screen: for each credential, a verdict, a progress bar with a pace marker, the counted total next to the naive sum of hours, credits forfeited to caps, any category minimum that is short, and the cycle dates.](site/media/progress.png)
+
+## Try it in your browser
+
+**<https://ceu.tools/app>**: nothing to install, no account, and your
+ledger and evidence stay in your browser.
+
+- **First run** asks which credentials you hold. Everything after that
+  follows from the answer, and you can skip it.
+- **Load sample data** to look around first: three credentials and nine
+  invented activities with certificates, all marked SAMPLE and removed in
+  one click.
+- **Drop a certificate** (PDF or photo) on Log activity. The date, hours,
+  provider and title are read on your device and filled in for you to
+  check; nothing is saved until you confirm. The empty ledger links a
+  sample certificate to try it with.
+
+  ![Dropping a certificate PDF on the Log activity screen: the date, hours, title and provider fill in, each with a confidence note, and the certificate holder is checked against your name.](site/media/capture.gif)
+
+- **Reports**: activities as CSV, a workbook (.xlsx) with Activities,
+  Evidence and Totals sheets, and a calendar (.ics) of your cycle ends with
+  alerts 90 and 30 days before. **Export** / **Import** move the whole
+  ledger, evidence included, between browsers and to or from the
+  self-hosted app.
+
+![One credential in detail: verdict, pace per month, cycle and grace dates, categories and group minimums with the shortfall.](site/media/cissp-detail.png)
+
+How it works and what it sends where: [webapp/README.md](webapp/README.md)
+and <https://ceu.tools/privacy>.
+
+## Self-host it
+
+The same rules and ledger as a small web app on your own machine or
+private network, on the Python 3 standard library: no third-party
+packages, no JavaScript, bound to localhost by default.
+
+```bash
+git clone https://github.com/robknowles-cybersecurity/registrar.git
+cd registrar
+cp .env.example .env && docker compose up -d --build     # or see Quickstart below
+```
+
+Then open <http://127.0.0.1:8762/>. Without Docker, see
+[Quickstart](#quickstart) and [Self-hosting](#self-hosting) below;
+[docs/SELF-HOST.md](docs/SELF-HOST.md) has the details. The self-hosted app
+adds optional Telegram capture with your own bot, a renewal report and
+quiet reminders.
+
+## Why you can trust it
+
+- **No accounts, no server, your data in your browser.** The browser app
+  keeps every activity, setting and certificate in your browser's own
+  storage on your device. ceu.tools has no account system, no database and
+  no analytics, so there is no copy of your ledger anywhere else to leak
+  (and none to restore it from: Export regularly). The only optional
+  feature that sends anything is bring-your-own-key, and it sends the text
+  of one certificate to the provider you chose, when you press the button;
+  [the privacy page](https://ceu.tools/privacy) says exactly what.
+- **Every third-party file is pinned by hash, and the build refuses on a
+  mismatch.** The browser app uses two libraries, pdf.js and tesseract.js,
+  served from ceu.tools itself, never from a CDN. Each file is vendored at
+  an exact version with its SHA-256 recorded in
+  `webapp/src/vendor/MANIFEST.json` and
+  [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md); `npm run build` re-hashes
+  every one and stops if a single byte differs. The site's
+  Content-Security-Policy lets the page run scripts and make connections
+  only on its own origin, plus the two optional AI provider hosts and localhost.
+- **Private vulnerability reporting is on.** Report security problems
+  privately through GitHub (the *Security* tab, then *Report a
+  vulnerability*); see [SECURITY.md](SECURITY.md) and
+  <https://ceu.tools/.well-known/security.txt>.
+- **The promises are tested, and the tests are tested.** Headless-browser
+  checks run the built app under its real security policy and fail on any
+  request that leaves the site; deliberately broken builds must make them
+  fail, and do. See [Verifying](#verifying).
+- **Registrar never asks for your certifying body's portal login.** It
+  fills in packets; you submit them yourself.
 
 ## Why not a spreadsheet
 
@@ -77,14 +153,14 @@ progress is in CPEs, CySA+ in CEUs, GCITP in PDUs. Internally there is one
 unit, the credit, and each credential declares its label and how activities
 convert (one per hour, or a flat amount per item).
 
-| Credential | Body | Unit | Cycle | Requirement | Rules verified (2026-08-30) |
+| Credential | Body | Unit | Cycle | Requirement | Rules verified (2026-10-20) |
 |---|---|---|---|---|---|
 | CISSP | ISC2 | CPE | 36 months | 120 (≥90 Group A, ≤30 Group B) | yes; rollover UNVERIFIED |
-| CySA+ | CompTIA | CEU | 36 months | 60 | yes; two category caps UNVERIFIED |
-| CEH | EC-Council | ECE | 36 months | 120, registered yearly | yes |
+| CySA+ | CompTIA | CEU | 36 months | 60 | yes |
+| CEH | EC-Council | CPE | 36 months | 120, registered yearly | yes |
 | GCITP | University of Maryland | PDU | 48 months | 100 (≥60 C-InT) | yes; rollover UNVERIFIED |
 | ATAP membership | ATAP | meeting | calendar year | 1 | **no** |
-| CTM | ATAP | credit | 24 months | 50 | **no**; category caps unknown |
+| CTM | ATAP | credit | 24 months | 50 | **no** (last checked 2026-08-30); category caps unknown |
 | CFE | ACFE | CPE | 12 months | 20 (≥10 fraud, ≥2 ethics) | yes |
 
 Some of these rules could not be confirmed against the body's own pages
@@ -242,14 +318,16 @@ cpebot/report.py      renewal report and renewal packet
 cpebot/reminders.py   when to speak, and mostly when not to
 cpebot/validate.py    rules-based advisories (+ a disabled seam)
 tools/                demo data, live verification, mutation proof
-site/                 the ceu.tools landing page (static) and site/app/, the built browser app
+site/                 the ceu.tools landing page and /privacy (static, no scripts), the
+                      share card and icons, security.txt, and site/app/, the built browser app
 webapp/               the browser app's source, tests and build (webapp/README.md)
-docs/                 Telegram setup, verification record, release notes
+docs/                 Telegram setup, verification record, release notes (docs/release-notes/)
 systemd/              user-unit templates
 ```
 
 ## Project
 
+- [CHANGELOG.md](CHANGELOG.md): what changed in each release.
 - Copyright (C) 2026 Rob Knowles. Licensed under the GNU Affero General
   Public License v3 (AGPL-3.0); see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 - [CONTRIBUTING.md](CONTRIBUTING.md): issues welcome; outside code

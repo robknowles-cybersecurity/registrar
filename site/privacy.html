@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy and threat model · ceu.tools</title>
+<meta name="description" content="What Registrar in your browser keeps local, what the optional bring-your-own-key feature sends and to whom, and what it never asks for.">
+<link rel="canonical" href="https://ceu.tools/privacy">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ceu.tools">
+<meta property="og:url" content="https://ceu.tools/privacy">
+<meta property="og:title" content="Privacy and threat model · ceu.tools">
+<meta property="og:description" content="What Registrar keeps local, and exactly what the optional bring-your-own-key feature sends and to whom.">
+<meta property="og:image" content="https://ceu.tools/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ceu.tools/og.png">
+<meta name="theme-color" content="#1f4e5f">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+
+<header>
+  <p class="brand"><a href="/">ceu.tools</a></p>
+  <h1>Privacy and threat model</h1>
+  <p class="lede">Registrar in your browser has no account and no server.
+  This page says what that means in practice, and names the one optional
+  feature that sends anything off your device.</p>
+</header>
+
+<main id="main">
+  <section aria-labelledby="local">
+    <h2 id="local">What stays local</h2>
+    <p>Every activity, setting and evidence file is stored in this
+    browser's IndexedDB for this site, and nowhere else. Certificates are
+    read on the device: the PDF reader (pdf.js) and the text-recognition
+    engine (tesseract.js) run in the page and in same-site workers, loaded
+    from ceu.tools, never from a CDN. The Content-Security-Policy permits
+    scripts only from this site and network connections only to this
+    site, plus the two optional AI provider hosts below and localhost.</p>
+    <p>There is no analytics, no telemetry, no cookie, no account and no
+    server-side copy, so there is nothing for ceu.tools to leak. Equally,
+    nothing is backed up for you: clearing site data, a browser profile
+    reset or a lost device loses the ledger. <b>Export</b> regularly.
+    Anyone with access to this browser profile can read the ledger, as
+    with any local file.</p>
+    <p>Registrar never asks for, stores or uses a certifying body's portal
+    login. Packets are filled in by you.</p>
+  </section>
+
+  <section aria-labelledby="byok">
+    <h2 id="byok">What the bring-your-own-key option sends, and to whom</h2>
+    <p>It is <b>off by default</b>. It sends something only when you set a
+    key in Settings <em>and</em> press "Ask the model" on an activity.</p>
+    <ul class="points">
+      <li><b>What is sent:</b> the text already extracted from that one
+      certificate (at most 20,000 characters), a fixed instruction, the
+      model name, and your key (as the provider's authentication header).</li>
+      <li><b>To whom:</b> over HTTPS to the provider you chose, and only
+      that one: Anthropic's API (<code>api.anthropic.com</code>), or an
+      OpenAI-compatible endpoint (<code>api.openai.com</code>, or a model
+      you run on <code>localhost</code> or <code>127.0.0.1</code>). The site's security policy
+      blocks every other destination.</li>
+      <li><b>What is never sent:</b> the certificate file itself, your
+      other activities, your settings or your export. The certificate
+      text itself usually contains your name and the provider's, so treat
+      it as personal data you are choosing to share.</li>
+      <li><b>The key</b> is held in a JavaScript variable for that tab
+      only. It is not written to IndexedDB, localStorage, cookies or
+      exports, and a reload forgets it.</li>
+      <li><b>The provider</b> sees the certificate text and your key, and
+      handles them under its own terms. The model's answer fills the form,
+      marked "llm", and you confirm it before anything is saved.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="site">
+    <h2 id="site">This website</h2>
+    <p>ceu.tools is static files on Cloudflare Pages. Like any web host,
+    Cloudflare handles each request, including your IP address and the
+    page asked for; ceu.tools adds no analytics, tracking or cookies on
+    top. The landing page and this page run no scripts at all.</p>
+  </section>
+
+  <section aria-labelledby="report">
+    <h2 id="report">Reporting a problem</h2>
+    <p>Found a way data could leave the device, or a way Registrar could
+    store a portal login? Please report it privately through
+    <a href="https://github.com/robknowles-cybersecurity/registrar/security/advisories/new">GitHub private vulnerability reporting</a>.
+    The full threat model, with the tests that check these promises, is in
+    the <a href="https://github.com/robknowles-cybersecurity/registrar/blob/main/webapp/README.md#threat-model">browser app's README</a>.</p>
+  </section>
+
+  <p><a href="/">Back to ceu.tools</a> · <a href="/app/">Open Registrar</a></p>
+</main>
+
+<footer>
+  <p>&copy; 2026 Rob Knowles. ceu.tools and Registrar are not affiliated
+  with or endorsed by any certifying body.</p>
+</footer>
+
+</div>
+</body>
+</html>

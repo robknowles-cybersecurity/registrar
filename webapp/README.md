@@ -16,6 +16,17 @@ format as the self-hosted Python app, running entirely in the browser.
 - Credentials and cycle progress (caps, floors, pace, naive vs counted),
   submission tracking, and packet export (a zip per body: cover sheet in
   the body's form order, manifest with SHA-256s, evidence files).
+- **First run** asks which credentials you hold (skippable); progress, the
+  activity form, Settings, Rules, the calendar and the reports follow from it.
+- **Sample data** on the empty ledger: three credentials, nine invented
+  activities and generated certificates, all marked SAMPLE, removed in one
+  click. A sample certificate to try evidence capture with.
+- **Reports**, made in the browser: activities as CSV; a workbook (.xlsx)
+  with Activities, Evidence and Totals sheets; a calendar (.ics) of each held
+  credential's cycle end with alerts 90 and 30 days before. The JSON Export
+  stays the backup format and is byte-compatible with v1.1.
+- The footer shows the version and the build's content hash, linking to the
+  release notes.
 
 ## Layout
 
@@ -29,12 +40,17 @@ src/                 the app, as shipped (no bundler)
   pdftext.js ingest.js   pdf.js text, OCR path
   llm.js             optional BYOK seam
   packets.js zip.js  packet cover sheet and zip
+  exports.js         CSV, .xlsx (SpreadsheetML on zip.js) and .ics reports
+  sample.js          sample data; generates its certificate PDFs
+  sample/            the "try capture with this" certificate
   sw.js              offline cache
   data.json          generated from bodies.yaml + packetmaps/ (do not edit)
   vendor/            pdf.js and tesseract.js, pinned; MANIFEST.json has hashes
-tools/               vendor.mjs, build.mjs, export_data.py, check_public_text.py
+tools/               vendor.mjs, build.mjs, export_data.py, check_public_text.py,
+                     capture.mjs (landing-page images), make_sample_certificate.py
 tests/               unit tests, parity with Python, fixtures
-e2e/                 serve.mjs (applies site/_headers), verify.mjs
+e2e/                 serve.mjs (applies site/_headers), verify.mjs, site.mjs,
+                     a11y.mjs, keyboard.mjs
 ```
 
 ## Build
@@ -48,7 +64,7 @@ cd webapp
 npm ci --ignore-scripts     # pinned dev packages; see docs/DEPENDENCIES.md
 npm run vendor              # only when changing a library version: re-copies vendor/ and MANIFEST.json
 npm run build               # -> ../site/app/ (checks every vendored file's SHA-256 first)
-npm run check-public        # fails if the built data carries internal wording
+npm run check-public        # fails if anything under site/ carries internal wording
 ```
 
 `site/app/` is committed and deploys with the rest of `site/` on Cloudflare
@@ -63,17 +79,28 @@ npm test                    # unit tests (node:test), including:
                             #     export -> wipe -> import with files; Python reads the browser's export
                             #   parser: 16 synthetic certificates (tests/fixtures/), every v1 body
 npm run heldout             # parser score on held-out certificates it was not tuned on (a score, not a gate)
-npm run e2e                 # the built app in headless Chromium, under the real CSP (43 checks)
-npm run e2e:prove-fails     # the same against two deliberately broken builds: both must fail
+npm run e2e                 # the built app in headless Chromium, under the real CSP (57 checks; 53 with --skip-ocr)
+npm run e2e:prove-fails     # the same against three deliberately broken builds: all must fail
+npm run e2e:site            # landing page, /privacy, share card, icons, security.txt (38 checks)
+npm run e2e:site:prove-fails  # a site without og.png, and one loading a third-party image: both must fail
+node e2e/keyboard.mjs       # keyboard-only walk of the core flow, focus visible at every stop
+AXE=/path/to/axe.min.js npm run a11y   # axe-core on every screen, light and dark
 ```
 
 `npm run e2e` serves `site/` with `site/_headers` applied and checks, among
-others: log an activity, attach a fixture PDF, the parsed hours appear,
-export, wipe, import, the activity is back with verified evidence; packet
+others: the first-run question; log an activity, attach a fixture PDF, the
+parsed hours appear, export, wipe, import, the activity is back with
+verified evidence; sample data load, the three reports, export, wipe,
+import, sample data back, remove sample data; packet
 zip contents; OCR of a photo and of an image-only PDF; a Python export
 imports; offline reload; BYOK sends text only and stores no key; no request
 to any other origin; no CSP violation. It uses the machine's Playwright
 (`npm root -g`), as the repo pins none.
+
+axe-core is not a dependency either: `e2e/a11y.mjs` needs a copy you
+point it at (`AXE=`), injects it through the DevTools protocol (outside
+the page's CSP), and ships nothing. The R3 audit used axe-core 4.13.0
+(`axe.min.js` SHA-256 `c24f097bd2f451d4f933e8bc7d8d539f8672a2ebcb5cc9f9f3eec8ca9470a0c1`).
 
 ## Threat model
 
@@ -83,7 +110,8 @@ are read on the device: pdf.js and the OCR engine run in the page and in
 same-origin workers, loaded from this site, never from a CDN. The Content-
 Security-Policy (`site/_headers`) permits scripts only from this origin and
 network connections only to this origin, plus the two BYOK provider hosts
-and localhost. There is no analytics, no telemetry, no account and no
+and localhost. Sample data, its certificates and the CSV, .xlsx and .ics reports
+are generated in the page; making them sends nothing anywhere. There is no analytics, no telemetry, no account and no
 server-side copy, so there is nothing for ceu.tools to leak; equally,
 nothing is backed up for you. Clearing site data, a browser profile reset
 or a lost device loses the ledger: **Export** regularly. Anyone with access

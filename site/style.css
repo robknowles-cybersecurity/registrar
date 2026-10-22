@@ -87,3 +87,79 @@ footer p { margin: .3rem 0; }
 .ctas { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0 .5rem; }
 .ctas .cta { margin: 0; }
 .cta.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+/* skip link, sections, figures, the coverage table */
+.skip { position: absolute; left: -999px; top: .5rem; background: var(--card);
+        color: var(--accent); padding: .5rem .8rem; border-radius: 6px; z-index: 2; }
+.skip:focus { left: .5rem; }
+.mt0 { margin-top: 0; }
+.points { padding-left: 1.1rem; }
+.points li { margin: .45rem 0; }
+.example {
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  margin: 1rem 0;
+}
+.example p { margin: 0; }
+figure { margin: 1.25rem 0 2rem; }
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+figcaption { font-size: .9rem; color: var(--mute); margin-top: .5rem; }
+.scroll { overflow-x: auto; }
+.scroll:focus-visible { outline: 3px solid var(--note); outline-offset: 2px; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; vertical-align: top; padding: .5rem .6rem;
+         border-bottom: 1px solid var(--line); }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em;
+     color: var(--mute); }
+.badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--note);
+  background: var(--note-soft);
+  border: 1px solid var(--note);
+  border-radius: 4px;
+  padding: 0 .3rem;
+  white-space: nowrap;
+}
+.links { padding-left: 1.1rem; }
+.links li { margin: .3rem 0; }
+code { font-size: .92em; }
+.scroll table { min-width: 34rem; }
+
+/* the guide: contents, per-body table, checklist, steps, glossary */
+.toc { margin: 1.5rem 0 0; padding: .85rem 1rem; background: var(--card);
+       border: 1px solid var(--line); border-radius: 10px; }
+.toc-head { margin: 0 0 .35rem; font-size: .8rem; text-transform: uppercase;
+            letter-spacing: .08em; color: var(--mute); }
+.toc ul { margin: 0; padding: 0; list-style: none; columns: 2 12rem;
+          column-gap: 1.5rem; font-size: .95rem; }
+.toc li { margin: .15rem 0; break-inside: avoid; }
+.bridge { margin: 1.1rem 0 0; padding: .7rem 1rem; font-size: .95rem;
+          border-left: 3px solid var(--accent); background: var(--accent-soft);
+          border-radius: 0 8px 8px 0; }
+.bridge b { color: var(--accent); }
+.bridge a { white-space: nowrap; }
+.scroll table.rules { min-width: 52rem; }
+.rules th[scope="row"] { font-size: .92rem; text-transform: none;
+                         letter-spacing: 0; color: var(--ink); font-weight: 700; }
+.rules .unit { font-weight: 400; font-size: .8rem; color: var(--mute); }
+.check { list-style: none; padding-left: 0; }
+.check li { position: relative; margin: .5rem 0; padding-left: 1.75rem; }
+.check li::before { content: ""; position: absolute; left: 0; top: .3rem;
+                    width: .95rem; height: .95rem; border: 2px solid var(--accent);
+                    border-radius: 3px; }
+.steps { padding-left: 1.3rem; }
+.steps li { margin: .55rem 0; }
+.gloss dt { font-weight: 700; margin-top: .8rem; }
+.gloss dd { margin: .15rem 0 0; }
+.attrib { margin: 2rem 0 0; }

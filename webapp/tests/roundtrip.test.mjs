@@ -104,3 +104,15 @@ test("import refuses documents that are not the ledger format", async () => {
   await assert.rejects(importLedger(led, { format: FORMAT, entries: [{ uuid: "a".repeat(32), activity_date: "2026-02-30", status: "confirmed" }] }), /not a real date/);
   assert.equal((await led.listEntries()).length, 0, "a refused import writes nothing");
 });
+
+test("a v1.1.0 export re-exports byte for byte (frozen fixture)", async () => {
+  // tests/fixtures/v1.1-export.json was written by the v1.1.0 code
+  // (make_v11_export.mjs at main cadba36). Whatever the app adds later, the
+  // JSON Export / Import must stay byte-compatible with it.
+  const text = readFileSync(join(here, "fixtures", "v1.1-export.json"), "utf8");
+  const led = new Ledger(new MemoryStore());
+  const rep = await importLedger(led, JSON.parse(text));
+  assert.equal(rep.files_refused.length, 0);
+  const out = await exportLedger(led, { exportedAt: "2026-10-21 12:00:00" });
+  assert.equal(JSON.stringify(out, null, 1), text);
+});

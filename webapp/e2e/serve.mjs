@@ -7,7 +7,8 @@ import { extname, join, normalize } from "node:path";
 
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8", ".json": "application/json", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json",
-  ".gz": "application/gzip", ".wasm": "application/wasm", ".txt": "text/plain; charset=utf-8", ".pdf": "application/pdf", ".png": "image/png" };
+  ".gz": "application/gzip", ".wasm": "application/wasm", ".txt": "text/plain; charset=utf-8", ".pdf": "application/pdf", ".png": "image/png",
+  ".gif": "image/gif", ".ico": "image/x-icon" };
 
 function parseHeaders(text) {
   const rules = [];
@@ -45,6 +46,8 @@ export function serve(siteDir, port = 0) {
         return res.end();
       }
       file = join(file, "index.html");
+    } else if (!existsSync(file) && existsSync(`${file}.html`)) {
+      file = `${file}.html`; // Cloudflare Pages serves /privacy from privacy.html
     }
     if (!file.startsWith(siteDir) || !existsSync(file)) {
       res.writeHead(404, { "content-type": "text/plain" });

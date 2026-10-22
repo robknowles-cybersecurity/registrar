@@ -92,3 +92,13 @@ pre.text { white-space: pre-wrap; background: var(--card); border: 1px solid var
 .pill.void, .pill.rejected { color: var(--bad); border-color: var(--bad); } .pill.superseded { color: var(--mute); }
 .mt0 { margin-top: 0; } .m0 { margin: 0; } .inline { display: inline; } .auto { width: auto; }
 label.plain, .plain { font-weight: 400; } .flexrow { display: flex; gap: .4rem; }
+/* sample data, first run, reports, version */
+.badge.held { color: var(--accent); background: var(--accent-soft); }
+.banner.sample { border-color: var(--accent); background: var(--accent-soft); }
+.banner.sample .actions { margin: .5rem 0 0; }
+.card.empty { border-style: dashed; }
+.hold { padding: .35rem 0; border-bottom: 1px solid var(--line); }
+.hold:last-child { border-bottom: 0; }
+.hold .when { margin: .3rem 0 .4rem 1.6rem; max-width: 18rem; }
+.start-form .flexrow { margin-top: .4rem; max-width: 22rem; }
+#version { margin-top: .4rem; }

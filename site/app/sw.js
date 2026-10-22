@@ -2,7 +2,7 @@
 // engine and its language model (about 7 MB) are cached the first time they
 // are used, or when you press "Make OCR available offline" in Settings.
 // Nothing here talks to any origin but this one.
-const VERSION = "b635981fa8e00c05";
+const VERSION = "90ada12515dc3dc5";
 const SHELL = [
  "./",
  "./app.css",
@@ -10,6 +10,7 @@ const SHELL = [
  "./data.json",
  "./db.js",
  "./engine.js",
+ "./exports.js",
  "./index.html",
  "./ingest.js",
  "./ledger.js",
@@ -18,11 +19,14 @@ const SHELL = [
  "./packets.js",
  "./parser.js",
  "./pdftext.js",
+ "./sample.js",
+ "./sample/try-capture-certificate.pdf",
  "./schema.js",
  "./vendor/pdfjs/LICENSE",
  "./vendor/pdfjs/pdf.min.mjs",
  "./vendor/pdfjs/pdf.worker.min.mjs",
- "./zip.js"
+ "./zip.js",
+ "./version.json"
 ];
 const CACHE = `registrar-${VERSION}`;
 const RUNTIME = "registrar-runtime-vendor";

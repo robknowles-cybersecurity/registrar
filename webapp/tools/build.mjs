@@ -42,8 +42,11 @@ for (const f of files) hash.update(f).update(readFileSync(join(out, f)));
 const version = hash.digest("hex").slice(0, 16);
 const sw = readFileSync(join(src, "sw.js"), "utf8")
   .replace("__BUILD_VERSION__", version)
-  .replace("__PRECACHE__", JSON.stringify(["./", ...shell.map((f) => `./${f}`)], null, 1));
+  .replace("__PRECACHE__", JSON.stringify(["./", ...shell.map((f) => `./${f}`), "./version.json"], null, 1));
 writeFileSync(join(out, "sw.js"), sw);
-writeFileSync(join(out, "BUILD.txt"), `Built from webapp/src by webapp/tools/build.mjs. Do not edit here.\nversion ${version}\n${files.length + 1} files\n`);
-console.log(`built site/app: ${files.length + 1} files, version ${version}`);
+// What the footer shows: the release version and this build's content hash.
+const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+writeFileSync(join(out, "version.json"), `${JSON.stringify({ version: pkg.version, build: version })}\n`);
+writeFileSync(join(out, "BUILD.txt"), `Built from webapp/src by webapp/tools/build.mjs. Do not edit here.\nversion ${version}\n${files.length + 2} files\n`);
+console.log(`built site/app: ${files.length + 2} files, version ${pkg.version}, build ${version}`);
 if (!existsSync(join(out, "index.html"))) throw new Error("no index.html in the build");

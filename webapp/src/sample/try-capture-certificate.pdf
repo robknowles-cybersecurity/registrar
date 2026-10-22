@@ -1,0 +1,64 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /FR 4 0 R /FB 5 0 R /FT 6 0 R /FTB 7 0 R /FI 8 0 R >> >> /Contents 9 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
+endobj
+9 0 obj
+<< /Length 1022 >>
+stream
+BT /FB 9 Tf 148.5 735.0 Td (SAMPLE CERTIFICATE - INVENTED FOR TRYING REGISTRAR - NOT A REAL RECORD) Tj ET
+BT /FTB 28 Tf 131.0 660.0 Td (Certificate of Attendance) Tj ET
+BT /FI 14 Tf 225.5 618.0 Td (This is to certify that) Tj ET
+BT /FTB 24 Tf 228.0 584.0 Td (Jordan Sample) Tj ET
+BT /FT 14 Tf 197.5 548.0 Td (attended the live online course) Tj ET
+BT /FTB 18 Tf 135.0 520.0 Td (\223Incident Response Tabletop Exercises\224) Tj ET
+BT /FT 13 Tf 221.5 490.0 Td (held on September 24, 2026) Tj ET
+BT /FT 13 Tf 153.2 466.0 Td (and earned 3.5 CPE credits \(3.5 contact hours\).) Tj ET
+BT /FB 11 Tf 72.0 360.0 Td (Provider:) Tj ET
+BT /FR 11 Tf 190.0 360.0 Td (Example Cyber Academy) Tj ET
+BT /FB 11 Tf 72.0 342.0 Td (Delivery:) Tj ET
+BT /FR 11 Tf 190.0 342.0 Td (Virtual, instructor-led) Tj ET
+BT /FB 11 Tf 72.0 324.0 Td (Certificate no.:) Tj ET
+BT /FR 11 Tf 190.0 324.0 Td (SAMPLE-0001) Tj ET
+BT /FR 9 Tf 81.0 200.0 Td (Example Cyber Academy is an invented provider. This file exists to try Registrar's evidence capture.) Tj ET
+
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000288 00000 n 
+0000000385 00000 n 
+0000000487 00000 n 
+0000000586 00000 n 
+0000000684 00000 n 
+0000000784 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R /Info << /Producer (Registrar synthetic fixture) >> >>
+startxref
+1858
+%%EOF

@@ -119,7 +119,7 @@ def main(base):
     check("kill-switch counter is exposed", "capture_counts" in doc,
           "real=%s threshold=%s" % (doc["capture_counts"]["real"],
                                     doc["capture_counts"]["threshold"]))
-    check("the running server is v1.0.0", doc.get("version") == "1.0.0",
+    check("the running server is v1.2.0", doc.get("version") == "1.2.0",
           "version=%s" % doc.get("version"))
 
     print("\nHost allowlist")

@@ -1,0 +1,7 @@
+# Security contact for ceu.tools and Registrar (RFC 9116).
+# Reports go through GitHub private vulnerability reporting.
+Contact: https://github.com/robknowles-cybersecurity/registrar/security/advisories/new
+Expires: 2027-10-21T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://ceu.tools/.well-known/security.txt
+Policy: https://github.com/robknowles-cybersecurity/registrar/security/policy

@@ -18,9 +18,19 @@
 /index.html
   Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+# The privacy page: same policy as the landing page.
+/privacy
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
+/privacy.html
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Permissions-Policy: browsing-topics=(), camera=(), microphone=(), geolocation=()
 /favicon.svg
   Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'
 /style.css
+  Content-Security-Policy: default-src 'none'
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
   Content-Security-Policy: default-src 'none'
 
 # The browser app: its own scripts only (plus WebAssembly for OCR); network

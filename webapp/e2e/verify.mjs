@@ -12,6 +12,7 @@
 //   node e2e/verify.mjs                 # exit 0 only if every check passes
 //   node e2e/verify.mjs --break parser  # a mutated build: must FAIL
 //   node e2e/verify.mjs --break import  # a mutated build: must FAIL
+//   node e2e/verify.mjs --break export  # a mutated build: must FAIL
 //   node e2e/verify.mjs --skip-ocr      # skip the two OCR checks (faster)
 import { createRequire } from "node:module";
 import { execSync, execFileSync } from "node:child_process";
@@ -53,6 +54,7 @@ if (breakWhat) {
   };
   if (breakWhat === "parser") mutate("parser.js", "hours: bestHours(lines) || none,", "hours: none,");
   else if (breakWhat === "import") mutate("schema.js", "await led.store.put(\"entries\", e);", "/* mutated: entries dropped */");
+  else if (breakWhat === "export") mutate("exports.js", "export const ALARM_DAYS = [90, 30];", "export const ALARM_DAYS = [90];");
   else throw new Error(`unknown --break ${breakWhat}`);
   console.log(`MUTATED BUILD (--break ${breakWhat}): this run must FAIL\n`);
 }
@@ -99,7 +101,21 @@ async function downloadOf(click) {
 try {
   await page.goto(base);
   await page.waitForFunction(() => window.__registrar && document.querySelector("main h1"));
-  check("app loads under the site's CSP", (await page.locator("main h1").innerText()) === "Credentials");
+  check("app loads under the site's CSP; a first run asks which credentials you hold",
+    (await page.locator("main h1").innerText()) === "Which credentials do you hold?" && (await page.locator('input[name="hold"]').count()) === 7);
+  const buildTxt = readFileSync(join(siteDir, "app", "BUILD.txt"), "utf8");
+  const pkgVersion = JSON.parse(readFileSync(join(webapp, "package.json"), "utf8")).version;
+  await page.waitForFunction(() => document.getElementById("version").textContent.includes("build"));
+  const footer = await page.locator("#version").innerText();
+  check("footer shows the version and build hash, linking to the release notes",
+    footer.includes(`v${pkgVersion}`) && footer.includes(/version (\w+)/.exec(buildTxt)[1]) &&
+    (await page.locator("#version a").getAttribute("href")).endsWith(`/releases/tag/v${pkgVersion}`), footer);
+  await page.click("#welcome-skip");
+  await page.waitForFunction(() => document.querySelector("main h1")?.textContent === "Credentials");
+  check("first run is skippable: the empty ledger offers sample data and a certificate to try",
+    (await page.locator("#sample-load").count()) === 1 && (await page.locator("#try-capture").getAttribute("href")) === "sample/try-capture-certificate.pdf");
+  const tryPdf = await page.evaluate(async () => { const r = await fetch("sample/try-capture-certificate.pdf"); return [r.status, (await r.text()).slice(0, 5)]; });
+  check("the try-capture certificate is served", tryPdf[0] === 200 && tryPdf[1] === "%PDF-", JSON.stringify(tryPdf));
   check("'your data lives in this browser' banner with Export / Import / Wipe",
     (await page.locator(".local").innerText()).includes("Your data lives in this browser") &&
     (await page.locator("#btn-export").count()) && (await page.locator("#btn-import").count()) && (await page.locator("#btn-wipe").count()));
@@ -144,7 +160,7 @@ try {
   await page.click("#btn-wipe");
   await page.waitForTimeout(500);
   check("wipe empties the ledger", (await entryCount()) === 0);
-  check("after wipe nothing is tracked", (await page.locator("main").innerText()).includes("Nothing tracked yet"));
+  check("after wipe the first-run question is back", (await page.locator("main h1").innerText()) === "Which credentials do you hold?");
 
   const exportFile = join(mkdtempSync(join(tmpdir(), "registrar-e2e-")), "export.json");
   writeFileSync(exportFile, exported);
@@ -251,6 +267,58 @@ try {
   await ingestDone(30000);
   check("evidence parsing works offline", (await val("#f-hours")) === "4", await val("#f-hours"));
   await context.setOffline(false);
+
+  // == SAMPLE DATA: onboarding -> load sample -> reports -> export -> wipe -> import -> remove ==
+  await page.click("#btn-wipe");
+  await page.waitForFunction(() => document.querySelector("main h1")?.textContent === "Which credentials do you hold?");
+  await page.check('input[name="hold"][value="cissp"]');
+  check("ticking a credential asks for its cycle start", await page.locator("#w-cissp").isVisible());
+  await page.fill("#w-cissp", "2025-09-01");
+  await page.check('input[name="hold"][value="cfe"]'); // held, start left for later
+  await page.click('#welcome-form button[type="submit"]');
+  await page.waitForFunction(() => document.querySelector("main h1")?.textContent === "Credentials" && document.querySelector("#sample-load"));
+  check("onboarding drives the Credentials screen (CISSP card, CFE asks for its start)",
+    (await page.locator("#c-cissp").count()) === 1 && (await page.locator('form[data-start="cfe"]').count()) === 1);
+  await page.click("#sample-load");
+  await page.waitForFunction(() => document.querySelector("#sample-remove"));
+  check("sample data loads: 9 activities over 3 bodies, clearly marked", (await entryCount()) === 9 &&
+    (await page.locator(".banner.sample").innerText()).includes("Sample data is loaded") &&
+    (await page.locator("#c-cissp").count()) === 1 && (await page.locator("#c-cysa_plus").count()) === 1 && (await page.locator("#c-cfe").count()) === 1);
+  const sampleTitles = await page.evaluate(async () => (await window.__registrar.led.listEntries()).map((e) => e.title));
+  check("every sample activity is titled SAMPLE —", sampleTitles.every((t) => t.startsWith("SAMPLE — ")));
+  const sampleVerify = await page.evaluate(async () => (await window.__registrar.led.verifyEvidence()).map((r) => r.verify));
+  check("sample evidence: 8 certificates, every hash OK", sampleVerify.length === 8 && sampleVerify.every((v) => v === "OK"), sampleVerify.join(","));
+
+  const csv = (await downloadOf(() => page.click("#dl-csv"))).toString("utf8");
+  check("CSV report: header + 9 activities", csv.startsWith("\ufeffDate,Title,") && csv.trim().split("\r\n").length === 10);
+  const xlsx = readZip(new Uint8Array(await downloadOf(() => page.click("#dl-xlsx"))));
+  const xnames = xlsx.map((f) => f.name);
+  const wb = new TextDecoder().decode(xlsx.find((f) => f.name === "xl/workbook.xml").data);
+  check("XLSX report: Activities, Evidence and Totals sheets", xnames.includes("xl/worksheets/sheet3.xml") && /Activities.*Evidence.*Totals/.test(wb), xnames.join(", "));
+  const ics = (await downloadOf(() => page.click("#dl-ics"))).toString("utf8");
+  check("ICS report: one cycle end per credential with a start (3), two alarms each",
+    (ics.match(/BEGIN:VEVENT/g) || []).length === 3 && (ics.match(/TRIGGER:-P90D/g) || []).length === 3 && (ics.match(/TRIGGER:-P30D/g) || []).length === 3);
+
+  const sampleExport = await downloadOf(() => page.click("#btn-export"));
+  await page.click("#btn-wipe");
+  await page.waitForFunction(() => document.querySelector("main h1")?.textContent === "Which credentials do you hold?");
+  const sampleFile = join(dirname(exportFile), "sample-export.json");
+  writeFileSync(sampleFile, sampleExport);
+  await page.setInputFiles("#import-file", sampleFile);
+  await page.waitForFunction(() => /Imported|refused/.test(document.getElementById("toast").textContent));
+  await go("#/");
+  check("SAMPLE DATA IS BACK after export -> wipe -> import", (await entryCount()) === 9 && (await page.locator("#sample-remove").count()) === 1);
+  const backVerify = await page.evaluate(async () => (await window.__registrar.led.verifyEvidence()).map((r) => r.verify));
+  check("its certificates are back and verify", backVerify.length === 8 && backVerify.every((v) => v === "OK"));
+  await page.click("#sample-remove");
+  await page.waitForFunction(() => !document.querySelector("#sample-remove"));
+  const afterRemove = await page.evaluate(async () => ({
+    entries: (await window.__registrar.led.listEntries()).length,
+    files: (await window.__registrar.led.store.getAll("files")).length,
+    creds: (await window.__registrar.led.allCredentialState()).map((s) => `${s.credential}:${s.anchor_date}`).sort(),
+  }));
+  check("remove sample data: activities and certificates gone, your CISSP and CFE kept",
+    afterRemove.entries === 0 && afterRemove.files === 0 && afterRemove.creds.join() === "cfe:null,cissp:2025-09-01", JSON.stringify(afterRemove));
 } catch (err) {
   check("verification ran to the end", false, err.stack.split("\n").slice(0, 3).join(" | "));
 }
